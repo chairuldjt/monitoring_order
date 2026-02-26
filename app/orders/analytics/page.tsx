@@ -8,6 +8,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 
 interface AnalyticsData {
     rawKey: string;
+    label: string;
     month: string;
     averageHours: number;
     orderCount: number;
@@ -27,12 +28,13 @@ function AnalyticsContent() {
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [viewType, setViewType] = useState<'daily' | 'weekly' | 'monthly'>('weekly');
 
-    const fetchAnalytics = useCallback(async (isRefresh = false) => {
+    const fetchAnalytics = useCallback(async (isRefresh = false, type = viewType) => {
         if (isRefresh) setRefreshing(true);
         setError(null);
         try {
-            const res = await fetch('/api/orders/analytics');
+            const res = await fetch(`/api/orders/analytics?type=${type}`);
             if (res.ok) {
                 const responseData = await res.json();
                 setData(responseData.data || []);
@@ -46,11 +48,12 @@ function AnalyticsContent() {
             setLoading(false);
             setRefreshing(false);
         }
-    }, []);
+    }, [viewType]);
 
     useEffect(() => {
-        fetchAnalytics();
-    }, [fetchAnalytics]);
+        setLoading(true);
+        fetchAnalytics(false, viewType);
+    }, [viewType, fetchAnalytics]);
 
     return (
         <div className="min-h-screen p-4 md:p-8 space-y-6 animate-fade-in relative">
@@ -60,20 +63,42 @@ function AnalyticsContent() {
                         <ArrowLeft className="w-4 h-4" /> Kembali ke Dashboard
                     </Link>
                     <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-700 rounded-xl flex items-center justify-center shadow-lg">
+                        <div className="w-10 h-10 bg-gradient-to-br from-violet-500 via-violet-600 to-fuchsia-700 rounded-xl flex items-center justify-center shadow-lg">
                             <BarChart2 className="w-5 h-5 text-white" />
                         </div>
                         <h1 className="text-2xl font-black text-slate-800">Analitik Penyelesaian Order</h1>
                     </div>
                 </div>
-                <button
-                    onClick={() => fetchAnalytics(true)}
-                    disabled={refreshing || loading}
-                    className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-5 py-2.5 rounded-xl hover:shadow-lg transition-all font-bold flex items-center gap-2 active:scale-95 disabled:opacity-60 self-start md:self-end text-sm"
-                >
-                    <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
-                    Kalkulasi Ulang
-                </button>
+
+                <div className="flex flex-col sm:flex-row gap-3">
+                    <div className="bg-slate-100 p-1.5 rounded-2xl flex gap-1">
+                        {[
+                            { id: 'daily', label: 'Harian' },
+                            { id: 'weekly', label: 'Mingguan' },
+                            { id: 'monthly', label: 'Bulanan' }
+                        ].map((btn) => (
+                            <button
+                                key={btn.id}
+                                onClick={() => setViewType(btn.id as any)}
+                                className={`px-4 py-2 rounded-xl text-xs font-black transition-all ${viewType === btn.id
+                                    ? 'bg-white text-violet-600 shadow-sm'
+                                    : 'text-slate-500 hover:text-slate-700'
+                                    }`}
+                            >
+                                {btn.label}
+                            </button>
+                        ))}
+                    </div>
+
+                    <button
+                        onClick={() => fetchAnalytics(true)}
+                        disabled={refreshing || loading}
+                        className="bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white px-5 py-2.5 rounded-xl hover:shadow-lg transition-all font-bold flex items-center gap-2 active:scale-95 disabled:opacity-60 text-sm whitespace-nowrap"
+                    >
+                        <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
+                        Kalkulasi Ulang
+                    </button>
+                </div>
             </div>
 
             {error && (
@@ -84,17 +109,19 @@ function AnalyticsContent() {
 
             <div className="bg-white rounded-[2rem] border border-slate-100 shadow-2xl overflow-hidden p-6 md:p-8 lg:p-10">
                 <div className="mb-6 flex items-center gap-3">
-                    <Clock className="w-6 h-6 text-indigo-500" />
+                    <Clock className="w-6 h-6 text-violet-500" />
                     <div>
                         <h2 className="text-xl font-bold text-slate-800">Rata-Rata Waktu Tanggap (Follow Up - Selesai)</h2>
-                        <p className="text-slate-500 text-sm">Menampilkan durasi rata-rata dalam ukuran Jam untuk order yang telah terselesaikan per bulannya.</p>
+                        <p className="text-slate-500 text-sm">
+                            Menampilkan durasi rata-rata dalam ukuran Jam untuk order yang telah terselesaikan per {viewType === 'daily' ? 'hari' : viewType === 'weekly' ? 'minggu' : 'bulan'}.
+                        </p>
                     </div>
                 </div>
 
                 {loading ? (
                     <div className="flex flex-col items-center justify-center py-24">
-                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto mb-4"></div>
-                        <p className="text-sm font-bold text-slate-600">Sedang mengambil riwayat pesanan (History) dari SIMRS...</p>
+                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-violet-600 mx-auto mb-4"></div>
+                        <p className="text-sm font-bold text-slate-600">Sedang mengolah data ({viewType})...</p>
                         <p className="text-xs text-slate-400 mt-1">Ini mungkin memerlukan waktu sekitar 2-5 detik.</p>
                     </div>
                 ) : data.length > 0 ? (
@@ -104,7 +131,7 @@ function AnalyticsContent() {
                             <ResponsiveContainer width="100%" height="100%">
                                 <BarChart data={data} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
                                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
-                                    <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fill: '#64748b', fontSize: 13, fontWeight: 600 }} dy={10} />
+                                    <XAxis dataKey="label" axisLine={false} tickLine={false} tick={{ fill: '#64748b', fontSize: 12, fontWeight: 600 }} dy={10} />
                                     <YAxis axisLine={false} tickLine={false} tick={{ fill: '#94a3b8', fontSize: 12 }} dx={-10} />
                                     <Tooltip
                                         cursor={{ fill: '#f1f5f9' }}
@@ -112,9 +139,15 @@ function AnalyticsContent() {
                                         formatter={(value: any) => [`${value} Jam`, 'Rata-Rata']}
                                         labelStyle={{ color: '#475569', marginBottom: '8px' }}
                                     />
-                                    <Bar dataKey="averageHours" fill="#6366f1" radius={[6, 6, 0, 0]} maxBarSize={60}>
-                                        <LabelList dataKey="averageHours" position="top" fill="#6366f1" fontSize={12} fontWeight="bold" formatter={(val: any) => `${val}h`} />
+                                    <Bar dataKey="averageHours" fill="url(#colorGradient)" radius={[6, 6, 0, 0]} maxBarSize={60}>
+                                        <LabelList dataKey="averageHours" position="top" fill="#8b5cf6" fontSize={12} fontWeight="bold" formatter={(val: any) => `${val}h`} />
                                     </Bar>
+                                    <defs>
+                                        <linearGradient id="colorGradient" x1="0" y1="0" x2="0" y2="1">
+                                            <stop offset="0%" stopColor="#8b5cf6" />
+                                            <stop offset="100%" stopColor="#d946ef" />
+                                        </linearGradient>
+                                    </defs>
                                 </BarChart>
                             </ResponsiveContainer>
                         </div>
@@ -124,7 +157,7 @@ function AnalyticsContent() {
                             <table className="w-full text-left border-collapse">
                                 <thead>
                                     <tr className="bg-slate-50 border-b border-slate-200 text-slate-500 text-xs uppercase tracking-wider">
-                                        <th className="px-6 py-4 font-black">Bulan</th>
+                                        <th className="px-6 py-4 font-black">Periode</th>
                                         <th className="px-6 py-4 font-black">Total Order Selesai</th>
                                         <th className="px-6 py-4 font-black">Rata-Rata Durasi</th>
                                         <th className="px-6 py-4 font-black text-right">Performa</th>
@@ -133,13 +166,13 @@ function AnalyticsContent() {
                                 <tbody className="divide-y divide-slate-100">
                                     {data.map((row, idx) => (
                                         <tr key={idx} className="hover:bg-slate-50/80 transition-colors">
-                                            <td className="px-6 py-4 text-sm font-bold text-slate-700">{row.month}</td>
+                                            <td className="px-6 py-4 text-sm font-bold text-slate-700">{row.label}</td>
                                             <td className="px-6 py-4 text-sm text-slate-600">
-                                                <span className="bg-indigo-50 text-indigo-700 px-3 py-1 rounded-full font-bold">
+                                                <span className="bg-violet-50 text-violet-700 px-3 py-1 rounded-full font-bold">
                                                     {row.orderCount} Order
                                                 </span>
                                             </td>
-                                            <td className="px-6 py-4 text-sm font-black text-indigo-600">
+                                            <td className="px-6 py-4 text-sm font-black text-violet-600">
                                                 {row.averageHours} Jam
                                             </td>
                                             <td className="px-6 py-4 text-sm text-right">

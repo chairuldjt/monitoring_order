@@ -9,6 +9,9 @@ export async function GET(request: Request) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
+        const { searchParams } = new URL(request.url);
+        const viewType = searchParams.get('type') || 'weekly'; // daily, weekly, monthly
+
         // 1. Fetch all DONE orders
         const doneOrders = await getSIMRSOrdersByStatus(15);
         console.log(`[Analytics API] Found ${doneOrders?.length || 0} DONE orders`);
@@ -36,23 +39,37 @@ export async function GET(request: Request) {
         console.log(`[Analytics API] Successfully fetched histories for ${histories.length} orders`);
 
         // 2. Process histories to find "FOLLOW UP" -> "DONE" duration
-        const monthMap = new Map<string, { totalHours: number, count: number, orders: any[] }>();
+        const groupMap = new Map<string, { totalHours: number, count: number, orders: any[] }>();
 
-        // Format: YYYY-MM
-        const getMonthKey = (date: Date | null) => {
-            if (!date || isNaN(date.getTime())) return null;
-            const year = date.getFullYear();
-            const month = String(date.getMonth() + 1).padStart(2, '0');
-            return `${year}-${month}`;
+        const getWeekNumber = (d: Date) => {
+            const date = new Date(d.getTime());
+            date.setHours(0, 0, 0, 0);
+            date.setDate(date.getDate() + 4 - (date.getDay() || 7));
+            const yearStart = new Date(date.getFullYear(), 0, 1);
+            return Math.ceil((((date.getTime() - yearStart.getTime()) / 86400000) + 1) / 7);
         };
 
-        const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+        const getGroupKey = (date: Date | null, type: string) => {
+            if (!date || isNaN(date.getTime())) return null;
+            const year = date.getFullYear();
+
+            if (type === 'daily') {
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
+                return `${year}-${month}-${day}`;
+            } else if (type === 'monthly') {
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                return `${year}-${month}`;
+            } else { // weekly
+                const weekNum = getWeekNumber(date);
+                return `${year}-W${String(weekNum).padStart(2, '0')}`;
+            }
+        };
+
+        const monthNames = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Ags", "Sep", "Okt", "Nov", "Des"];
 
         histories.forEach(({ order, history }) => {
-            if (!history || !Array.isArray(history)) {
-                console.log(`[Analytics API] Skip order ${order.order_no}: No history array`);
-                return;
-            }
+            if (!history || !Array.isArray(history)) return;
 
             let followUpDate: Date | null = null;
             let doneDate: Date | null = null;
@@ -68,23 +85,11 @@ export async function GET(request: Request) {
                 const statusName = (h.status_desc || '').toUpperCase().trim();
                 const hDate = parseSIMRSDate(h.status_date || h.create_date);
 
-                // Earliest FOLLOW UP
-                if (statusName === 'FOLLOW UP' && !followUpDate) {
-                    followUpDate = hDate;
-                }
-
-                // Latest DONE
-                if (statusName === 'DONE') {
-                    doneDate = hDate;
-                }
+                if (statusName === 'FOLLOW UP' && !followUpDate) followUpDate = hDate;
+                if (statusName === 'DONE') doneDate = hDate;
             }
 
-            // Fallback 1: If no FOLLOW UP in history, use create_date of the order
-            if (!followUpDate && order.create_date) {
-                followUpDate = parseSIMRSDate(order.create_date);
-            }
-
-            // Fallback 2: If no DONE in history but order IS done, use last log date or order create_date
+            if (!followUpDate && order.create_date) followUpDate = parseSIMRSDate(order.create_date);
             if (!doneDate) {
                 if (sortedHistory.length > 0) {
                     const lastLog = sortedHistory[sortedHistory.length - 1];
@@ -97,56 +102,56 @@ export async function GET(request: Request) {
             if (followUpDate && doneDate) {
                 const start = followUpDate.getTime();
                 const end = doneDate.getTime();
-
-                if (isNaN(start) || isNaN(end)) {
-                    console.log(`[Analytics API] Skip order ${order.order_no}: Invalid date strings (FU: ${followUpDate}, Done: ${doneDate})`);
-                    return;
-                }
+                if (isNaN(start) || isNaN(end)) return;
 
                 let diffHours = (end - start) / (1000 * 60 * 60);
                 if (diffHours < 0) diffHours = 0;
 
-                const monthKey = getMonthKey(doneDate);
-                if (monthKey) {
-                    if (!monthMap.has(monthKey)) {
-                        monthMap.set(monthKey, { totalHours: 0, count: 0, orders: [] });
+                const groupKey = getGroupKey(doneDate, viewType);
+                if (groupKey) {
+                    if (!groupMap.has(groupKey)) {
+                        groupMap.set(groupKey, { totalHours: 0, count: 0, orders: [] });
                     }
-                    const mData = monthMap.get(monthKey)!;
-                    mData.totalHours += diffHours;
-                    mData.count += 1;
-                    mData.orders.push({
+                    const gData = groupMap.get(groupKey)!;
+                    gData.totalHours += diffHours;
+                    gData.count += 1;
+                    gData.orders.push({
                         order_no: order.order_no,
                         title: order.catatan || order.order_no,
                         follow_up_date: followUpDate.toISOString(),
                         done_date: doneDate.toISOString(),
                         duration_hours: Number(diffHours.toFixed(2))
                     });
-                } else {
-                    console.log(`[Analytics API] Skip order ${order.order_no}: Could not determine month key for ${doneDate}`);
                 }
-            } else {
-                console.log(`[Analytics API] Skip order ${order.order_no}: Missing dates (FU: ${followUpDate}, Done: ${doneDate})`);
             }
         });
 
         // 3. Format into array for Recharts
-        const chartData = Array.from(monthMap.entries()).map(([key, value]) => {
-            const [year, month] = key.split('-');
-            const monthLabel = `${monthNames[parseInt(month) - 1]} ${year}`;
+        const chartData = Array.from(groupMap.entries()).map(([key, value]) => {
+            let label = key;
+            if (viewType === 'monthly') {
+                const [year, month] = key.split('-');
+                label = `${monthNames[parseInt(month) - 1]} ${year}`;
+            } else if (viewType === 'weekly') {
+                label = `Minggu ${key.split('-W')[1]} (${key.split('-')[0]})`;
+            } else if (viewType === 'daily') {
+                const [year, month, day] = key.split('-');
+                label = `${day} ${monthNames[parseInt(month) - 1]}`;
+            }
+
             return {
                 rawKey: key,
-                month: monthLabel,
+                label,
                 averageHours: value.count > 0 ? Number((value.totalHours / value.count).toFixed(2)) : 0,
                 orderCount: value.count,
                 details: value.orders.sort((a, b) => b.duration_hours - a.duration_hours)
             };
         }).sort((a, b) => a.rawKey.localeCompare(b.rawKey));
 
-        console.log(`[Analytics API] Calculated ${chartData.length} months of data`);
-
         return NextResponse.json({
             success: true,
-            data: chartData
+            data: chartData,
+            viewType
         });
 
     } catch (error: any) {

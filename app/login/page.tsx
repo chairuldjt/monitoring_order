@@ -72,12 +72,12 @@ function LoginContent() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-950 to-indigo-950 flex items-center justify-center p-4 relative overflow-hidden">
+        <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center p-4 relative overflow-hidden">
             {/* Animated Background Elements */}
             <div className="absolute inset-0 overflow-hidden">
-                <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl animate-float"></div>
-                <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl animate-float" style={{ animationDelay: '1s' }}></div>
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-blue-600/5 rounded-full blur-3xl"></div>
+                <div className="absolute -top-40 -right-40 w-80 h-80 bg-violet-500/10 rounded-full blur-3xl animate-float"></div>
+                <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-fuchsia-500/10 rounded-full blur-3xl animate-float" style={{ animationDelay: '1s' }}></div>
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-violet-600/5 rounded-full blur-3xl"></div>
             </div>
 
             <div className="relative z-10 w-full max-w-md animate-fade-in-up">
@@ -85,14 +85,14 @@ function LoginContent() {
                 <div className="bg-white/[0.08] backdrop-blur-xl rounded-[2.5rem] shadow-2xl p-10 border border-white/[0.12]">
                     {/* Logo */}
                     <div className="flex flex-col items-center mb-10">
-                        <div className="w-20 h-20 bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-700 rounded-3xl flex items-center justify-center shadow-2xl shadow-blue-500/30 mb-6 border border-white/20 animate-float">
+                        <div className="w-20 h-20 bg-gradient-to-br from-violet-500 via-violet-600 to-fuchsia-700 rounded-3xl flex items-center justify-center shadow-2xl shadow-violet-500/30 mb-6 border border-white/20 animate-float">
                             <Package className="w-10 h-10 text-white" />
                         </div>
                         <h1 className="text-4xl font-black text-white tracking-tight">
-                            Order<span className="bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">Track</span>
+                            Order<span className="bg-gradient-to-r from-violet-400 to-fuchsia-400 bg-clip-text text-transparent">Track</span>
                         </h1>
                         <p className="text-slate-400 text-sm mt-2 font-medium tracking-wider uppercase">SIMRS Monitoring System</p>
-                        <div className="w-12 h-1.5 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full mt-4"></div>
+                        <div className="w-12 h-1.5 bg-gradient-to-r from-violet-500 to-fuchsia-500 rounded-full mt-4"></div>
                     </div>
 
                     {/* Error */}
@@ -116,7 +116,7 @@ function LoginContent() {
                                 onChange={handleChange}
                                 placeholder="Masukkan username atau email"
                                 required
-                                className="w-full px-5 py-3.5 bg-white/[0.06] border border-white/[0.12] rounded-2xl focus:outline-none focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20 text-white placeholder-slate-500 transition-all font-medium"
+                                className="w-full px-5 py-3.5 bg-white/[0.06] border border-white/[0.12] rounded-2xl focus:outline-none focus:border-violet-500/50 focus:ring-2 focus:ring-violet-500/20 text-white placeholder-slate-500 transition-all font-medium"
                             />
                         </div>
 
@@ -133,7 +133,7 @@ function LoginContent() {
                                     onChange={handleChange}
                                     placeholder="Masukkan password"
                                     required
-                                    className="w-full px-5 py-3.5 bg-white/[0.06] border border-white/[0.12] rounded-2xl focus:outline-none focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20 text-white placeholder-slate-500 transition-all font-medium pr-12"
+                                    className="w-full px-5 py-3.5 bg-white/[0.06] border border-white/[0.12] rounded-2xl focus:outline-none focus:border-violet-500/50 focus:ring-2 focus:ring-violet-500/20 text-white placeholder-slate-500 transition-all font-medium pr-12"
                                 />
                                 <button
                                     type="button"
@@ -149,7 +149,7 @@ function LoginContent() {
                             type="submit"
                             id="login-submit"
                             disabled={loading}
-                            className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-black py-3.5 rounded-2xl hover:shadow-xl hover:shadow-blue-500/25 transition-all disabled:opacity-50 disabled:cursor-not-allowed text-sm uppercase tracking-widest active:scale-[0.98] mt-2"
+                            className="w-full bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white font-black py-3.5 rounded-2xl hover:shadow-xl hover:shadow-violet-500/25 transition-all disabled:opacity-50 disabled:cursor-not-allowed text-sm uppercase tracking-widest active:scale-[0.98] mt-2"
                         >
                             {loading ? (
                                 <span className="flex items-center justify-center gap-3">

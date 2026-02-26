@@ -35,7 +35,6 @@ function RepeatOrdersContent() {
 
     const fetchAiAnalysis = useCallback(async (triggerManual = false, params: any = {}) => {
         if (!triggerManual) {
-            // Initial load - Fetch history but don't auto-load detail unless specific ID requested
             try {
                 const url = params.id ? `/api/ai/analyze?id=${params.id}` : '/api/ai/analyze';
                 const res = await fetch(url);
@@ -43,20 +42,25 @@ function RepeatOrdersContent() {
                     const json = await res.json();
                     setAiHistory(json.history || []);
 
-                    if (params.id) {
+                    if (json.activeTask) {
+                        setAiStatus('running');
+                        setAiError(null);
+                        return true;
+                    }
+
+                    if (params.id || json.data) {
                         setAiData(json.data || []);
                         setAiMeta(json);
                         setSelectedHistoryId(json.id);
                         setAiStatus('success');
                     } else {
-                        // Just showing history list gallery
                         setAiStatus('idle');
                         setAiData([]);
                         setSelectedHistoryId(null);
                     }
                 }
             } catch (err) { /* ignore silent local error */ }
-            return;
+            return false;
         }
 
         setAiStatus('running');
@@ -75,9 +79,7 @@ function RepeatOrdersContent() {
             });
             const json = await res.json();
             if (res.ok) {
-                setAiData(json.data || []);
-                setAiMeta(json);
-                setAiStatus('success');
+                setRequestStatus({ status: 'success', message: json.message });
             } else if (res.status === 400) {
                 setAiStatus('not_set');
             } else {
@@ -88,7 +90,8 @@ function RepeatOrdersContent() {
             setAiStatus('error');
             setAiError('Gagal menghubungi server. Pastikan internet lancar.');
         }
-    }, []);
+        return true;
+    }, [selectedModel]);
 
     const handleEstimate = async () => {
         setEstimating(true);
@@ -133,8 +136,25 @@ function RepeatOrdersContent() {
     };
 
     useEffect(() => {
+        let isSubscribed = true;
+        let interval: NodeJS.Timeout;
+
+        const checkStatus = async () => {
+            const isRunning = await fetchAiAnalysis();
+            if (isRunning && isSubscribed) {
+                interval = setTimeout(checkStatus, 5000);
+            }
+        };
+
         setLoading(true);
-        fetchAiAnalysis().finally(() => setLoading(false));
+        checkStatus().finally(() => {
+            if (isSubscribed) setLoading(false);
+        });
+
+        return () => {
+            isSubscribed = false;
+            if (interval) clearTimeout(interval);
+        };
     }, [fetchAiAnalysis]);
 
     return (
@@ -349,7 +369,7 @@ function RepeatOrdersContent() {
                                 <Brain className="w-8 h-8 text-white" />
                             </div>
                             <div>
-                                <h2 className="text-2xl font-black text-slate-800">Hasil Analisa Cerdas (AI)</h2>
+                                <h2 className="text-2xl font-black text-slate-800">Hasil Analisa AI</h2>
                                 <div className="flex items-center gap-2 mt-1">
                                     <span className="bg-violet-100 text-violet-700 text-[10px] font-black px-2 py-0.5 rounded-md uppercase tracking-widest">Semantic Analysis</span>
                                     <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">
@@ -424,7 +444,7 @@ function RepeatOrdersContent() {
                                     </div>
 
                                     <div className="space-y-1 mb-6">
-                                        <h4 className="text-lg font-black text-slate-800">Analisa Cerdas SIMRS</h4>
+                                        <h4 className="text-lg font-black text-slate-800">Analisa AI SIMRS</h4>
                                         <div className="flex flex-wrap gap-2 mt-2">
                                             <div className="bg-slate-100 text-slate-500 text-[10px] font-bold px-2 py-1 rounded-lg flex items-center gap-1.5 border border-slate-200">
                                                 <Search className="w-3 h-3" />
@@ -463,7 +483,7 @@ function RepeatOrdersContent() {
                             <div className="w-24 h-24 bg-white rounded-[2rem] shadow-xl flex items-center justify-center mb-8 animate-float">
                                 <Brain className="w-12 h-12 text-violet-500" />
                             </div>
-                            <h3 className="text-3xl font-black text-slate-800 mb-4">Belum Ada Analisa Cerdas</h3>
+                            <h3 className="text-3xl font-black text-slate-800 mb-4">Belum Ada Analisa AI</h3>
                             <p className="text-slate-500 font-medium max-w-md mb-10 leading-relaxed">
                                 Gunakan kekuatan AI untuk mendeteksi masalah yang berulang bukan hanya dari teks, tapi juga dari makna keluhan pasien dan unit.
                             </p>

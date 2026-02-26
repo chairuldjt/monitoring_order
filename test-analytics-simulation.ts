@@ -11,7 +11,7 @@ async function simulate() {
     const monthMap = new Map();
     const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
 
-    const getMonthKey = (date) => {
+    const getMonthKey = (date: any) => {
         if (!date || isNaN(date.getTime())) return null;
         const year = date.getFullYear();
         const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -42,7 +42,7 @@ async function simulate() {
             if (statusName === 'DONE') doneDate = hDate;
         }
 
-        if (!followUpDate && order.create_date) followUpDate = parseSIMRSDate(order.create_date);
+        // Removed fallback to order.create_date
         if (!doneDate) {
             if (sortedHistory.length > 0) {
                 const lastLog = sortedHistory[sortedHistory.length - 1];
@@ -57,7 +57,7 @@ async function simulate() {
             const end = doneDate.getTime();
             const diffHours = (end - start) / (1000 * 60 * 60);
 
-            const monthKey = getMonthKey(doneDate);
+            const monthKey = getMonthKey(followUpDate);
             if (monthKey) {
                 if (!monthMap.has(monthKey)) monthMap.set(monthKey, { total: 0, count: 0 });
                 const m = monthMap.get(monthKey);

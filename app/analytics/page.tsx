@@ -1,10 +1,16 @@
 'use client';
 
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
-import { useEffect, useState, useCallback } from 'react';
-import { ArrowLeft, RefreshCw, BarChart2, Clock } from 'lucide-react';
+import { ArrowLeft, RefreshCw, BarChart2, Clock, ChevronDown, ChevronUp, User } from 'lucide-react';
 import Link from 'next/link';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LabelList } from 'recharts';
+
+interface TechnicianData {
+    name: string;
+    averageHours: number;
+    orderCount: number;
+}
 
 interface AnalyticsData {
     rawKey: string;
@@ -12,6 +18,7 @@ interface AnalyticsData {
     month: string;
     averageHours: number;
     orderCount: number;
+    technicians: TechnicianData[];
     details: any[];
 }
 
@@ -31,20 +38,37 @@ function AnalyticsContent() {
     const [viewType, setViewType] = useState<'daily' | 'weekly' | 'monthly'>('weekly');
     const [selectedMonth, setSelectedMonth] = useState(String(new Date().getMonth() + 1));
     const [selectedYear, setSelectedYear] = useState(String(new Date().getFullYear()));
+    const [expandedRows, setExpandedRows] = useState<string[]>([]);
+    const [uniqueTechnicians, setUniqueTechnicians] = useState<string[]>([]);
+
+    // New Technician State
+    const [selectedTechnician, setSelectedTechnician] = useState<string>('all');
+
+    const toggleRow = (id: string) => {
+        setExpandedRows(prev =>
+            prev.includes(id) ? prev.filter(rowId => rowId !== id) : [...prev, id]
+        );
+    };
 
     const fetchAnalytics = useCallback(async (isRefresh = false, type = viewType, month = selectedMonth, year = selectedYear) => {
-        if (isRefresh) setRefreshing(true);
+        if (isRefresh) {
+            setRefreshing(true);
+            setLoading(true);
+        }
         setError(null);
         try {
             const params = new URLSearchParams();
             params.set('type', type);
-            if (month) params.set('month', month);
+            if (month && type !== 'monthly') params.set('month', month);
             if (year) params.set('year', year);
+            if (isRefresh) params.set('action', 'recalculate'); // Add recalculate action
 
             const res = await fetch(`/api/orders/analytics?${params}`);
             if (res.ok) {
                 const responseData = await res.json();
                 setData(responseData.data || []);
+                setUniqueTechnicians(responseData.technicians || []);
+                setExpandedRows([]); // Collapse all rows on new data
             } else {
                 const errData = await res.json();
                 setError(errData.error || 'Gagal mengambil data analitik');
@@ -61,6 +85,20 @@ function AnalyticsContent() {
         setLoading(true);
         fetchAnalytics(false, viewType, selectedMonth, selectedYear);
     }, [viewType, selectedMonth, selectedYear, fetchAnalytics]);
+
+    // Compute display data based on selected technician
+    const displayData = useMemo(() => {
+        if (selectedTechnician === 'all') return data;
+
+        return data.map(period => {
+            const techData = period.technicians?.find(t => t.name.toUpperCase() === selectedTechnician.toUpperCase());
+            return {
+                ...period,
+                averageHours: techData ? techData.averageHours : 0,
+                orderCount: techData ? techData.orderCount : 0
+            };
+        });
+    }, [data, selectedTechnician]);
 
     return (
         <div className="min-h-screen p-4 md:p-8 space-y-6 animate-fade-in relative">
@@ -98,23 +136,35 @@ function AnalyticsContent() {
                     </div>
 
                     <div className="flex gap-2">
-                        <select
-                            value={selectedMonth}
-                            onChange={(e) => setSelectedMonth(e.target.value)}
-                            className="bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-700 outline-none focus:ring-2 focus:ring-violet-500"
-                        >
-                            {["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"].map((m, i) => (
-                                <option key={i + 1} value={String(i + 1)}>{m}</option>
-                            ))}
-                        </select>
+                        {viewType !== 'monthly' && (
+                            <select
+                                value={selectedMonth}
+                                onChange={(e) => setSelectedMonth(e.target.value)}
+                                className="bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-700 outline-none focus:ring-2 focus:ring-violet-500 max-w-[120px]"
+                            >
+                                {["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"].map((m, i) => (
+                                    <option key={i + 1} value={String(i + 1)}>{m}</option>
+                                ))}
+                            </select>
+                        )}
 
                         <select
                             value={selectedYear}
                             onChange={(e) => setSelectedYear(e.target.value)}
-                            className="bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-700 outline-none focus:ring-2 focus:ring-violet-500"
+                            className="bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-700 outline-none focus:ring-2 focus:ring-violet-500 max-w-[90px]"
                         >
                             {[2024, 2025, 2026].map(y => (
                                 <option key={y} value={String(y)}>{y}</option>
+                            ))}
+                        </select>
+                        <select
+                            value={selectedTechnician}
+                            onChange={(e) => setSelectedTechnician(e.target.value)}
+                            className="bg-white border border-violet-200 rounded-xl px-3 py-2 text-xs font-bold text-violet-700 outline-none focus:ring-2 focus:ring-violet-500 max-w-[150px] shadow-sm"
+                        >
+                            <option value="all">Semua Teknisi</option>
+                            {uniqueTechnicians.map(tech => (
+                                <option key={tech} value={tech}>{tech}</option>
                             ))}
                         </select>
                     </div>
@@ -140,7 +190,9 @@ function AnalyticsContent() {
                 <div className="mb-6 flex items-center gap-3">
                     <Clock className="w-6 h-6 text-violet-500" />
                     <div>
-                        <h2 className="text-xl font-bold text-slate-800">Rata-Rata Waktu Tanggap (Follow Up - Selesai)</h2>
+                        <h2 className="text-xl font-bold text-slate-800">
+                            {selectedTechnician === 'all' ? 'Rata-Rata Waktu Tanggap (Follow Up - Selesai)' : `Rata-Rata Waktu Tanggap: ${selectedTechnician}`}
+                        </h2>
                         <p className="text-slate-500 text-sm">
                             Menampilkan durasi rata-rata dalam ukuran Jam untuk order yang telah terselesaikan per {viewType === 'daily' ? 'hari' : viewType === 'weekly' ? 'minggu' : 'bulan'}.
                         </p>
@@ -153,23 +205,23 @@ function AnalyticsContent() {
                         <p className="text-sm font-bold text-slate-600">Sedang mengolah data ({viewType})...</p>
                         <p className="text-xs text-slate-400 mt-1">Ini mungkin memerlukan waktu sekitar 2-5 detik.</p>
                     </div>
-                ) : data.length > 0 ? (
+                ) : displayData.length > 0 ? (
                     <div className="space-y-12">
                         {/* CHART SECTION */}
                         <div className="w-full h-[400px] border border-slate-100 rounded-2xl p-4 md:p-6 bg-slate-50/50">
                             <ResponsiveContainer width="100%" height="100%">
-                                <BarChart data={data} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
+                                <BarChart data={displayData} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
                                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
                                     <XAxis dataKey="label" axisLine={false} tickLine={false} tick={{ fill: '#64748b', fontSize: 12, fontWeight: 600 }} dy={10} />
                                     <YAxis axisLine={false} tickLine={false} tick={{ fill: '#94a3b8', fontSize: 12 }} dx={-10} />
                                     <Tooltip
                                         cursor={{ fill: '#f1f5f9' }}
                                         contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)', fontWeight: 'bold' }}
-                                        formatter={(value: any) => [`${value} Jam`, 'Rata-Rata']}
+                                        formatter={(value: any) => [`${value} Jam`, 'Rata-Rata Durasi']}
                                         labelStyle={{ color: '#475569', marginBottom: '8px' }}
                                     />
                                     <Bar dataKey="averageHours" fill="url(#colorGradient)" radius={[6, 6, 0, 0]} maxBarSize={60}>
-                                        <LabelList dataKey="averageHours" position="top" fill="#8b5cf6" fontSize={12} fontWeight="bold" formatter={(val: any) => `${val}h`} />
+                                        <LabelList dataKey="averageHours" position="top" fill="#8b5cf6" fontSize={12} fontWeight="bold" formatter={(val: any) => `${val} Jam`} />
                                     </Bar>
                                     <defs>
                                         <linearGradient id="colorGradient" x1="0" y1="0" x2="0" y2="1">
@@ -182,7 +234,7 @@ function AnalyticsContent() {
                         </div>
 
                         {/* TABLE SUMMARY SECTION */}
-                        <div className="overflow-x-auto rounded-2xl border border-slate-200">
+                        <div className="rounded-2xl border border-slate-200 overflow-hidden">
                             <table className="w-full text-left border-collapse">
                                 <thead>
                                     <tr className="bg-slate-50 border-b border-slate-200 text-slate-500 text-xs uppercase tracking-wider">
@@ -190,31 +242,115 @@ function AnalyticsContent() {
                                         <th className="px-6 py-4 font-black">Total Order Selesai</th>
                                         <th className="px-6 py-4 font-black">Rata-Rata Durasi</th>
                                         <th className="px-6 py-4 font-black text-right">Performa</th>
+                                        {selectedTechnician === 'all' && <th className="px-6 py-4"></th>}
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-slate-100">
-                                    {data.map((row, idx) => (
-                                        <tr key={idx} className="hover:bg-slate-50/80 transition-colors">
-                                            <td className="px-6 py-4 text-sm font-bold text-slate-700">{row.label}</td>
-                                            <td className="px-6 py-4 text-sm text-slate-600">
-                                                <span className="bg-violet-50 text-violet-700 px-3 py-1 rounded-full font-bold">
-                                                    {row.orderCount} Order
-                                                </span>
-                                            </td>
-                                            <td className="px-6 py-4 text-sm font-black text-violet-600">
-                                                {row.averageHours} Jam
-                                            </td>
-                                            <td className="px-6 py-4 text-sm text-right">
-                                                {row.averageHours <= 24 ? (
-                                                    <span className="text-emerald-500 font-bold bg-emerald-50 px-3 py-1 rounded-full">Sangat Baik</span>
-                                                ) : row.averageHours <= 72 ? (
-                                                    <span className="text-amber-500 font-bold bg-amber-50 px-3 py-1 rounded-full">Normal</span>
-                                                ) : (
-                                                    <span className="text-red-500 font-bold bg-red-50 px-3 py-1 rounded-full">Perlu Perhatian</span>
+                                    {displayData.map((row, idx) => {
+                                        const isExpanded = expandedRows.includes(row.rawKey);
+                                        return (
+                                            <React.Fragment key={idx}>
+                                                <tr className={`hover:bg-slate-50/80 transition-colors group ${selectedTechnician === 'all' ? 'cursor-pointer' : ''}`} onClick={() => selectedTechnician === 'all' && toggleRow(row.rawKey)}>
+                                                    <td className="px-6 py-4 text-sm font-bold text-slate-700">{row.label}</td>
+                                                    <td className="px-6 py-4 text-sm text-slate-600">
+                                                        <span className="bg-violet-50 text-violet-700 px-3 py-1 rounded-full font-bold">
+                                                            {row.orderCount} Order
+                                                        </span>
+                                                    </td>
+                                                    <td className="px-6 py-4 text-sm font-black text-violet-600">
+                                                        {row.averageHours} Jam
+                                                    </td>
+                                                    <td className="px-6 py-4 text-sm text-right">
+                                                        {row.averageHours <= 24 && row.orderCount > 0 ? (
+                                                            <span className="text-emerald-500 font-bold bg-emerald-50 px-3 py-1 rounded-full">Sangat Baik</span>
+                                                        ) : row.averageHours <= 72 && row.orderCount > 0 ? (
+                                                            <span className="text-amber-500 font-bold bg-amber-50 px-3 py-1 rounded-full">Normal</span>
+                                                        ) : row.orderCount > 0 ? (
+                                                            <span className="text-red-500 font-bold bg-red-50 px-3 py-1 rounded-full">Perlu Perhatian</span>
+                                                        ) : (
+                                                            <span className="text-slate-400 font-bold bg-slate-50 px-3 py-1 rounded-full">N/A</span>
+                                                        )}
+                                                    </td>
+                                                    {selectedTechnician === 'all' && (
+                                                        <td className="px-6 py-4 text-slate-400 group-hover:text-slate-600 text-right">
+                                                            {isExpanded ? <ChevronUp className="w-5 h-5 inline" /> : <ChevronDown className="w-5 h-5 inline" />}
+                                                        </td>
+                                                    )}
+                                                </tr>
+                                                {/* Expanded Details Row */}
+                                                {isExpanded && (
+                                                    <tr className="bg-slate-50/50">
+                                                        <td colSpan={5} className="px-6 py-6 border-b border-slate-100">
+                                                            <div className="flex flex-col gap-6">
+
+                                                                {/* Rata-Rata Per Teknisi Section */}
+                                                                {selectedTechnician === 'all' && row.technicians && row.technicians.length > 0 && (
+                                                                    <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
+                                                                        <h4 className="text-xs font-black text-slate-500 uppercase flex items-center gap-2 mb-4">
+                                                                            <User className="w-4 h-4" /> Rata-Rata Per Teknisi ({row.label})
+                                                                        </h4>
+                                                                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                                                                            {row.technicians.map((tech, i) => (
+                                                                                <div key={i} className="flex justify-between items-center p-3 rounded-xl bg-slate-50 border border-slate-100 hover:border-violet-200 transition-colors">
+                                                                                    <div className="flex flex-col">
+                                                                                        <span className="text-sm font-bold text-slate-700 truncate max-w-[150px]">{tech.name}</span>
+                                                                                        <span className="text-xs text-slate-500">{tech.orderCount} order selesai</span>
+                                                                                    </div>
+                                                                                    <div className="flex flex-col items-end">
+                                                                                        <span className={`text-sm font-black ${tech.averageHours <= 24 ? 'text-emerald-600' : tech.averageHours <= 72 ? 'text-amber-600' : 'text-red-600'}`}>
+                                                                                            {tech.averageHours} Jam
+                                                                                        </span>
+                                                                                    </div>
+                                                                                </div>
+                                                                            ))}
+                                                                        </div>
+                                                                    </div>
+                                                                )}
+
+                                                                {/* Top 5 Order Terlama Section */}
+                                                                {(() => {
+                                                                    let orderDetails = row.details || [];
+                                                                    if (selectedTechnician !== 'all') {
+                                                                        orderDetails = orderDetails.filter(o => o.teknisi?.toUpperCase() === selectedTechnician.toUpperCase());
+                                                                    }
+                                                                    const top5Slowest = [...orderDetails].sort((a, b) => b.duration_hours - a.duration_hours).slice(0, 5);
+
+                                                                    if (top5Slowest.length === 0) return null;
+
+                                                                    return (
+                                                                        <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
+                                                                            <h4 className="text-xs font-black text-slate-500 uppercase flex items-center gap-2 mb-4">
+                                                                                <Clock className="w-4 h-4 text-red-500" /> Top 5 Order Terlama ({row.label})
+                                                                            </h4>
+                                                                            <div className="flex flex-col gap-2">
+                                                                                {top5Slowest.map((order, idx) => (
+                                                                                    <div key={idx} className="flex flex-col sm:flex-row sm:items-center justify-between p-3 rounded-xl bg-red-50/50 border border-red-100 hover:border-red-200 transition-colors gap-3">
+                                                                                        <div className="flex flex-col">
+                                                                                            <span className="text-sm font-bold text-slate-800">{order.order_no}</span>
+                                                                                            <span className="text-xs text-slate-500 line-clamp-1">{order.title}</span>
+                                                                                        </div>
+                                                                                        <div className="flex items-center gap-4 sm:ml-auto">
+                                                                                            <span className="text-xs font-bold text-slate-500 bg-white px-2 py-1 rounded-md border border-slate-100">
+                                                                                                {order.teknisi}
+                                                                                            </span>
+                                                                                            <span className="text-sm font-black text-red-600 bg-red-100 px-3 py-1 rounded-lg">
+                                                                                                {order.duration_hours} Jam
+                                                                                            </span>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                ))}
+                                                                            </div>
+                                                                        </div>
+                                                                    );
+                                                                })()}
+
+                                                            </div>
+                                                        </td>
+                                                    </tr>
                                                 )}
-                                            </td>
-                                        </tr>
-                                    ))}
+                                            </React.Fragment>
+                                        );
+                                    })}
                                 </tbody>
                             </table>
                         </div>
@@ -223,7 +359,7 @@ function AnalyticsContent() {
                     <div className="flex flex-col items-center justify-center py-20 text-center">
                         <span className="text-5xl mb-4">📊</span>
                         <h3 className="text-xl font-black text-slate-800">Belum Ada Cukup Data</h3>
-                        <p className="text-slate-500 mt-2">Tidak ada riwayat pesanan (Done) yang dapat dikalkulasi dari SIMRS saat ini.</p>
+                        <p className="text-slate-500 mt-2">Tidak ada riwayat pesanan (Selesai/Verified) yang dapat dikalkulasi dari SIMRS saat ini.</p>
                     </div>
                 )}
             </div>

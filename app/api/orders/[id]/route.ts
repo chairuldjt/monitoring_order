@@ -37,9 +37,10 @@ export async function GET(
                 history: history.map((h: any) => ({
                     id: h.history_id || Math.random(),
                     status: h.status_desc?.toLowerCase().replace(' ', '_') || 'unknown',
+                    status_desc: h.status_desc,
                     note: h.status_note || '',
                     changed_by_name: h.nama_petugas || 'System',
-                    created_at: h.create_date,
+                    created_at: h.status_date || h.create_date || '',
                 })),
                 // We provide dummy priority as it's removed from SIMRS
                 priority: 'medium',

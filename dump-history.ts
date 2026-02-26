@@ -4,7 +4,7 @@ const fs = require('fs');
 
 async function dump() {
     const orders = await getSIMRSOrdersByStatus(15);
-    const target = orders.find(o => o.order_no === '20.54195') || orders[0];
+    const target = orders.find((o: any) => o.order_no === '20.54195') || orders[0];
     console.log(`Dumping order ${target.order_no}...`);
     const history = await getSIMRSOrderHistory(target.order_id);
     fs.writeFileSync('order-history-dump.json', JSON.stringify({ order: target, history }, null, 2));

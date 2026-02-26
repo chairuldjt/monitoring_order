@@ -20,9 +20,6 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "OrderTrack | SIMRS Monitoring Order",
   description: "Sistem Monitoring dan Tracking Order SIMRS - Premium Dashboard",
-  icons: {
-    icon: "/favicon.ico",
-  },
 };
 
 export default function RootLayout({

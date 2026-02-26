@@ -571,7 +571,7 @@ function AnalyticsMiniWidget() {
                     </div>
                     <div>
                         <h3 className="font-black text-white">Rata-Rata Penyelesaian</h3>
-                        <p className="text-[10px] text-slate-400 uppercase tracking-widest font-bold">Waktu Respond Bulan Ini</p>
+                        <p className="text-[10px] text-slate-400 uppercase tracking-widest font-bold">Waktu Respond Minggu Ini</p>
                     </div>
                 </div>
 

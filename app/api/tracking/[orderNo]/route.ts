@@ -41,7 +41,7 @@ export async function GET(
                     status_desc: h.status_desc,
                     note: h.status_note || '',
                     changed_by_name: h.nama_petugas || 'System',
-                    created_at: h.create_date,
+                    created_at: h.status_date || h.create_date || '',
                 })),
                 priority: 'normal', // Removed in SIMRS
             },

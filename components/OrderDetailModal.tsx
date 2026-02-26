@@ -203,7 +203,7 @@ export function OrderDetailModal({ orderId, onClose }: OrderDetailModalProps) {
                                                             </p>
                                                         </div>
                                                         <p className="text-xs text-slate-700 font-medium leading-relaxed bg-white/80 p-3 rounded-xl border border-slate-100 shadow-sm">
-                                                            <span className="font-black text-blue-600 uppercase mr-1">({h.status_desc || h.status.replace('_', ' ')})</span> {h.note ? `: ${h.note}` : ''}
+                                                            <span className="font-black text-blue-600 uppercase mr-1">({h.status_desc || h.status?.replace('_', ' ') || 'UNKNOWN'})</span> {h.note ? `: ${h.note}` : ''}
                                                         </p>
                                                     </div>
                                                 ))}

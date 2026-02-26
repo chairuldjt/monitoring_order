@@ -3,7 +3,7 @@
 import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { useEffect, useState, useCallback } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { Search, RefreshCw, Wifi, ChevronDown, X, ArrowUp, ArrowDown } from 'lucide-react';
+import { Search, RefreshCw, Wifi, ChevronDown, X, ArrowUp, ArrowDown, Phone } from 'lucide-react';
 import { OrderDetailModal } from '@/components/OrderDetailModal';
 
 interface Order {
@@ -330,6 +330,12 @@ function OrdersContent() {
                                             <div className="flex flex-col">
                                                 <span className="text-xs font-black text-slate-700 uppercase tracking-widest">{order.requester_name}</span>
                                                 <span className="text-[10px] text-violet-500 font-bold mt-0.5 uppercase tracking-wider">{order.requester_unit}</span>
+                                                {order.ext_phone && (
+                                                    <span className="text-[10px] text-slate-500 font-bold mt-1 uppercase tracking-wider flex items-center gap-1">
+                                                        <Phone className="w-3 h-3" />
+                                                        Ext: {order.ext_phone}
+                                                    </span>
+                                                )}
                                             </div>
                                         </td>
                                         <td className="px-6 py-5 max-w-xs">

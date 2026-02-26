@@ -28,7 +28,7 @@ export async function GET(
         return NextResponse.json({
             data: {
                 order_no: simrsOrder.order_no,
-                title: simrsOrder.catatan.split('\n')[0] || `Order ${simrsOrder.order_no}`,
+                title: simrsOrder.catatan || `Order ${simrsOrder.order_no}`,
                 description: simrsOrder.catatan,
                 requester_name: simrsOrder.order_by,
                 requester_unit: simrsOrder.location_desc,

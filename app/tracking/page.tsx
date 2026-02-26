@@ -113,7 +113,7 @@ export default function TrackingPage() {
                                         <div className="flex items-center gap-2 text-[10px] font-black text-blue-400 uppercase tracking-[0.2em] bg-blue-400/10 px-3 py-1 rounded-full w-fit">
                                             <Wifi className="w-3 h-3" /> {order.order_no}
                                         </div>
-                                        <h2 className="text-3xl font-black text-white leading-tight mt-2">{order.title}</h2>
+                                        <h2 className="text-xl font-black text-white leading-tight mt-2">{order.title}</h2>
                                     </div>
                                     <div className="shrink-0 flex items-center justify-center p-1 bg-white/[0.05] rounded-full border border-white/10 px-6 py-2">
                                         <span className={`w-2.5 h-2.5 rounded-full mr-3 shadow-lg ${statusColors[order.status] || 'bg-slate-500 animate-pulse'}`}></span>

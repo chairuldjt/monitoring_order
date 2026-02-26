@@ -182,7 +182,7 @@ export async function getSIMRSOrdersByStatus(statusId: number, bypassCache = fal
             order_by: order.order_by || order.requester || '',
             location_desc: order.location_desc || order.location || '',
             ext_phone: order.ext_phone || order.phone || '',
-            catatan: order.catatan || order.note || order.description || '',
+            catatan: getCleanedSIMRSNote(order),
             status_desc: order.status_desc || order.status || '',
             status_id: order.status_id,
             teknisi: (order.teknisi || '').replace(/\|$/, '').trim(),
@@ -252,7 +252,7 @@ export async function getSIMRSOrderDetail(orderId: number | string): Promise<SIM
             order_by: order.order_by || order.requester || '',
             location_desc: order.location_desc || '',
             ext_phone: order.ext_phone || '',
-            catatan: order.catatan || '',
+            catatan: getCleanedSIMRSNote(order),
             status_desc: order.status_desc || '',
             status_id: parseInt(order.status_code) || order.status_id,
             teknisi: (order.nama_teknisi || order.teknisi || '').replace(/\|$/, '').trim(),
@@ -370,6 +370,22 @@ export function mapSIMRSStatus(statusDesc: string): string {
     const upper = (statusDesc || '').toUpperCase().trim();
     const mapping = SIMRS_STATUS_MAP[upper];
     return mapping?.local || 'open';
+}
+
+/**
+ * Clean and prioritize SIMRS order notes to ensure meaningful text is displayed.
+ * Filters out "fake" notes that only contain the order number.
+ */
+export function getCleanedSIMRSNote(order: any): string {
+    const rawNote = (order.catatan || order.note || order.description || '').trim();
+    const orderNo = (order.order_no || '').trim();
+
+    // If the note is essentially just the order number, treat it as empty
+    if (rawNote === orderNo || rawNote.toLowerCase() === `order ${orderNo.toLowerCase()}`) {
+        return '';
+    }
+
+    return rawNote;
 }
 
 /**

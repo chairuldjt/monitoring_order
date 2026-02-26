@@ -11,14 +11,34 @@ export async function GET(request: Request) {
 
         const { searchParams } = new URL(request.url);
         const viewType = searchParams.get('type') || 'weekly'; // daily, weekly, monthly
+        const selectedMonth = searchParams.get('month'); // "1" - "12"
+        const selectedYear = searchParams.get('year'); // "2024", etc.
 
         // 1. Fetch all DONE orders
-        const doneOrders = await getSIMRSOrdersByStatus(15);
-        console.log(`[Analytics API] Found ${doneOrders?.length || 0} DONE orders`);
+        let doneOrders = await getSIMRSOrdersByStatus(15);
+        console.log(`[Analytics API] Found ${doneOrders?.length || 0} DONE orders raw`);
 
         if (!doneOrders || doneOrders.length === 0) {
             console.log('[Analytics API] Returning early: No DONE orders found');
             return NextResponse.json({ success: true, data: [] });
+        }
+
+        // Apply month/year filter if provided
+        if (selectedMonth || selectedYear) {
+            doneOrders = doneOrders.filter(o => {
+                const date = parseSIMRSDate(o.create_date);
+                if (!date) return false;
+
+                let matches = true;
+                if (selectedMonth) {
+                    matches = matches && (date.getMonth() + 1).toString() === selectedMonth;
+                }
+                if (selectedYear) {
+                    matches = matches && date.getFullYear().toString() === selectedYear;
+                }
+                return matches;
+            });
+            console.log(`[Analytics API] Filtered to ${doneOrders.length} orders for ${selectedMonth}/${selectedYear}`);
         }
 
         // Limit concurrent requests to avoid SIMRS API timeout

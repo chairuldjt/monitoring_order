@@ -29,12 +29,19 @@ function AnalyticsContent() {
     const [refreshing, setRefreshing] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [viewType, setViewType] = useState<'daily' | 'weekly' | 'monthly'>('weekly');
+    const [selectedMonth, setSelectedMonth] = useState(String(new Date().getMonth() + 1));
+    const [selectedYear, setSelectedYear] = useState(String(new Date().getFullYear()));
 
-    const fetchAnalytics = useCallback(async (isRefresh = false, type = viewType) => {
+    const fetchAnalytics = useCallback(async (isRefresh = false, type = viewType, month = selectedMonth, year = selectedYear) => {
         if (isRefresh) setRefreshing(true);
         setError(null);
         try {
-            const res = await fetch(`/api/orders/analytics?type=${type}`);
+            const params = new URLSearchParams();
+            params.set('type', type);
+            if (month) params.set('month', month);
+            if (year) params.set('year', year);
+
+            const res = await fetch(`/api/orders/analytics?${params}`);
             if (res.ok) {
                 const responseData = await res.json();
                 setData(responseData.data || []);
@@ -48,12 +55,12 @@ function AnalyticsContent() {
             setLoading(false);
             setRefreshing(false);
         }
-    }, [viewType]);
+    }, [viewType, selectedMonth, selectedYear]);
 
     useEffect(() => {
         setLoading(true);
-        fetchAnalytics(false, viewType);
-    }, [viewType, fetchAnalytics]);
+        fetchAnalytics(false, viewType, selectedMonth, selectedYear);
+    }, [viewType, selectedMonth, selectedYear, fetchAnalytics]);
 
     return (
         <div className="min-h-screen p-4 md:p-8 space-y-6 animate-fade-in relative">
@@ -88,6 +95,28 @@ function AnalyticsContent() {
                                 {btn.label}
                             </button>
                         ))}
+                    </div>
+
+                    <div className="flex gap-2">
+                        <select
+                            value={selectedMonth}
+                            onChange={(e) => setSelectedMonth(e.target.value)}
+                            className="bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-700 outline-none focus:ring-2 focus:ring-violet-500"
+                        >
+                            {["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"].map((m, i) => (
+                                <option key={i + 1} value={String(i + 1)}>{m}</option>
+                            ))}
+                        </select>
+
+                        <select
+                            value={selectedYear}
+                            onChange={(e) => setSelectedYear(e.target.value)}
+                            className="bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-700 outline-none focus:ring-2 focus:ring-violet-500"
+                        >
+                            {[2024, 2025, 2026].map(y => (
+                                <option key={y} value={String(y)}>{y}</option>
+                            ))}
+                        </select>
                     </div>
 
                     <button

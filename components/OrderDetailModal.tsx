@@ -105,7 +105,9 @@ export function OrderDetailModal({ orderId, onClose }: OrderDetailModalProps) {
                                                 {order.status_desc || order.status.replace('_', ' ')}
                                             </span>
                                         </div>
-                                        <h1 className="text-2xl font-black leading-tight drop-shadow-sm pr-12">{order.catatan?.split('\n')[0] || `Order ${order.order_no}`}</h1>
+                                        <h1 className="text-xl font-black leading-tight drop-shadow-sm pr-12 line-clamp-2">
+                                            {order.catatan || order.description || `Order ${order.order_no}`}
+                                        </h1>
                                         <div className="flex flex-wrap items-center gap-4 mt-5 text-slate-400 font-medium text-xs">
                                             <div className="flex items-center gap-1.5">
                                                 <User className="w-3.5 h-3.5 opacity-70" />

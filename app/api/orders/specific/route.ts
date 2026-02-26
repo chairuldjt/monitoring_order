@@ -72,7 +72,7 @@ export async function GET(request: Request) {
                 .map(o => ({
                     order_id: o.order_id,
                     order_no: o.order_no,
-                    title: (o.catatan || '').split('\n')[0]?.trim() || `Order ${o.order_no}`,
+                    title: o.catatan || `Order ${o.order_no}`,
                     description: o.catatan || '',
                     requester_name: o.order_by,
                     requester_unit: o.location_desc,
@@ -105,7 +105,7 @@ export async function GET(request: Request) {
                 .map(o => ({
                     order_id: o.order_id,
                     order_no: o.order_no,
-                    title: (o.catatan || '').split('\n')[0]?.trim() || `Order ${o.order_no}`,
+                    title: o.catatan || `Order ${o.order_no}`,
                     description: o.catatan || '',
                     requester_name: o.order_by,
                     requester_unit: o.location_desc,

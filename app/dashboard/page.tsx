@@ -1,0 +1,555 @@
+'use client';
+
+import { ProtectedRoute } from '@/components/ProtectedRoute';
+import { useEffect, useState, useCallback } from 'react';
+import { useAuth } from '@/hooks/useAuth';
+import Link from 'next/link';
+import {
+    FolderOpen, MessageSquare, Loader, CheckCircle, ShieldCheck, Clock,
+    TrendingUp, AlertTriangle, Repeat, ArrowRight, Timer,
+    RefreshCw, Wifi, WifiOff, BarChart2
+} from 'lucide-react';
+import { OrderDetailModal } from '@/components/OrderDetailModal';
+
+interface DashboardStats {
+    counts: Record<string, number>;
+    totalOrders: number;
+    followUpOverdue: any[];
+    pendingOverdue: any[];
+    repeatOrders: any[];
+    recentOrders: any[];
+}
+
+export default function DashboardPage() {
+    return (
+        <ProtectedRoute>
+            <DashboardContent />
+        </ProtectedRoute>
+    );
+}
+
+function DashboardContent() {
+    const { user } = useAuth();
+    const [stats, setStats] = useState<DashboardStats | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [refreshing, setRefreshing] = useState(false);
+    const [lastRefresh, setLastRefresh] = useState<Date | null>(null);
+    const [error, setError] = useState<string | null>(null);
+
+    // Modal state
+    const [selectedOrderId, setSelectedOrderId] = useState<number | null>(null);
+
+    const fetchStats = useCallback(async (isRefresh = false) => {
+        if (isRefresh) setRefreshing(true);
+        setError(null);
+        try {
+            const res = await fetch('/api/dashboard/stats');
+            if (res.ok) {
+                const data = await res.json();
+                setStats(data);
+                setLastRefresh(new Date());
+            } else {
+                const data = await res.json();
+                setError(data.error || 'Gagal mengambil data');
+            }
+        } catch (err: any) {
+            setError('Koneksi ke SIMRS gagal: ' + err.message);
+        } finally {
+            setLoading(false);
+            setRefreshing(false);
+        }
+    }, []);
+
+    useEffect(() => {
+        fetchStats();
+        // Auto-refresh every 2 minutes
+        const interval = setInterval(() => fetchStats(true), 120000);
+        return () => clearInterval(interval);
+    }, [fetchStats]);
+
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center min-h-screen">
+                <div className="text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                    <p className="text-slate-400 text-sm font-medium">Mengambil data dari SIMRS...</p>
+                </div>
+            </div>
+        );
+    }
+
+    const statusCards = [
+        { key: 'open', label: 'Open', icon: FolderOpen, gradient: 'from-blue-500 to-blue-700', shadow: 'shadow-blue-200', desc: 'Order baru' },
+        { key: 'follow_up', label: 'Follow Up', icon: MessageSquare, gradient: 'from-amber-400 to-orange-600', shadow: 'shadow-amber-200', desc: 'Tindak lanjut' },
+        { key: 'running', label: 'Running', icon: Loader, gradient: 'from-indigo-500 to-purple-700', shadow: 'shadow-indigo-200', desc: 'Dikerjakan' },
+        { key: 'done', label: 'Done', icon: CheckCircle, gradient: 'from-emerald-500 to-green-700', shadow: 'shadow-emerald-200', desc: 'Selesai' },
+        { key: 'verified', label: 'Verified', icon: ShieldCheck, gradient: 'from-teal-400 to-cyan-700', shadow: 'shadow-teal-200', desc: 'Terverifikasi' },
+        { key: 'pending', label: 'Pending', icon: Clock, gradient: 'from-rose-500 to-red-700', shadow: 'shadow-rose-200', desc: 'Tertunda' },
+    ];
+
+    const getStatusColor = (status: string) => {
+        const s = status?.toUpperCase().trim();
+        const map: Record<string, string> = {
+            'OPEN': 'bg-blue-100 text-blue-700 border-blue-200',
+            'FOLLOW UP': 'bg-amber-100 text-amber-700 border-amber-200',
+            'RUNNING': 'bg-indigo-100 text-indigo-700 border-indigo-200',
+            'DONE': 'bg-emerald-100 text-emerald-700 border-emerald-200',
+            'VERIFIED': 'bg-teal-100 text-teal-700 border-teal-200',
+            'PENDING': 'bg-rose-100 text-rose-700 border-rose-200',
+        };
+        return map[s] || 'bg-slate-100 text-slate-600';
+    };
+
+    return (
+        <div className="min-h-screen p-4 md:p-8 space-y-8 animate-fade-in">
+            {/* Welcome Header */}
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white/40 backdrop-blur-md p-8 rounded-[2rem] border border-white/20 shadow-xl">
+                <div className="flex items-center gap-5">
+                    <div className="w-16 h-16 bg-gradient-to-br from-violet-600 to-fuchsia-600 rounded-2xl flex items-center justify-center shadow-lg shadow-violet-200 animate-float">
+                        <TrendingUp className="w-8 h-8 text-white" />
+                    </div>
+                    <div>
+                        <h1 className="text-3xl font-black text-slate-800">
+                            Selamat Datang, <span className="bg-gradient-to-r from-violet-600 to-fuchsia-600 bg-clip-text text-transparent">{user?.username}!</span>
+                        </h1>
+                        <p className="text-slate-500 font-medium mt-1 uppercase tracking-widest text-[10px] font-black opacity-60">
+                            SIMRS Order Monitoring — Live View
+                        </p>
+                    </div>
+                </div>
+
+                <button
+                    onClick={() => fetchStats(true)}
+                    disabled={refreshing}
+                    className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-5 py-3 rounded-2xl hover:shadow-xl hover:shadow-emerald-200 transition-all font-bold flex items-center gap-2 active:scale-95 disabled:opacity-60 self-start"
+                >
+                    <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
+                    {refreshing ? 'Memuat...' : 'Refresh'}
+                </button>
+            </div>
+
+            {/* Error Banner */}
+            {error && (
+                <div className="flex items-center gap-3 px-6 py-4 rounded-2xl bg-red-50 border border-red-200 text-red-700 animate-fade-in-up">
+                    <WifiOff className="w-5 h-5 shrink-0" />
+                    <span className="text-sm font-medium">{error}</span>
+                    <button onClick={() => fetchStats(true)} className="ml-auto text-xs font-bold bg-red-100 px-3 py-1 rounded-lg hover:bg-red-200">Coba Lagi</button>
+                </div>
+            )}
+
+            {/* Live Indicator + Last Refresh */}
+            <div className="flex items-center gap-3 px-6 py-3 bg-slate-50 rounded-2xl border border-slate-100 text-xs">
+                <Wifi className="w-4 h-4 text-emerald-500" />
+                <span className="text-slate-500 font-medium">
+                    <strong className="text-emerald-600">Live</strong> dari SIMRS
+                    {lastRefresh && (
+                        <> • Diperbarui {lastRefresh.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}</>
+                    )}
+                </span>
+                <span className="ml-auto text-slate-400">Auto-refresh tiap 2 menit</span>
+            </div>
+
+            {/* Status Cards */}
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                {statusCards.map((card, i) => {
+                    const Icon = card.icon;
+                    const count = stats?.counts[card.key] || 0;
+                    return (
+                        <Link
+                            key={card.key}
+                            href={`/orders?status=${card.key}`}
+                            className={`p-6 rounded-[2rem] bg-gradient-to-br ${card.gradient} text-white shadow-2xl ${card.shadow} relative overflow-hidden group hover:scale-105 transition-all duration-300`}
+                            style={{ animationDelay: `${i * 100}ms` }}
+                        >
+                            <div className="absolute -top-4 -right-4 w-24 h-24 rounded-full blur-2xl opacity-20 bg-white group-hover:opacity-40 transition-opacity"></div>
+                            <div className="relative z-10 flex flex-col items-center text-center">
+                                <Icon className="w-7 h-7 mb-3 opacity-80 group-hover:scale-110 transition-transform" />
+                                <span className="text-4xl font-black mb-1 tabular-nums">{count}</span>
+                                <span className="text-[9px] font-black uppercase tracking-[0.15em] opacity-80">{card.label}</span>
+                            </div>
+                        </Link>
+                    );
+                })}
+            </div>
+
+            {/* Analytics Row */}
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+                {/* Total Orders */}
+                <div className="bg-white rounded-[2rem] border border-slate-100 shadow-xl p-8 relative overflow-hidden group hover:shadow-2xl transition-all h-full flex flex-col">
+                    <div className="absolute -top-6 -right-6 w-32 h-32 bg-violet-50/50 rounded-full blur-3xl"></div>
+                    <div className="absolute -bottom-6 -left-6 w-32 h-32 bg-fuchsia-50/50 rounded-full blur-3xl group-hover:bg-fuchsia-100/50 transition-colors duration-500"></div>
+                    <div className="relative z-10 flex-1 flex flex-col">
+                        <div className="flex items-center gap-3 mb-6">
+                            <div className="w-12 h-12 bg-gradient-to-br from-violet-500 to-fuchsia-600 rounded-xl flex items-center justify-center shadow-lg shadow-violet-200">
+                                <TrendingUp className="w-6 h-6 text-white" />
+                            </div>
+                            <div>
+                                <h3 className="font-black text-slate-800 text-lg">Total Order</h3>
+                                <p className="text-[10px] text-slate-400 uppercase tracking-widest font-bold">Keseluruhan Order</p>
+                            </div>
+                        </div>
+
+                        <div className="flex flex-col justify-center flex-1">
+                            <div className="flex items-baseline gap-2 mb-2">
+                                <span className="text-6xl font-black text-slate-900 tabular-nums tracking-tight">{stats?.totalOrders || 0}</span>
+                                <span className="text-lg font-bold text-slate-400">order</span>
+                            </div>
+
+                            <div className="mt-4 flex flex-col gap-4 w-full">
+                                {/* Visual Progress Bar */}
+                                <div className="h-3 w-full bg-slate-100 rounded-full overflow-hidden flex shadow-inner">
+                                    <div className="bg-emerald-500 h-full transition-all duration-1000 hover:opacity-80" style={{ width: `${((stats?.counts['done'] || 0) / (stats?.totalOrders || 1)) * 100}%` }} title="Selesai"></div>
+                                    <div className="bg-blue-500 h-full transition-all duration-1000 hover:opacity-80 border-l border-white/20" style={{ width: `${((stats?.counts['open'] || 0) / (stats?.totalOrders || 1)) * 100}%` }} title="Open"></div>
+                                    <div className="bg-indigo-500 h-full transition-all duration-1000 hover:opacity-80 border-l border-white/20" style={{ width: `${((stats?.counts['running'] || 0) / (stats?.totalOrders || 1)) * 100}%` }} title="Running"></div>
+                                    <div className="bg-amber-500 h-full transition-all duration-1000 hover:opacity-80 border-l border-white/20" style={{ width: `${((stats?.counts['follow_up'] || 0) / (stats?.totalOrders || 1)) * 100}%` }} title="Follow Up"></div>
+                                    <div className="bg-rose-500 h-full transition-all duration-1000 hover:opacity-80 border-l border-white/20" style={{ width: `${((stats?.counts['pending'] || 0) / (stats?.totalOrders || 1)) * 100}%` }} title="Pending"></div>
+                                </div>
+
+                                {/* Status Breakdown Grid */}
+                                <div className="grid grid-cols-2 gap-2 mt-1">
+                                    <div className="flex items-center justify-between bg-emerald-50/50 border border-emerald-100/50 p-3 rounded-xl hover:bg-emerald-50 transition-colors">
+                                        <div className="flex items-center gap-2">
+                                            <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-sm animate-pulse"></div>
+                                            <span className="text-[11px] font-bold text-slate-600 uppercase">Selesai</span>
+                                        </div>
+                                        <span className="text-sm font-black text-emerald-700 tabular-nums">{stats?.counts['done'] || 0}</span>
+                                    </div>
+                                    <div className="flex items-center justify-between bg-indigo-50/50 border border-indigo-100/50 p-3 rounded-xl hover:bg-indigo-50 transition-colors">
+                                        <div className="flex items-center gap-2">
+                                            <div className="w-2 h-2 rounded-full bg-indigo-500 shadow-sm"></div>
+                                            <span className="text-[11px] font-bold text-slate-600 uppercase">Proses</span>
+                                        </div>
+                                        <span className="text-sm font-black text-indigo-700 tabular-nums">{stats?.counts['running'] || 0}</span>
+                                    </div>
+                                    <div className="flex items-center justify-between bg-blue-50/50 border border-blue-100/50 p-3 rounded-xl hover:bg-blue-50 transition-colors">
+                                        <div className="flex items-center gap-2">
+                                            <div className="w-2 h-2 rounded-full bg-blue-500 shadow-sm"></div>
+                                            <span className="text-[11px] font-bold text-slate-600 uppercase">Baru/Open</span>
+                                        </div>
+                                        <span className="text-sm font-black text-blue-700 tabular-nums">{stats?.counts['open'] || 0}</span>
+                                    </div>
+                                    <div className="flex items-center justify-between bg-rose-50/50 border border-rose-100/50 p-3 rounded-xl hover:bg-rose-50 transition-colors">
+                                        <div className="flex items-center gap-2">
+                                            <div className="w-2 h-2 rounded-full bg-rose-500 shadow-sm"></div>
+                                            <span className="text-[11px] font-bold text-slate-600 uppercase">Kendala</span>
+                                        </div>
+                                        <span className="text-sm font-black text-rose-700 tabular-nums">{(stats?.counts['pending'] || 0) + (stats?.counts['follow_up'] || 0)}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Navigation Link */}
+                        <div className="mt-6 pt-4 border-t border-slate-100 flex justify-end">
+                            <Link href="/orders" className="text-xs font-bold text-violet-600 hover:text-violet-700 flex items-center gap-1 group/link">
+                                Lihat Semua Order
+                                <ArrowRight className="w-3.5 h-3.5 group-hover/link:translate-x-1 transition-transform" />
+                            </Link>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Follow Up Overdue Alert */}
+                <div className="bg-white rounded-[2rem] border border-slate-100 shadow-xl p-8 relative overflow-hidden">
+                    <div className="absolute -top-6 -right-6 w-24 h-24 bg-amber-50 rounded-full blur-2xl"></div>
+                    <div className="relative z-10">
+                        <div className="flex items-center gap-3 mb-4">
+                            <div className="w-12 h-12 bg-gradient-to-br from-amber-400 to-orange-600 rounded-xl flex items-center justify-center shadow-lg">
+                                <AlertTriangle className="w-6 h-6 text-white" />
+                            </div>
+                            <div>
+                                <h3 className="font-black text-slate-800">Follow-up Terlambat</h3>
+                                <p className="text-[10px] text-slate-400 uppercase tracking-widest font-bold">Overdue &gt; 1 Hari</p>
+                            </div>
+                        </div>
+                        {stats?.followUpOverdue && stats.followUpOverdue.length > 0 ? (
+                            <div className="space-y-3 max-h-[280px] overflow-y-auto pr-2 custom-scrollbar">
+                                {stats.followUpOverdue.map((order: any, i: number) => (
+                                    <div key={i} className="flex items-center justify-between bg-amber-50/60 hover:bg-amber-50 rounded-2xl p-4 border border-amber-100/50 transition-colors">
+                                        <div className="min-w-0 flex-1 mr-4">
+                                            <p className="text-[13px] font-bold text-slate-800 truncate mb-0.5">{order.title}</p>
+                                            <div className="flex items-center gap-2 text-[10px] text-slate-500 font-medium">
+                                                <span className="font-bold text-amber-600/80">{order.order_no}</span>
+                                                <span className="w-1 h-1 rounded-full bg-slate-300"></span>
+                                                <span className="truncate">{order.requester_name}</span>
+                                            </div>
+                                        </div>
+                                        <div className="shrink-0 flex items-center justify-center bg-white border border-amber-100 shadow-sm px-3 py-1.5 rounded-xl">
+                                            <Timer className="w-3.5 h-3.5 text-amber-500 mr-1.5" />
+                                            <span className="text-xs font-black text-amber-700">{order.hours_overdue}j</span>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <div className="flex flex-col items-center py-6 text-center">
+                                <span className="text-3xl mb-2">✅</span>
+                                <p className="text-sm text-slate-400 font-medium">Tidak ada follow-up terlambat</p>
+                            </div>
+                        )}
+
+                        {/* Navigation Link */}
+                        <div className="mt-4 pt-4 border-t border-amber-100/50 flex justify-end">
+                            <Link href="/orders/overdue" className="text-xs font-bold text-amber-600 hover:text-amber-700 flex items-center gap-1 group/link">
+                                Lihat Selengkapnya
+                                <ArrowRight className="w-3.5 h-3.5 group-hover/link:translate-x-1 transition-transform" />
+                            </Link>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Repeat Orders */}
+                <div className="bg-white rounded-[2rem] border border-slate-100 shadow-xl p-8 relative overflow-hidden">
+                    <div className="absolute -top-6 -right-6 w-24 h-24 bg-indigo-50 rounded-full blur-2xl"></div>
+                    <div className="relative z-10">
+                        <div className="flex items-center gap-3 mb-4">
+                            <div className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-700 rounded-xl flex items-center justify-center shadow-lg">
+                                <Repeat className="w-6 h-6 text-white" />
+                            </div>
+                            <div>
+                                <h3 className="font-black text-slate-800">Repeat Order</h3>
+                                <p className="text-[10px] text-slate-400 uppercase tracking-widest font-bold">Order Berulang Terbanyak</p>
+                            </div>
+                        </div>
+                        {stats?.repeatOrders && stats.repeatOrders.length > 0 ? (
+                            <div className="space-y-3 max-h-[280px] overflow-y-auto pr-2 custom-scrollbar">
+                                {stats.repeatOrders.map((item: any, i: number) => (
+                                    <div key={i} className="flex items-center justify-between bg-indigo-50/60 hover:bg-indigo-50 rounded-2xl p-4 border border-indigo-100/50 transition-colors shadow-sm">
+                                        <div className="flex items-center gap-3 min-w-0 flex-1 mr-4">
+                                            <span className="shrink-0 w-8 h-8 bg-white border border-indigo-100 shadow-sm rounded-lg flex items-center justify-center text-sm font-black text-indigo-600">
+                                                #{i + 1}
+                                            </span>
+                                            <div className="min-w-0">
+                                                <p className="text-[13px] font-bold text-slate-800 truncate mb-0.5">{item.title}</p>
+                                                <p className="text-[10px] text-slate-500 font-medium truncate">{item.units}</p>
+                                            </div>
+                                        </div>
+                                        <div className="shrink-0 flex items-center justify-center bg-white border border-indigo-100 shadow-sm px-3 py-1.5 rounded-xl">
+                                            <span className="text-sm font-black text-indigo-600">{item.count}x</span>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <div className="flex flex-col items-center py-6 text-center">
+                                <span className="text-3xl mb-2">📋</span>
+                                <p className="text-sm text-slate-400 font-medium">Belum ada repeat order</p>
+                            </div>
+                        )}
+
+                        {/* Navigation Link */}
+                        <div className="mt-4 pt-4 border-t border-indigo-100/50 flex justify-end">
+                            <Link href="/orders/repeat" className="text-xs font-bold text-indigo-600 hover:text-indigo-700 flex items-center gap-1 group/link">
+                                Lihat Selengkapnya
+                                <ArrowRight className="w-3.5 h-3.5 group-hover/link:translate-x-1 transition-transform" />
+                            </Link>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Avg Resolution Time Analytics Widget */}
+                <AnalyticsMiniWidget />
+            </div>
+
+            {/* Pending Overdue Alert */}
+            {stats?.pendingOverdue && stats.pendingOverdue.length > 0 && (
+                <div className="bg-gradient-to-r from-red-50 to-rose-50 rounded-[2rem] border border-red-200 shadow-xl p-8 animate-slide-in-bottom">
+                    <div className="flex items-center gap-3 mb-4">
+                        <div className="w-12 h-12 bg-gradient-to-br from-red-500 to-rose-700 rounded-xl flex items-center justify-center shadow-lg animate-pulse-glow">
+                            <Clock className="w-6 h-6 text-white" />
+                        </div>
+                        <div>
+                            <h3 className="font-black text-red-800 text-lg">🚨 Pending Terlalu Lama</h3>
+                            <p className="text-xs text-red-500 font-bold uppercase tracking-widest">Status Pending &gt; 1 Bulan</p>
+                        </div>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[280px] overflow-y-auto pr-2 custom-scrollbar">
+                        {stats.pendingOverdue.map((order: any, i: number) => (
+                            <div
+                                key={i}
+                                className="flex items-center justify-between bg-white hover:bg-red-50/50 rounded-2xl p-4 border border-red-100 transition-colors shadow-sm"
+                            >
+                                <div className="min-w-0 flex-1 mr-4">
+                                    <p className="text-[13px] font-bold text-slate-800 truncate mb-0.5">{order.title}</p>
+                                    <div className="flex items-center gap-2 text-[10px] text-slate-500 font-medium">
+                                        <span className="font-bold text-red-600/80">{order.order_no}</span>
+                                        <span className="w-1 h-1 rounded-full bg-slate-300"></span>
+                                        <span className="truncate">{order.requester_name}</span>
+                                    </div>
+                                </div>
+                                <div className="shrink-0 flex items-center justify-center bg-red-50 border border-red-100 shadow-sm px-3 py-1.5 rounded-xl">
+                                    <Clock className="w-3.5 h-3.5 text-red-500 mr-1.5" />
+                                    <span className="text-xs font-black text-red-700">{order.days_overdue}hri</span>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+
+                    {/* Navigation Link */}
+                    <div className="mt-4 pt-4 border-t border-red-200/50 flex justify-end">
+                        <Link href="/orders/pending" className="text-xs font-bold text-red-600 hover:text-red-700 flex items-center gap-1 group/link">
+                            Lihat Selengkapnya
+                            <ArrowRight className="w-3.5 h-3.5 group-hover/link:translate-x-1 transition-transform" />
+                        </Link>
+                    </div>
+                </div>
+            )}
+
+            {/* Recent Orders */}
+            <div className="bg-white rounded-[2rem] border border-slate-100 shadow-2xl overflow-hidden">
+                <div className="px-8 py-6 bg-slate-50 border-b border-slate-100 flex justify-between items-center">
+                    <h2 className="text-xl font-black text-slate-800 flex items-center gap-3">
+                        <span className="text-2xl">📋</span> Order Terbaru
+                    </h2>
+                    <Link
+                        href="/orders"
+                        className="text-blue-600 hover:text-blue-700 font-black text-sm flex items-center gap-2 hover:gap-3 transition-all"
+                    >
+                        Lihat Semua <ArrowRight className="w-4 h-4" />
+                    </Link>
+                </div>
+
+                <div className="overflow-x-auto">
+                    <table className="w-full text-left">
+                        <thead className="bg-slate-50/50">
+                            <tr>
+                                <th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">No. Order</th>
+                                <th className="px-4 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Catatan</th>
+                                <th className="px-4 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Pemohon</th>
+                                <th className="px-4 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Unit</th>
+                                <th className="px-4 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Status</th>
+                                <th className="px-4 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Teknisi</th>
+                                <th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Tanggal</th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-slate-50">
+                            {stats?.recentOrders && stats.recentOrders.length > 0 ? (
+                                stats.recentOrders.map((order: any, i: number) => (
+                                    <tr
+                                        key={i}
+                                        onClick={() => setSelectedOrderId(order.order_id)}
+                                        className="hover:bg-blue-50/30 transition-colors cursor-pointer group"
+                                    >
+                                        <td className="px-8 py-4">
+                                            <span className="text-sm font-bold text-blue-600 group-hover:underline">{order.order_no}</span>
+                                        </td>
+                                        <td className="px-4 py-4 text-sm font-medium text-slate-700 max-w-[200px] truncate">{order.title}</td>
+                                        <td className="px-4 py-4 text-sm text-slate-500">{order.requester_name}</td>
+                                        <td className="px-4 py-4 text-xs text-slate-400">{order.requester_unit}</td>
+                                        <td className="px-4 py-4 text-center">
+                                            <span className={`text-[10px] font-black px-3 py-1 rounded-full border ${getStatusColor(order.status)}`}>
+                                                {order.status}
+                                            </span>
+                                        </td>
+                                        <td className="px-4 py-4 text-xs text-slate-500 font-medium">{order.teknisi || '-'}</td>
+                                        <td className="px-8 py-4 text-right text-xs text-slate-400 font-medium">{order.create_date}</td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan={7} className="px-8 py-20 text-center text-slate-400 font-medium">
+                                        <div className="flex flex-col items-center gap-3">
+                                            <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center text-4xl shadow-sm">📋</div>
+                                            <span>Belum ada data order</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            {/* Modal */}
+            <OrderDetailModal
+                orderId={selectedOrderId}
+                onClose={() => setSelectedOrderId(null)}
+            />
+        </div>
+    );
+}
+
+// Komponen Widget Tersendiri agar tidak merusak performa loading Dashboard
+function AnalyticsMiniWidget() {
+    const [data, setData] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        let isMounted = true;
+        const fetchAnalytics = async () => {
+            try {
+                const res = await fetch('/api/orders/analytics');
+                if (res.ok) {
+                    const json = await res.json();
+                    if (isMounted) setData(json.data || []);
+                }
+            } catch (err) { }
+            finally {
+                if (isMounted) setLoading(false);
+            }
+        };
+        fetchAnalytics();
+        return () => { isMounted = false; };
+    }, []);
+
+    const currentMonthData = data.length > 0 ? data[data.length - 1] : null;
+
+    return (
+        <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-[2rem] border border-slate-700 shadow-xl p-8 relative overflow-hidden group">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/20 rounded-full blur-3xl group-hover:bg-indigo-500/30 transition-colors duration-500"></div>
+            <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-fuchsia-500/20 rounded-full blur-3xl"></div>
+
+            <div className="relative z-10 flex flex-col h-full">
+                <div className="flex items-center gap-3 mb-6">
+                    <div className="w-12 h-12 bg-white/10 backdrop-blur-md rounded-xl flex items-center justify-center border border-white/10">
+                        <BarChart2 className="w-6 h-6 text-indigo-300" />
+                    </div>
+                    <div>
+                        <h3 className="font-black text-white">Rata-Rata Penyelesaian</h3>
+                        <p className="text-[10px] text-slate-400 uppercase tracking-widest font-bold">Waktu Respond Bulan Ini</p>
+                    </div>
+                </div>
+
+                <div className="flex-1 flex flex-col justify-center">
+                    {loading ? (
+                        <div className="text-center py-6">
+                            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-400 mx-auto mb-2"></div>
+                            <span className="text-xs text-slate-400">Menyinkronkan analitik...</span>
+                        </div>
+                    ) : currentMonthData ? (
+                        <div>
+                            <div className="flex items-baseline gap-2 mb-2">
+                                <span className="text-5xl font-black text-white tabular-nums tracking-tight">
+                                    {currentMonthData.averageHours}
+                                </span>
+                                <span className="text-base font-bold text-slate-400">Jam</span>
+                            </div>
+
+                            <div className="mt-4 flex items-center gap-2">
+                                <div className={`px-3 py-1.5 rounded-lg text-xs font-bold border flex items-center justify-center w-full ${currentMonthData.averageHours <= 24
+                                    ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30'
+                                    : currentMonthData.averageHours <= 72
+                                        ? 'bg-amber-500/20 text-amber-400 border-amber-500/30'
+                                        : 'bg-rose-500/20 text-rose-400 border-rose-500/30'
+                                    }`}>
+                                    Total {currentMonthData.orderCount} Order Selesai
+                                </div>
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="text-center py-6 opacity-60">
+                            <span className="text-sm font-medium text-slate-300">Belum ada data bulan ini</span>
+                        </div>
+                    )}
+                </div>
+
+                <div className="mt-6 pt-4 border-t border-white/10 flex justify-end">
+                    <Link href="/orders/analytics" className="text-xs font-bold text-indigo-300 hover:text-white flex items-center gap-1 group/link transition-colors">
+                        Buka Mode Analitik
+                        <ArrowRight className="w-3.5 h-3.5 group-hover/link:translate-x-1 transition-transform" />
+                    </Link>
+                </div>
+            </div>
+        </div>
+    );
+}

@@ -47,6 +47,34 @@ async function initDatabase() {
     `);
 
     // ================================
+    // TABLE: settings
+    // ================================
+    console.log('📋 Creating table: settings');
+    await connection.query(`
+        CREATE TABLE IF NOT EXISTS settings (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            setting_key VARCHAR(100) NOT NULL UNIQUE,
+            setting_value TEXT NULL,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    `);
+
+    // ================================
+    // TABLE: ai_analysis
+    // ================================
+    console.log('📋 Creating table: ai_analysis');
+    await connection.query(`
+        CREATE TABLE IF NOT EXISTS ai_analysis (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            analysis_type VARCHAR(50) NOT NULL DEFAULT 'repeat_orders',
+            result_json LONGTEXT NULL,
+            last_run TIMESTAMP NULL,
+            status ENUM('success', 'failed', 'running') DEFAULT 'success',
+            error_message TEXT NULL
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    `);
+
+    // ================================
     // CLEANUP: Drop local orders tables (As requested: Live only)
     // ================================
     console.log('🗑️  Dropping local orders tables (data now live from SIMRS)...');

@@ -24,7 +24,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
         { name: 'Pending Lama', path: '/orders/pending', icon: Clock },
         { name: 'Analitik Order', path: '/orders/analytics', icon: BarChart2 },
         { name: 'Tracking', path: '/tracking', icon: Search },
-        { name: 'Settings', path: '/settings', icon: Settings },
+        { name: 'Pengaturan', path: '/settings', icon: Settings },
     ];
 
     const isActive = (path: string) => {

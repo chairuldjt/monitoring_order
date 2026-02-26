@@ -7,7 +7,7 @@ import Link from 'next/link';
 import {
     FolderOpen, MessageSquare, Loader, CheckCircle, ShieldCheck, Clock,
     TrendingUp, AlertTriangle, Repeat, ArrowRight, Timer,
-    RefreshCw, Wifi, WifiOff, BarChart2
+    RefreshCw, Wifi, WifiOff, BarChart2, Brain
 } from 'lucide-react';
 import { OrderDetailModal } from '@/components/OrderDetailModal';
 
@@ -36,6 +36,11 @@ function DashboardContent() {
     const [lastRefresh, setLastRefresh] = useState<Date | null>(null);
     const [error, setError] = useState<string | null>(null);
 
+    // AI Repeat Orders State
+    const [aiRepeatOrders, setAiRepeatOrders] = useState<any[]>([]);
+    const [aiLoading, setAiLoading] = useState(false);
+    const [aiStatus, setAiStatus] = useState<'idle' | 'running' | 'success' | 'error' | 'not_set'>('idle');
+
     // Modal state
     const [selectedOrderId, setSelectedOrderId] = useState<number | null>(null);
 
@@ -60,18 +65,43 @@ function DashboardContent() {
         }
     }, []);
 
+    const fetchAiAnalysis = useCallback(async (triggerManual = false) => {
+        if (triggerManual) setAiLoading(true);
+        setAiStatus(triggerManual ? 'running' : 'idle');
+        try {
+            // First check if cached data exists
+            const res = await fetch('/api/ai/analyze', { method: triggerManual ? 'POST' : 'GET' });
+            if (res.ok) {
+                const json = await res.json();
+                setAiRepeatOrders(json.data || []);
+                setAiStatus('success');
+            } else if (res.status === 404 && !triggerManual) {
+                setAiStatus('idle'); // Need manual trigger or auto first run
+            } else if (res.status === 400) {
+                setAiStatus('not_set'); // API Key not set
+            } else {
+                setAiStatus('error');
+            }
+        } catch (err) {
+            setAiStatus('error');
+        } finally {
+            setAiLoading(false);
+        }
+    }, []);
+
     useEffect(() => {
         fetchStats();
-        // Auto-refresh every 2 minutes
+        fetchAiAnalysis();
+        // Auto-refresh stats every 2 minutes
         const interval = setInterval(() => fetchStats(true), 120000);
         return () => clearInterval(interval);
-    }, [fetchStats]);
+    }, [fetchStats, fetchAiAnalysis]);
 
     if (loading) {
         return (
             <div className="flex items-center justify-center min-h-screen">
                 <div className="text-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-violet-600 mx-auto mb-4"></div>
                     <p className="text-slate-400 text-sm font-medium">Mengambil data dari SIMRS...</p>
                 </div>
             </div>
@@ -298,30 +328,65 @@ function DashboardContent() {
                     </div>
                 </div>
 
-                {/* Repeat Orders */}
-                <div className="bg-white rounded-[2rem] border border-slate-100 shadow-xl p-8 relative overflow-hidden">
+                {/* Repeat Orders (AI Powered) */}
+                <div className="bg-white rounded-[2rem] border border-slate-100 shadow-xl p-8 relative overflow-hidden h-full flex flex-col">
                     <div className="absolute -top-6 -right-6 w-24 h-24 bg-indigo-50 rounded-full blur-2xl"></div>
-                    <div className="relative z-10">
-                        <div className="flex items-center gap-3 mb-4">
-                            <div className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-700 rounded-xl flex items-center justify-center shadow-lg">
-                                <Repeat className="w-6 h-6 text-white" />
+                    <div className="relative z-10 flex flex-col h-full">
+                        <div className="flex items-center justify-between mb-4">
+                            <div className="flex items-center gap-3">
+                                <div className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-700 rounded-xl flex items-center justify-center shadow-lg">
+                                    <Brain className="w-6 h-6 text-white" />
+                                </div>
+                                <div>
+                                    <h3 className="font-black text-slate-800">Repeat Order AI</h3>
+                                    <p className="text-[10px] text-slate-400 uppercase tracking-widest font-bold">Deteksi Semantik Gemini</p>
+                                </div>
                             </div>
-                            <div>
-                                <h3 className="font-black text-slate-800">Repeat Order</h3>
-                                <p className="text-[10px] text-slate-400 uppercase tracking-widest font-bold">Order Berulang Terbanyak</p>
-                            </div>
+
+                            {/* AI Status Badge / Trigger */}
+                            {aiStatus === 'idle' && (
+                                <button
+                                    onClick={() => fetchAiAnalysis(true)}
+                                    className="bg-indigo-50 text-indigo-600 p-2 rounded-lg hover:bg-indigo-100 transition-colors"
+                                    title="Mulai Analisis AI"
+                                >
+                                    <RefreshCw className="w-4 h-4" />
+                                </button>
+                            )}
+                            {aiStatus === 'running' && (
+                                <div className="animate-spin text-indigo-500">
+                                    <RefreshCw className="w-4 h-4" />
+                                </div>
+                            )}
                         </div>
-                        {stats?.repeatOrders && stats.repeatOrders.length > 0 ? (
-                            <div className="space-y-3 max-h-[280px] overflow-y-auto pr-2 custom-scrollbar">
-                                {stats.repeatOrders.map((item: any, i: number) => (
-                                    <div key={i} className="flex items-center justify-between bg-indigo-50/60 hover:bg-indigo-50 rounded-2xl p-4 border border-indigo-100/50 transition-colors shadow-sm">
+
+                        {aiStatus === 'not_set' ? (
+                            <div className="flex-1 flex flex-col items-center justify-center py-6 text-center">
+                                <AlertTriangle className="w-10 h-10 text-amber-500 mb-3" />
+                                <p className="text-[11px] text-slate-500 font-bold mb-3 uppercase tracking-wider">API Key Belum Diatur</p>
+                                <Link href="/settings" className="bg-slate-100 px-4 py-2 rounded-xl text-[10px] font-black hover:bg-slate-200 transition-all uppercase tracking-widest">Ke Pengaturan</Link>
+                            </div>
+                        ) : aiStatus === 'running' ? (
+                            <div className="flex-1 flex flex-col items-center justify-center py-10">
+                                <div className="relative mb-4">
+                                    <div className="w-12 h-12 border-4 border-indigo-100 border-t-indigo-600 rounded-full animate-spin"></div>
+                                    <Brain className="w-5 h-5 text-indigo-600 absolute inset-0 m-auto" />
+                                </div>
+                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">AI Sedang Menganalisis...</p>
+                            </div>
+                        ) : aiRepeatOrders.length > 0 ? (
+                            <div className="space-y-3 max-h-[280px] overflow-y-auto pr-2 custom-scrollbar flex-1">
+                                {aiRepeatOrders.map((item: any, i: number) => (
+                                    <div key={i} className="flex items-center justify-between bg-indigo-50/60 hover:bg-indigo-50 rounded-2xl p-4 border border-indigo-100/50 transition-colors shadow-sm group">
                                         <div className="flex items-center gap-3 min-w-0 flex-1 mr-4">
                                             <span className="shrink-0 w-8 h-8 bg-white border border-indigo-100 shadow-sm rounded-lg flex items-center justify-center text-sm font-black text-indigo-600">
                                                 #{i + 1}
                                             </span>
                                             <div className="min-w-0">
-                                                <p className="text-[13px] font-bold text-slate-800 truncate mb-0.5">{item.title}</p>
-                                                <p className="text-[10px] text-slate-500 font-medium truncate">{item.units}</p>
+                                                <p className="text-[13px] font-bold text-slate-800 truncate mb-0.5 group-hover:text-indigo-700 transition-colors">{item.title}</p>
+                                                <div className="flex items-center gap-1.5 overflow-hidden">
+                                                    <p className="text-[9px] text-slate-400 font-black uppercase truncate tracking-wider">{item.units}</p>
+                                                </div>
                                             </div>
                                         </div>
                                         <div className="shrink-0 flex items-center justify-center bg-white border border-indigo-100 shadow-sm px-3 py-1.5 rounded-xl">
@@ -330,10 +395,23 @@ function DashboardContent() {
                                     </div>
                                 ))}
                             </div>
+                        ) : aiStatus === 'idle' ? (
+                            <div className="flex-1 flex flex-col items-center justify-center py-10 text-center">
+                                <div className="w-12 h-12 bg-slate-50 rounded-xl flex items-center justify-center mb-3">
+                                    <Brain className="w-6 h-6 text-slate-300" />
+                                </div>
+                                <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mb-3">Analisis AI belum dijalankan hari ini</p>
+                                <button
+                                    onClick={() => fetchAiAnalysis(true)}
+                                    className="bg-indigo-600 text-white px-5 py-2.5 rounded-xl text-[10px] font-black hover:shadow-lg transition-all uppercase tracking-widest flex items-center gap-2"
+                                >
+                                    <RefreshCw className="w-3.5 h-3.5" /> JALANKAN ANALISIS
+                                </button>
+                            </div>
                         ) : (
-                            <div className="flex flex-col items-center py-6 text-center">
+                            <div className="flex-1 flex flex-col items-center py-6 text-center">
                                 <span className="text-3xl mb-2">📋</span>
-                                <p className="text-sm text-slate-400 font-medium">Belum ada repeat order</p>
+                                <p className="text-sm text-slate-400 font-medium">Tidak ada repeat order terdeteksi</p>
                             </div>
                         )}
 

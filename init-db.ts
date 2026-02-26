@@ -102,9 +102,19 @@ async function initDatabase() {
             start_date DATE NOT NULL,
             end_date DATE NOT NULL,
             status ENUM('pending', 'executing', 'success', 'error') DEFAULT 'pending',
+            processing_mode VARCHAR(50) DEFAULT 'auto',
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
     `);
+
+    // Ensure processing_mode exists on ai_assistant_requests
+    console.log('🔄 Checking columns for table: ai_assistant_requests');
+    const [requestColumns]: any = await connection.query(`SHOW COLUMNS FROM ai_assistant_requests`);
+    const requestColumnNames = requestColumns.map((c: any) => c.Field);
+    if (!requestColumnNames.includes('processing_mode')) {
+        console.log('   ➕ Adding column: processing_mode');
+        await connection.query(`ALTER TABLE ai_assistant_requests ADD COLUMN processing_mode VARCHAR(50) DEFAULT 'auto' AFTER status`);
+    }
 
     // ================================
     // TABLE: ai_analysis

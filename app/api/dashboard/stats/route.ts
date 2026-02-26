@@ -56,6 +56,7 @@ export async function GET() {
         title: (o.catatan || '').split('\n')[0]?.trim() || `Order ${o.order_no}`,
         requester_name: o.order_by,
         requester_unit: o.location_desc,
+        teknisi: (o.teknisi || '').replace(/\|$/, '').trim(),
         create_date: o.create_date,
         hours_overdue: Math.round((Date.now() - (parseSIMRSDate(o.create_date)?.getTime() || Date.now())) / (1000 * 60 * 60)),
       }))
@@ -76,6 +77,7 @@ export async function GET() {
         title: (o.catatan || '').split('\n')[0]?.trim() || `Order ${o.order_no}`,
         requester_name: o.order_by,
         requester_unit: o.location_desc,
+        teknisi: (o.teknisi || '').replace(/\|$/, '').trim(),
         create_date: o.create_date,
         days_overdue: Math.round((Date.now() - (parseSIMRSDate(o.create_date)?.getTime() || Date.now())) / (1000 * 60 * 60 * 24)),
       }))

@@ -271,7 +271,7 @@ function DashboardContent() {
                                             <div className="flex items-center gap-2 text-[10px] text-slate-500 font-medium">
                                                 <span className="font-bold text-amber-600/80">{order.order_no}</span>
                                                 <span className="w-1 h-1 rounded-full bg-slate-300"></span>
-                                                <span className="truncate">{order.requester_name}</span>
+                                                <span className="truncate">{order.teknisi || 'Belum ada teknisi'}</span>
                                             </div>
                                         </div>
                                         <div className="shrink-0 flex items-center justify-center bg-white border border-amber-100 shadow-sm px-3 py-1.5 rounded-xl">
@@ -374,7 +374,7 @@ function DashboardContent() {
                                     <div className="flex items-center gap-2 text-[10px] text-slate-500 font-medium">
                                         <span className="font-bold text-red-600/80">{order.order_no}</span>
                                         <span className="w-1 h-1 rounded-full bg-slate-300"></span>
-                                        <span className="truncate">{order.requester_name}</span>
+                                        <span className="truncate">{order.teknisi || 'Belum ada teknisi'}</span>
                                     </div>
                                 </div>
                                 <div className="shrink-0 flex items-center justify-center bg-red-50 border border-red-100 shadow-sm px-3 py-1.5 rounded-xl">

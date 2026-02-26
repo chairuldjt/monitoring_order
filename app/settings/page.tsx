@@ -16,7 +16,7 @@ export default function SettingsPage() {
 }
 
 function SettingsContent() {
-    const [settings, setSettings] = useState<Record<string, string>>({});
+    const [settings, setSettings] = useState<any>({});
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [status, setStatus] = useState<{ type: 'success' | 'error', msg: string } | null>(null);
@@ -139,7 +139,36 @@ function SettingsContent() {
 
                         <div className="p-6 bg-slate-900 rounded-[1.5rem] border border-slate-800 shadow-inner relative overflow-hidden">
                             <div className="absolute top-0 right-0 w-24 h-24 bg-violet-500/10 rounded-full blur-2xl"></div>
-                            <div className="relative z-10 space-y-4">
+                            <div className="relative z-10 space-y-6">
+                                {/* API Details Table-like view */}
+                                {settings.gemini_api_key && (
+                                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pb-4 border-b border-white/5">
+                                        <div className="space-y-1">
+                                            <p className="text-[10px] text-slate-500 font-black uppercase tracking-widest">Key</p>
+                                            <p className="text-xs text-indigo-300 font-mono">...{settings.gemini_api_key.slice(-4)}</p>
+                                        </div>
+                                        <div className="space-y-1">
+                                            <p className="text-[10px] text-slate-500 font-black uppercase tracking-widest">Project</p>
+                                            <p className="text-xs text-slate-300">{settings.ai_project_name || 'monitoring-order-ai'}</p>
+                                        </div>
+                                        <div className="space-y-1">
+                                            <p className="text-[10px] text-slate-500 font-black uppercase tracking-widest">Created on</p>
+                                            <p className="text-xs text-slate-300">
+                                                {settings.gemini_api_key_created_at
+                                                    ? new Date(settings.gemini_api_key_created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+                                                    : 'N/A'}
+                                            </p>
+                                        </div>
+                                        <div className="space-y-1">
+                                            <p className="text-[10px] text-slate-500 font-black uppercase tracking-widest">Quota tier</p>
+                                            <div className="flex flex-col">
+                                                <p className="text-xs text-violet-300 font-bold">Standard</p>
+                                                <p className="text-[9px] text-slate-500">Free Tier</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+
                                 <div className="flex items-center justify-between">
                                     <h4 className="text-white text-sm font-black flex items-center gap-2">
                                         <TrendingUp className="w-4 h-4 text-violet-400" />

@@ -180,6 +180,10 @@ export async function GET(request: Request) {
 
     } catch (error: any) {
         console.error('Specific stats error:', error);
-        return NextResponse.json({ error: 'Gagal mengambil data dari SIMRS: ' + error.message }, { status: 500 });
+        let message = error.message;
+        if (error.message.includes('SIMRS API error')) {
+            message = 'Server SIMRS sedang tidak menanggapi (Offline/Error 500). Mohon coba lagi nanti.';
+        }
+        return NextResponse.json({ error: 'Gagal mengambil data dari SIMRS: ' + message }, { status: 500 });
     }
 }

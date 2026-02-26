@@ -15,12 +15,19 @@ export async function GET() {
             settings[row.setting_key] = row.setting_value;
         });
 
+        // Get API Key Created Date
+        const [apiKeyRow]: any = await pool.query(
+            "SELECT updated_at FROM settings WHERE setting_key = 'gemini_api_key'"
+        );
+        settings.gemini_api_key_created_at = apiKeyRow[0]?.updated_at || null;
+
         // Get Today's AI Usage
         const [usage]: any = await pool.query(
             "SELECT COUNT(*) as count FROM ai_usage_logs WHERE created_at >= CURDATE()"
         );
         settings.ai_usage_today = usage[0]?.count || 0;
         settings.ai_usage_limit = 1500; // Gemini Free Tier Default approx per day for 1.5 flash
+        settings.ai_project_name = 'monitoring-order-ai';
 
         return NextResponse.json(settings);
     } catch (error: any) {

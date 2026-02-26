@@ -1,0 +1,1568 @@
+[
+  {
+    "order_no": "20.54233",
+    "catatan": "PC tidak bisa untuk print",
+    "location_desc": "Klinik Amarilis Garuda",
+    "create_date": "26 Feb 26 - 15:03"
+  },
+  {
+    "order_no": "20.54232",
+    "catatan": "PC Dell AIO kedip\" minta pergantian",
+    "location_desc": "Anak Lt 1 - Willi",
+    "create_date": "26 Feb 26 - 14:44"
+  },
+  {
+    "order_no": "20.54230",
+    "catatan": "printer TSC hasil print tidak sesuai, sudah coba kalibrasi tidak bisa",
+    "location_desc": "Bu ida - rumah tangga",
+    "create_date": "26 Feb 26 - 13:12"
+  },
+  {
+    "order_no": "20.54229",
+    "catatan": "\nminta penambahan kabel LAN 2M \n",
+    "location_desc": "bu eni - ULP di depan TU",
+    "create_date": "26 Feb 26 - 12:34"
+  },
+  {
+    "order_no": "20.54228",
+    "catatan": "pc tidak mendapatkan internet, sudah mencoba cabut colok masih tidak bisa",
+    "location_desc": "mas ghitfir - regristrar CRU penunjang LT 5",
+    "create_date": "26 Feb 26 - 12:25"
+  },
+  {
+    "order_no": "20.54227",
+    "catatan": "printer TSC rebontnya keluar\" terus mohon di cek",
+    "location_desc": "mbak nila - farmasi merpati",
+    "create_date": "26 Feb 26 - 12:14"
+  },
+  {
+    "order_no": "20.54226",
+    "catatan": "2 tv display antrean tidak tampil antrean pasien",
+    "location_desc": "Poli THT Merpati Lt 1 - Andin",
+    "create_date": "26 Feb 26 - 10:40"
+  },
+  {
+    "order_no": "20.54225",
+    "catatan": "Ganti baterai cmos pc dell aio karena tidak bisa hidup (indikator nyala)",
+    "location_desc": "Adhi CDC - Kamar 7",
+    "create_date": "26 Feb 26 - 10:12"
+  },
+  {
+    "order_no": "20.54224",
+    "catatan": "\ncomputer tidak mendaptakan internet (169.x.x.x) sudah di coba cabut colok tidak bisa",
+    "location_desc": "pak solikin - penelitian CLU penunujang lt 5",
+    "create_date": "26 Feb 26 - 09:55"
+  },
+  {
+    "order_no": "20.54223",
+    "catatan": "minta tolong di cek telepon, jika kabel tersenggol gampang lepas dari telepon",
+    "location_desc": "Poli Rehab Medik Garuda A Lt 2 - Mbak Aminah",
+    "create_date": "26 Feb 26 - 09:43"
+  },
+  {
+    "order_no": "20.54222",
+    "catatan": "printer hp laserjet p1102 hsil print ngeblok hitam, kadang tidak jelas. sudah diganti toner 2 kali tetap seperti itu hasil printnya",
+    "location_desc": "Merak Lt2 - Tiwi",
+    "create_date": "26 Feb 26 - 09:38"
+  },
+  {
+    "order_no": "20.54221",
+    "catatan": "reset otp dokter ika",
+    "location_desc": "pak mex - SIMRS",
+    "create_date": "26 Feb 26 - 09:35"
+  },
+  {
+    "order_no": "20.54218",
+    "catatan": "PC dikamar periksa 5 tidak nyala sama sekali, mohon bantuan pengecekan",
+    "location_desc": "Poli Elang Lt Dasar Kamar 5 - Pak Roni",
+    "create_date": "26 Feb 26 - 08:32"
+  },
+  {
+    "order_no": "20.54216",
+    "catatan": "Mohon bantuan pengecekkan tv depan resepsionis DIklat lt dasar tidak muncul display jadwal penggunaan ruang",
+    "location_desc": "Diklat Lt Dasar - Amal",
+    "create_date": "26 Feb 26 - 08:13"
+  },
+  {
+    "order_no": "20.54215",
+    "catatan": "Perapian kabel telepon di NS",
+    "location_desc": "endah - Kutilang dasar ",
+    "create_date": "26 Feb 26 - 07:52"
+  },
+  {
+    "order_no": "20.54212",
+    "catatan": "Prepare dan cek jaringan di Gardenia kamar 3 dan 6 untuk virtual klinik",
+    "location_desc": "Mba atik - Garuda A Lt 1 Poli Gardenia",
+    "create_date": "26 Feb 26 - 07:31"
+  },
+  {
+    "order_no": "20.54211",
+    "catatan": "cek koneksi jaringan dan printer eror waktu print dari browser, kemarin sudah order tapi sekarang masih tidak bisa",
+    "location_desc": "Mba Nia - PENDAFTARAN ELANG (JANTUNG (ELANG))",
+    "create_date": "26 Feb 26 - 07:28"
+  },
+  {
+    "order_no": "20.54206",
+    "catatan": "Leptop dell selalu bunyi, indikasi awal NVME minta ganti, kode kunci leptop 026",
+    "location_desc": "Cendrawasih Lt.2 - Mbak Kurnia",
+    "create_date": "26 Feb 26 - 02:10"
+  },
+  {
+    "order_no": "20.54198",
+    "catatan": "TL laporan dari grup user simrs, Cek koneksi wifi di DPJP ONSITE IGD",
+    "location_desc": "Ria - DPJP ONSITE IGD",
+    "create_date": "25 Feb 26 - 16:59"
+  },
+  {
+    "order_no": "20.54194",
+    "catatan": "Minta penggantian kabel power karena kabel yang lama gosong",
+    "location_desc": "Poli Elang Lt Dasar Klinik 2 - Riska",
+    "create_date": "25 Feb 26 - 14:31"
+  },
+  {
+    "order_no": "20.54193",
+    "catatan": "Tidak bisa tampil preview panel di folder sharing, kalau localan sudah bisa IP 10.55.4.165",
+    "location_desc": "Putri Piutang penunjang",
+    "create_date": "25 Feb 26 - 14:22"
+  },
+  {
+    "order_no": "20.54191",
+    "catatan": "Prepare dan pedampingan virtual klinik, kamar 13 jam 4 sore, IP = 10.51.0.10",
+    "location_desc": "widya - Poli eksekutif psikiatri grd A",
+    "create_date": "25 Feb 26 - 14:18"
+  },
+  {
+    "order_no": "20.54190",
+    "catatan": "Cek performa dan spek PC di kamar 6 poli bedah merpati",
+    "location_desc": "Dr happy - Poli Bedah Merpati lantai 2 kamar 6",
+    "create_date": "25 Feb 26 - 14:09"
+  },
+  {
+    "order_no": "20.54189",
+    "catatan": "Minta bantuan untuk setting printer Hp Laserjet",
+    "location_desc": "Gd. Penunjang Farmasi Lt Dasar / Oris",
+    "create_date": "25 Feb 26 - 14:09"
+  },
+  {
+    "order_no": "20.54188",
+    "catatan": "\nprinter zebra rebonyya keluar di saat mau ngeprint",
+    "location_desc": "mbak riri - farmasi merpati ",
+    "create_date": "25 Feb 26 - 13:26"
+  },
+  {
+    "order_no": "20.54184",
+    "catatan": "TV Kamar 504 tidak bisa nyala, sudah di coba colok cabut power oleh perawat",
+    "location_desc": "Kasuari Lt5 - Gandhes",
+    "create_date": "25 Feb 26 - 12:43"
+  },
+  {
+    "order_no": "20.54172",
+    "catatan": "Mohon dibantu cek jaringan lemot",
+    "location_desc": "Poli Kasuari Lt2 - Pak Mike",
+    "create_date": "25 Feb 26 - 09:23"
+  },
+  {
+    "order_no": "20.54171",
+    "catatan": "Minta pengecekan printer hp laserjet p1102, sudah diremote connect tapi untuk ngeprint tidak keluar hasil print",
+    "location_desc": "Poli Obgyn Anak Garuda A Lt 2 - Nurul",
+    "create_date": "25 Feb 26 - 09:17"
+  },
+  {
+    "order_no": "20.54169",
+    "catatan": "perapian kabel computer di NS",
+    "location_desc": "poli privat garuda B lt 1 - bu mimin",
+    "create_date": "25 Feb 26 - 09:01"
+  },
+  {
+    "order_no": "20.54167",
+    "catatan": "pedampingan",
+    "location_desc": "pedampingan sidang  A",
+    "create_date": "25 Feb 26 - 08:55"
+  },
+  {
+    "order_no": "20.54164",
+    "catatan": "pc tidak connect jaringan sudah di coba cabut dan restart masih belom bisa",
+    "location_desc": "mbak inung - poli tht garuda B lt 1",
+    "create_date": "25 Feb 26 - 08:29"
+  },
+  {
+    "order_no": "20.54159",
+    "catatan": "PC OK 3 tiba\" mati sendiri ( CITO )\n\n",
+    "location_desc": "IBS cental - mbak cici ",
+    "create_date": "25 Feb 26 - 08:12"
+  },
+  {
+    "order_no": "20.54158",
+    "catatan": "pita printer Epson LX-310 tulisan kabur tidak jelas\n",
+    "location_desc": "mas fikri - ODS rajawali ",
+    "create_date": "25 Feb 26 - 08:10"
+  },
+  {
+    "order_no": "20.54157",
+    "catatan": "printer tidak bisa print out",
+    "location_desc": "kutilang",
+    "create_date": "25 Feb 26 - 08:04"
+  },
+  {
+    "order_no": "20.54156",
+    "catatan": "PC RME di R3 ICU koq lemooot...(cek jaringan dan hardwere )",
+    "location_desc": "pak mike simrs",
+    "create_date": "25 Feb 26 - 07:47"
+  },
+  {
+    "order_no": "20.54155",
+    "catatan": "cek keyboard pc kasir garuda private, tdk bs digunakan utk mengetik, sdh coba cabut colok usb dan restart pc masih blm bs",
+    "location_desc": "dewi / kasir garuda private",
+    "create_date": "25 Feb 26 - 06:57"
+  },
+  {
+    "order_no": "20.54154",
+    "catatan": "cek pc igd terasa lambat utk membuka aplikasi rme, bs ketemu dg dr krisna utk pengecekan",
+    "location_desc": "dr krisna / igd",
+    "create_date": "24 Feb 26 - 21:34"
+  },
+  {
+    "order_no": "20.54153",
+    "catatan": "cek printer tidak mau narik kertas ketika proses cetak, ketemu mbk hidayatul umi",
+    "location_desc": "hidayatul umi / ns merak lt 2",
+    "create_date": "24 Feb 26 - 21:31"
+  },
+  {
+    "order_no": "20.54152",
+    "catatan": "Cek printer HP Laserjet infonya tonernya bocor > hasil kotor",
+    "location_desc": "Ubaidilah - Anak lantai 1 ",
+    "create_date": "24 Feb 26 - 21:00"
+  },
+  {
+    "order_no": "20.54151",
+    "catatan": "Cek printer eror paperjam dan ada pc yang eror, user minta dicek lokasi",
+    "location_desc": "WA / Merak lt 2",
+    "create_date": "24 Feb 26 - 19:19"
+  },
+  {
+    "order_no": "20.54150",
+    "catatan": "Penggantian Mouse di Kasuari lt 3 Zona C ",
+    "location_desc": "Galih Kasuari lt 3 Zona C ",
+    "create_date": "24 Feb 26 - 15:23"
+  },
+  {
+    "order_no": "20.54149",
+    "catatan": "kirim pc selesai perbaikan di elang lt.1 dan elang lt. 2.\nPc ada di ruang training",
+    "location_desc": "Bu Fitri Simrs",
+    "create_date": "24 Feb 26 - 15:09"
+  },
+  {
+    "order_no": "20.54148",
+    "catatan": "Penggantian mouse rusak di kenari",
+    "location_desc": "2000 SIMRS",
+    "create_date": "24 Feb 26 - 15:08"
+  },
+  {
+    "order_no": "20.54146",
+    "catatan": "tray lepas minta perapian kembali",
+    "location_desc": "titik /elang 1",
+    "create_date": "24 Feb 26 - 13:34"
+  },
+  {
+    "order_no": "20.54143",
+    "catatan": "Kembalikan PC ke Anak lt. 1, PC yang dipinjamkan ditarik (ACER)",
+    "location_desc": "SIRS - Mbak Fitri",
+    "create_date": "24 Feb 26 - 12:35"
+  },
+  {
+    "order_no": "20.54142",
+    "catatan": "Kembalikan PC ke Anak dasar , PC yang dipinjamkan ditarik (lenovo thinkcentre)\n",
+    "location_desc": "SIRS - Mbak Fitri",
+    "create_date": "24 Feb 26 - 12:34"
+  },
+  {
+    "order_no": "20.54141",
+    "catatan": "Order pengembalian pc dell aio selesai perbaikan di ruang : \nPICU > PC pinjaman di tarik ",
+    "location_desc": "MBAK FITRI SIRS",
+    "create_date": "24 Feb 26 - 12:34"
+  },
+  {
+    "order_no": "20.54140",
+    "catatan": "Order pengembalian pc dell aio selesai perbaikan di ruang : \nTB Dots > pc pinjaman ditarik\n",
+    "location_desc": "MBAK FITRI SIRS",
+    "create_date": "24 Feb 26 - 12:34"
+  },
+  {
+    "order_no": "20.54139",
+    "catatan": "Order pengembalian pc dell aio selesai perbaikan di ruang : \nKasuari lt. 5 > pc pinjaman ditarik",
+    "location_desc": "MBAK FITRI SIRS",
+    "create_date": "24 Feb 26 - 12:34"
+  },
+  {
+    "order_no": "20.54138",
+    "catatan": "Mengembalikan PC ke Rajawali 1B , PC yang dipinjamkan di tarik\n",
+    "location_desc": "SIRS-Mbak Fitri",
+    "create_date": "24 Feb 26 - 12:33"
+  },
+  {
+    "order_no": "20.54137",
+    "catatan": "Mengembalikan PC ke Merak lt. 2 , PC yang dipinjamkan di tarik\n",
+    "location_desc": "SIRS - Mbak Fitri",
+    "create_date": "24 Feb 26 - 12:32"
+  },
+  {
+    "order_no": "20.54123",
+    "catatan": "pedampingan ruang sidang B ketemu bu indah jam 10",
+    "location_desc": "pedampingan ruang sidang B bu indah",
+    "create_date": "24 Feb 26 - 10:04"
+  },
+  {
+    "order_no": "20.54121",
+    "catatan": "tidak bisa masuk windows",
+    "location_desc": "kasir cdc merpati",
+    "create_date": "24 Feb 26 - 09:46"
+  },
+  {
+    "order_no": "20.54118",
+    "catatan": "minta tolong order install KIS di laptop PPK pak anggiat, di ruang Virtual Klinik ya",
+    "location_desc": "pak antok simrs",
+    "create_date": "24 Feb 26 - 09:37"
+  },
+  {
+    "order_no": "20.54115",
+    "catatan": "minta ganti keyboard karean ada tombol yang tidak bisa di gunakan",
+    "location_desc": "vikri ods rajawali",
+    "create_date": "24 Feb 26 - 09:04"
+  },
+  {
+    "order_no": "20.54114",
+    "catatan": "Tv samsung tampil display store, minta dihilangkan",
+    "location_desc": "Poli MDT Zona Garuda B Lt 1 - Inung",
+    "create_date": "24 Feb 26 - 09:00"
+  },
+  {
+    "order_no": "20.54113",
+    "catatan": "billingnya tidak sesuai dengan pembayarannya",
+    "location_desc": "risa/perben",
+    "create_date": "24 Feb 26 - 08:58"
+  },
+  {
+    "order_no": "20.54111",
+    "catatan": "setting zoom di ruang flamboyan",
+    "location_desc": "edo/diklat",
+    "create_date": "24 Feb 26 - 08:41"
+  },
+  {
+    "order_no": "20.54108",
+    "catatan": "ivana pedaftaran kasuari",
+    "location_desc": "mbak cut simrs",
+    "create_date": "24 Feb 26 - 08:27"
+  },
+  {
+    "order_no": "20.54103",
+    "catatan": "Minta penggantian mouse, dikarenakan mouse yang lama saat digunakan untuk klik kurang responsif",
+    "location_desc": "Kasuari Lt5 - Handi",
+    "create_date": "24 Feb 26 - 07:47"
+  },
+  {
+    "order_no": "20.54100",
+    "catatan": "order menyiapkan pc untuk pengganti pc win7 di admisi geriatri.\n(Pc ada di meja teknisi dekat jendela)\nInstall apk admisi, finger, face bpjs dan player server antrian",
+    "location_desc": "bu fitri / instalasi sirs",
+    "create_date": "23 Feb 26 - 15:29"
+  },
+  {
+    "order_no": "20.54099",
+    "catatan": "order kirim pc selesai perbaikan di : \n1. Kenari > laptop dell pinjaman di tarik\n2. Depo IRIN > PC pinjaman ada apa tidak di sana cek disana.\n3. Rajawali 2B > tarik pc pinjaman dell aio juga",
+    "location_desc": "bu fitri / instalasi sirs",
+    "create_date": "23 Feb 26 - 15:27"
+  },
+  {
+    "order_no": "20.54096",
+    "catatan": "Minta pergantian keyboard, sudah dicoba colok cabut tetap tidak bisa.",
+    "location_desc": "ODS Rajawali Lt Dasar -Fikri",
+    "create_date": "23 Feb 26 - 14:36"
+  },
+  {
+    "order_no": "20.54095",
+    "catatan": "Minta penggantian batre mouse, karena sering macet-macet saat digunakan",
+    "location_desc": "SDM Lt3 - Aniq",
+    "create_date": "23 Feb 26 - 14:18"
+  },
+  {
+    "order_no": "20.54086",
+    "catatan": "PC Aio Dell buat klik selalu dobel, di remote aman, cek keyboard n MOUSE dilokasi",
+    "location_desc": "Oki / elang lantai 1 kelas 1 VIP",
+    "create_date": "23 Feb 26 - 12:57"
+  },
+  {
+    "order_no": "20.54066",
+    "catatan": "daftar nama dokter tv tidak muncul",
+    "location_desc": "ayu/poli bedah utara merpati",
+    "create_date": "23 Feb 26 - 10:27"
+  },
+  {
+    "order_no": "20.54062",
+    "catatan": "suara zoom teleconfrence tidak keluar, mohon bantuan pengecekan",
+    "location_desc": "Diklat Lt 1 - Edo",
+    "create_date": "23 Feb 26 - 10:20"
+  },
+  {
+    "order_no": "20.54053",
+    "catatan": "Barangkali bisa dibantu terkait  no telp\n - km 14 IBS (ext 121) tdk bisa utk menghubungi, tapi bisa menerima\n - ext 104 dihubungi tdk ada suara (ada nada dering), tapi bisa utk menghubungi\n\nDr Ajid sd",
+    "location_desc": "RIFKI - SIRS",
+    "create_date": "23 Feb 26 - 09:17"
+  },
+  {
+    "order_no": "20.54049",
+    "catatan": "minta di pindahkan komputer  ,",
+    "location_desc": "bu ning /di poli tht garuda",
+    "create_date": "23 Feb 26 - 09:13"
+  },
+  {
+    "order_no": "20.54038",
+    "catatan": "PC ASUS AIO butuh ganti baterai CMOS, FOTO terlampir",
+    "location_desc": "Luthfi Lab central managemen",
+    "create_date": "23 Feb 26 - 07:50"
+  },
+  {
+    "order_no": "20.54036",
+    "catatan": "PC no display, foto terlampir",
+    "location_desc": "Siswo - LAB PATOLOGI ANATOMI",
+    "create_date": "23 Feb 26 - 07:45"
+  },
+  {
+    "order_no": "20.54034",
+    "catatan": "minta kabel lan 5m",
+    "location_desc": "darsono/cssd",
+    "create_date": "23 Feb 26 - 07:35"
+  },
+  {
+    "order_no": "20.54030",
+    "catatan": "ganti bateray cmos",
+    "location_desc": "icu central",
+    "create_date": "23 Feb 26 - 07:08"
+  },
+  {
+    "order_no": "20.54027",
+    "catatan": "Cek printer di Elang RPO tidak bisa print",
+    "location_desc": "Evi - Elang RPO Lantai 1",
+    "create_date": "23 Feb 26 - 06:16"
+  },
+  {
+    "order_no": "20.54026",
+    "catatan": "cek mesin antrian di elang dasar eror ",
+    "location_desc": "Mas Geri - Portir",
+    "create_date": "23 Feb 26 - 05:53"
+  },
+  {
+    "order_no": "20.54024",
+    "catatan": "Pasien tidak muncul di menu IGD > daftar pasien per tanggal, tujuannya untuk dilakukan retriage",
+    "location_desc": "Insanul Barik Ashar - Admisi IGD",
+    "create_date": "22 Feb 26 - 22:58"
+  },
+  {
+    "order_no": "20.54021",
+    "catatan": "Menghidupkan PC port server IH dan Cobas pasca ngetrip",
+    "location_desc": "Nugroho - Simrs",
+    "create_date": "22 Feb 26 - 21:20"
+  },
+  {
+    "order_no": "20.54019",
+    "catatan": "cek switch hub rack wallmount cendra obsgyn lt 1 dan 2 setelah listrik pln on",
+    "location_desc": "pak joko / instalasi sirs",
+    "create_date": "22 Feb 26 - 20:36"
+  },
+  {
+    "order_no": "20.54016",
+    "catatan": "cek monitor cctv / nvr dan 1 pc di ns anak lt dasar masih blm nyala setelah trip listrik",
+    "location_desc": "huda / ns anak cendra lt dasar",
+    "create_date": "22 Feb 26 - 18:58"
+  },
+  {
+    "order_no": "20.54015",
+    "catatan": "cek rack wallmount switch area IBS ICU",
+    "location_desc": "pak joko / instalasi sirs",
+    "create_date": "22 Feb 26 - 18:47"
+  },
+  {
+    "order_no": "20.54008",
+    "catatan": "Cek PC dell aio layar rusak berkedip",
+    "location_desc": "kepodang dasar ns",
+    "create_date": "21 Feb 26 - 16:52"
+  },
+  {
+    "order_no": "20.53971",
+    "catatan": "Pengecekan RME di area Merpati",
+    "location_desc": "Merpati",
+    "create_date": "20 Feb 26 - 09:20"
+  },
+  {
+    "order_no": "20.53970",
+    "catatan": "Pengecekan performa RME di area Kasuari",
+    "location_desc": "pak mex - simrs",
+    "create_date": "20 Feb 26 - 09:20"
+  },
+  {
+    "order_no": "20.53962",
+    "catatan": "Pendampingan dan pengecekan aplikasi employee karena ada kendala absensi di dir mk",
+    "location_desc": "Pak Mex - Simrs",
+    "create_date": "20 Feb 26 - 08:21"
+  },
+  {
+    "order_no": "20.53842",
+    "catatan": "cek pc ns anak lt 1 kedip layar monitornya makin lebar sdh 1/2 layar dan tambah sering",
+    "location_desc": "Ruang anak lt. 1",
+    "create_date": "15 Feb 26 - 09:22"
+  },
+  {
+    "order_no": "20.53156",
+    "catatan": "recall 15/10/2025 D338537 foto femur",
+    "location_desc": "widi / resieden radiologi",
+    "create_date": "21 Jan 26 - 15:53"
+  },
+  {
+    "order_no": "20.52997",
+    "catatan": "Telepon keluar kariadi tidak bisa tersambung, sudah dicoba di simrs dengan akun yang berbeda dan no hp tujuan beda hasilnya sama\n",
+    "location_desc": "Tegar / CS Merpati",
+    "create_date": "18 Jan 26 - 12:11"
+  },
+  {
+    "order_no": "20.52885",
+    "catatan": "penyambungan jaringan Internet 3 komputer (sudah ACC pak antok)",
+    "location_desc": "Siswo - LAB PATOLOGI ANATOMI",
+    "create_date": "14 Jan 26 - 11:45"
+  },
+  {
+    "order_no": "20.54231",
+    "catatan": "minta penggantian lampu projector epson",
+    "location_desc": "IPSS - Erlin",
+    "create_date": "26 Feb 26 - 13:17"
+  },
+  {
+    "order_no": "20.54214",
+    "catatan": "cek pc mbak nilsari cs kasuari stuck di bios",
+    "location_desc": "Nila - CS Kasuari",
+    "create_date": "26 Feb 26 - 07:46"
+  },
+  {
+    "order_no": "20.54196",
+    "catatan": "Recall ke pacsrs \nD321370 > lumbal 3 maret 2025 ??\nC949581 > 7 januari 2025 ??\nD303605 > 7 januari 2025\nD303876 > 7 maret 2025\nC961968 > 7 maret 2025\nC994180 > 11 maret 2025\nD262774 > 11 maret 2025\nD2",
+    "location_desc": "Hani - Residen Radiologi",
+    "create_date": "25 Feb 26 - 16:18"
+  },
+  {
+    "order_no": "20.54183",
+    "catatan": "instal cryatal report",
+    "location_desc": "pak anggiat  /ppk",
+    "create_date": "25 Feb 26 - 12:35"
+  },
+  {
+    "order_no": "20.54181",
+    "catatan": "kertas  nyangktu di tengah di saat ngeprint, sudah di edukasi ganti tonernya masih sama",
+    "location_desc": "mas awal - radioligi MRI 3T",
+    "create_date": "25 Feb 26 - 11:31"
+  },
+  {
+    "order_no": "20.54178",
+    "catatan": "setting printer sharing , jadikan static biar tidak lepas  , karena ip sering lepas  , di kasuari rekam medis  ,",
+    "location_desc": "pak joko sirs",
+    "create_date": "25 Feb 26 - 10:48"
+  },
+  {
+    "order_no": "20.54166",
+    "catatan": "printer depo rajawali rusak/error, plat besi yg ditengah tidak bergerak sehingga saat di klik printer tulisan tidak muncul, tks",
+    "location_desc": "depo rajawali",
+    "create_date": "25 Feb 26 - 08:53"
+  },
+  {
+    "order_no": "20.54161",
+    "catatan": "mohon bantuan pengecekan 1 monitor merk dell tidak nyala dell dan tolong dibantu untuk connect printer",
+    "location_desc": "Instalasi Gizi Ruang Gizi Admin - Dewi Sita",
+    "create_date": "25 Feb 26 - 08:21"
+  },
+  {
+    "order_no": "20.54160",
+    "catatan": "tambah kabel LAN kurleb 5M",
+    "location_desc": "mbak cholifah - perpendaharaan",
+    "create_date": "25 Feb 26 - 08:18"
+  },
+  {
+    "order_no": "20.54133",
+    "catatan": "minta di sharingkan data, pak rudi minta ada teknisi kesana , rekam medis lantai 1",
+    "location_desc": "bu fitri simrs",
+    "create_date": "24 Feb 26 - 11:58"
+  },
+  {
+    "order_no": "20.54129",
+    "catatan": "5 tv lt 2 Merpati ns bedah dan saraf tidak tampil display praktek dokter",
+    "location_desc": "Akfani - Merpati Triase lt. Dasar",
+    "create_date": "24 Feb 26 - 10:57"
+  },
+  {
+    "order_no": "20.54124",
+    "catatan": "menghidupkan mesin antrean dan display TV\n",
+    "location_desc": "UTDRS Loket - Verla",
+    "create_date": "24 Feb 26 - 10:14"
+  },
+  {
+    "order_no": "20.54083",
+    "catatan": "ip dobel , kemarin sudah lapor dengan mas joni, minta datang kesana lagi",
+    "location_desc": "adhi/kenari",
+    "create_date": "23 Feb 26 - 11:33"
+  },
+  {
+    "order_no": "20.54080",
+    "catatan": "Ruang PPK(Ruang kaca Virtual Klinik) Bu Yuli dkk pindah ke Virtual Klinik, \nminta disambungkan ke Networkdrive milik ULP nanti ketemu Pak Yatno untuk alamat Networkdrivenya",
+    "location_desc": "Yuliana - Ruang PPK Penunjang lt. Dasar",
+    "create_date": "23 Feb 26 - 11:15"
+  },
+  {
+    "order_no": "20.54059",
+    "catatan": "cek fingger BPJS pasien di pendaftaran",
+    "location_desc": "Bu Kustati - Geriatri Dasar Poli",
+    "create_date": "23 Feb 26 - 09:51"
+  },
+  {
+    "order_no": "20.54046",
+    "catatan": "loket 2 di Rehab Medik mati",
+    "location_desc": "Bu Kustati - Rehab Medik Admisi",
+    "create_date": "23 Feb 26 - 09:07"
+  },
+  {
+    "order_no": "20.53983",
+    "catatan": "TL laporan kendala hmis dari \ndr omega di ruang hemodialis",
+    "location_desc": "pak mex - 200",
+    "create_date": "20 Feb 26 - 11:13"
+  },
+  {
+    "order_no": "20.53980",
+    "catatan": "PC AIO DELL lawas di poliklinik rehab medik garuda\nIP = 10.52.1.33 perlu upgrade SSD dan RAM karena lemot",
+    "location_desc": "Sofi - Poliklinik rehab medik garuda lantai 2 garuda a",
+    "create_date": "20 Feb 26 - 10:41"
+  },
+  {
+    "order_no": "20.53976",
+    "catatan": "Cek keyboard huruf m c x n tidak bisa pada tablet RME",
+    "location_desc": "Martha - Kepodang  1",
+    "create_date": "20 Feb 26 - 10:17"
+  },
+  {
+    "order_no": "20.53975",
+    "catatan": "minta perapian kabel",
+    "location_desc": "Gd. Penunjang lt 4 Bag. Keuangan - Eka",
+    "create_date": "20 Feb 26 - 10:17"
+  },
+  {
+    "order_no": "20.53974",
+    "catatan": "PC IP 10.59.2.155 (sudah up ssd,Ram 4GB) laporan komputernya sering hang",
+    "location_desc": "Farida - KSM Penyakit dalam Cendra lantai 2",
+    "create_date": "20 Feb 26 - 09:35"
+  },
+  {
+    "order_no": "20.53969",
+    "catatan": "perapian kabel di ruangan CRU",
+    "location_desc": "Shelma dari lantai 5 gedung penunjang, ruang Clinical Research Unit (CRU) yang baru",
+    "create_date": "20 Feb 26 - 09:11"
+  },
+  {
+    "order_no": "20.53941",
+    "catatan": "Minta bantuan cek printer untuk alat EEG, hasil warna printer tidak sesuai",
+    "location_desc": "Ruang EEG CDC - Hasna",
+    "create_date": "19 Feb 26 - 14:03"
+  },
+  {
+    "order_no": "20.53935",
+    "catatan": "Perapian kabel di RM ruang Filling Cabinet, detail foto ada di grup infra",
+    "location_desc": "Pak Joko - simrs",
+    "create_date": "19 Feb 26 - 11:21"
+  },
+  {
+    "order_no": "20.53933",
+    "catatan": "Cek pc mba Maulyna Putri rm stuck di login administrasi, sudah restart beberapa kali",
+    "location_desc": "Maulyna Putri - KMKB Rekam Medis",
+    "create_date": "19 Feb 26 - 10:42"
+  },
+  {
+    "order_no": "20.53893",
+    "catatan": "printer tidak bisa digunakan",
+    "location_desc": "TU",
+    "create_date": "18 Feb 26 - 10:24"
+  },
+  {
+    "order_no": "20.53888",
+    "catatan": "perbaikan printer , hasil printout tidak jelas",
+    "location_desc": "suwardi/pejab kasuari radioterapi",
+    "create_date": "18 Feb 26 - 09:38"
+  },
+  {
+    "order_no": "20.53840",
+    "catatan": "PC AIO Dell layar keluar garis garis",
+    "location_desc": "Azis - Geriatri lt. 1",
+    "create_date": "15 Feb 26 - 06:53"
+  },
+  {
+    "order_no": "20.53732",
+    "catatan": "tidak bisa print out",
+    "location_desc": "adji/kenari dasar",
+    "create_date": "11 Feb 26 - 07:23"
+  },
+  {
+    "order_no": "20.53692",
+    "catatan": "cek tv kamar 526 channel tdk bs tampil",
+    "location_desc": "garuda b lt 5",
+    "create_date": "09 Feb 26 - 19:18"
+  },
+  {
+    "order_no": "20.53545",
+    "catatan": "Penggantian keyboard di NS ",
+    "location_desc": "Pak lilik / PICU",
+    "create_date": "05 Feb 26 - 10:30"
+  },
+  {
+    "order_no": "20.53522",
+    "catatan": "Cek pc acer aio mati total ",
+    "location_desc": "Pradika / Farmasi Kasuari Ruang Telaah resep depan",
+    "create_date": "04 Feb 26 - 12:18"
+  },
+  {
+    "order_no": "20.53520",
+    "catatan": "instal ina cbg di laptop mas hendra",
+    "location_desc": "hendra/rekam medis lantai 1",
+    "create_date": "04 Feb 26 - 11:26"
+  },
+  {
+    "order_no": "20.53487",
+    "catatan": "Pindahan PC :\nRuang pengolahan ke ruang prolis untuk outbow dan listrik info user ada\nDAN dari ruang prolis ke gudang untuk outbow dilokasi info tidak ada, minta di cekkan dilokasi",
+    "location_desc": "mas Sendro - UTDRS ",
+    "create_date": "03 Feb 26 - 12:02"
+  },
+  {
+    "order_no": "20.53437",
+    "catatan": "cek Komputer NS belakang ICU Sentral mati ",
+    "location_desc": "ICU Central",
+    "create_date": "31 Jan 26 - 21:31"
+  },
+  {
+    "order_no": "20.53413",
+    "catatan": "monitor hari ini sudah blue screen 3x",
+    "location_desc": "Darsono/ruang setting dan packing cssd",
+    "create_date": "30 Jan 26 - 11:33"
+  },
+  {
+    "order_no": "20.53345",
+    "catatan": " setting pasang ip phone di farmasi ODS Rajawali. \nIp phone ready di gudang",
+    "location_desc": "bu fitri - SIMRS",
+    "create_date": "28 Jan 26 - 13:16"
+  },
+  {
+    "order_no": "20.53342",
+    "catatan": " printer error dengan keterangan \"paper empty in tray\" ",
+    "location_desc": "mbak isna - farmasi kasuari",
+    "create_date": "28 Jan 26 - 12:42"
+  },
+  {
+    "order_no": "20.53341",
+    "catatan": "kirim pc di \n1. Merak lt. 1 > tarik pc pinjaman ACER\n2. Obstetri Kelas > tarik pc pinjaman ASUS AIO (kl tidak salah)\nPC ada di SD",
+    "location_desc": "Fitri-simrs",
+    "create_date": "28 Jan 26 - 12:40"
+  },
+  {
+    "order_no": "20.53317",
+    "catatan": "laptop dell lcd bermasalah ada tampilan garis\"",
+    "location_desc": "Rajawali 6B - pak ngatno",
+    "create_date": "27 Jan 26 - 16:23"
+  },
+  {
+    "order_no": "20.53111",
+    "catatan": "fingger belum di aktivasi  10.56.0.208 di cdc merpati",
+    "location_desc": "mbak cut simrs",
+    "create_date": "20 Jan 26 - 15:36"
+  },
+  {
+    "order_no": "20.52369",
+    "catatan": "cek aplikasi paper stream scan lt 4 pelaksanaan anggaran, sudah 30 menit eror",
+    "location_desc": "gd penunjang lt 4 pelaksanaan anggaran",
+    "create_date": "29 Dec 25 - 08:29"
+  },
+  {
+    "order_no": "20.52009",
+    "catatan": "tv no sinyal",
+    "location_desc": "BEKTI TV POLI GARUDA",
+    "create_date": "15 Dec 25 - 14:50"
+  },
+  {
+    "order_no": "20.51949",
+    "catatan": "printer epson tinta blobor trus",
+    "location_desc": "ika/garuda a lantai 3",
+    "create_date": "12 Dec 25 - 10:24"
+  },
+  {
+    "order_no": "20.54028",
+    "catatan": "PC Aio Dell layar bergaris dan berkedip",
+    "location_desc": "elang lantai 1 kelas 1 CC ",
+    "create_date": "23 Feb 26 - 06:35"
+  },
+  {
+    "order_no": "20.54023",
+    "catatan": "+1 aio PC dell layar rusak kedip2",
+    "location_desc": "Erni - Elang 2 putri",
+    "create_date": "22 Feb 26 - 22:43"
+  },
+  {
+    "order_no": "20.54001",
+    "catatan": "printer e tiket penjepitnya patah",
+    "location_desc": "diah/depo farmasi rajawali",
+    "create_date": "20 Feb 26 - 19:39"
+  },
+  {
+    "order_no": "20.53992",
+    "catatan": "monitor pc bergaris  hitam ,dan berkedip parah",
+    "location_desc": "bu fitri kutilang 1",
+    "create_date": "20 Feb 26 - 14:38"
+  },
+  {
+    "order_no": "20.53958",
+    "catatan": "Mohon dibantu untuk pengecekan telepon\n1.) Extension 121 di OK 14 sama dengan OK CITO, menerima telepon bisa, untuk telepon tidak bisa\n2.) Extension 104 tidak bunyi saat ditelefon posisi di set alat k",
+    "location_desc": "IBS Sentral - Pak Sapuan",
+    "create_date": "20 Feb 26 - 08:09"
+  },
+  {
+    "order_no": "20.53900",
+    "catatan": "Komputer yang dipojok kanan ada bayangan hitam",
+    "location_desc": "Kutilang lt 1 ns",
+    "create_date": "18 Feb 26 - 12:37"
+  },
+  {
+    "order_no": "20.53829",
+    "catatan": "PC Dell AIO berkedip",
+    "location_desc": "WA - Rajawali 3A",
+    "create_date": "14 Feb 26 - 15:40"
+  },
+  {
+    "order_no": "20.53746",
+    "catatan": "2 PC Dell monitor kedap kedip",
+    "location_desc": "Kutilang Lt1",
+    "create_date": "11 Feb 26 - 11:42"
+  },
+  {
+    "order_no": "20.53740",
+    "catatan": "Monitor di NS Merak Lt 2 bergaris semakin parah, minta diganti",
+    "location_desc": "Merak Lt2",
+    "create_date": "11 Feb 26 - 09:24"
+  },
+  {
+    "order_no": "20.53724",
+    "catatan": "PC Dell aio layar ber shadow",
+    "location_desc": "Bu Marta / Kepodang lt 1",
+    "create_date": "10 Feb 26 - 15:13"
+  },
+  {
+    "order_no": "20.53709",
+    "catatan": "printer error",
+    "location_desc": "euis/gizi pengawas",
+    "create_date": "10 Feb 26 - 10:08"
+  },
+  {
+    "order_no": "20.53664",
+    "catatan": "upgrade ssd dan ram",
+    "location_desc": "dian/dept obgin  (ksm obgin)",
+    "create_date": "09 Feb 26 - 09:59"
+  },
+  {
+    "order_no": "20.53657",
+    "catatan": "printer Laserjet Pro MFP M127fn di Depo Farmasi Sitos (Kasuari) tidak bisa untuk print e-resep",
+    "location_desc": "Depo Farmasi Sitos (Kasuari) - Rut Elyana",
+    "create_date": "09 Feb 26 - 08:55"
+  },
+  {
+    "order_no": "20.53091",
+    "catatan": "PC dell keluar hitam\"nya mohon di cek ",
+    "location_desc": "mbak nuzul - kasuari LT 5",
+    "create_date": "20 Jan 26 - 11:09"
+  },
+  {
+    "order_no": "20.52977",
+    "catatan": "cek monitor pc kedip2 saat digunakan",
+    "location_desc": "depo farmasi rajawali lt dasar",
+    "create_date": "17 Jan 26 - 16:37"
+  },
+  {
+    "order_no": "20.52963",
+    "catatan": "Laptop ULP Lemot butuh di cek ",
+    "location_desc": "Ratih / ULP",
+    "create_date": "17 Jan 26 - 07:11"
+  },
+  {
+    "order_no": "20.52940",
+    "catatan": "komputer layar berkedip ,minta ganti  mouse ,scrool susah di gunakan",
+    "location_desc": "wido /nicu",
+    "create_date": "15 Jan 26 - 20:03"
+  },
+  {
+    "order_no": "20.52926",
+    "catatan": "Setting Extend display ke tv, kabel hdmi splitter dll sudah dilokasi",
+    "location_desc": "Arief / OK 11 Ibs Sentral",
+    "create_date": "15 Jan 26 - 10:25"
+  },
+  {
+    "order_no": "20.52918",
+    "catatan": "PC Matot pasca ngetrip",
+    "location_desc": "Ulil / Elang lt 2 Putri",
+    "create_date": "15 Jan 26 - 09:17"
+  },
+  {
+    "order_no": "20.52893",
+    "catatan": "Display minotor berkedip",
+    "location_desc": "Rajawali 3 A",
+    "create_date": "14 Jan 26 - 22:59"
+  },
+  {
+    "order_no": "20.52879",
+    "catatan": "tv untuk menampilkan daftar antrian tidak mau nyala, black screen, tv polytron\n",
+    "location_desc": "Teguh Poli Geriatri ",
+    "create_date": "14 Jan 26 - 09:38"
+  },
+  {
+    "order_no": "20.52741",
+    "catatan": "Upgrade PC penambahan SSD - PC PJRM Ina",
+    "location_desc": "IRIN ICU",
+    "create_date": "09 Jan 26 - 12:40"
+  },
+  {
+    "order_no": "20.52545",
+    "catatan": "cek salah satu PC tidak bisa untuk brigging sudah coba direstart dan login ulang tetap tidak bisa untuk komputer lainnya aman 10.57.0.29",
+    "location_desc": "Ari / Pendaftaran merpati yang di dalam",
+    "create_date": "04 Jan 26 - 14:37"
+  },
+  {
+    "order_no": "20.52498",
+    "catatan": "layar pc buram",
+    "location_desc": "anak lantai dasar",
+    "create_date": "02 Jan 26 - 08:33"
+  },
+  {
+    "order_no": "20.52479",
+    "catatan": "pc layar burem",
+    "location_desc": "dila/elang 2 putri",
+    "create_date": "01 Jan 26 - 07:38"
+  },
+  {
+    "order_no": "20.52411",
+    "catatan": "penggeseran meja laborat hematologi (per rapian kabel)",
+    "location_desc": "Pak bayu ",
+    "create_date": "30 Dec 25 - 09:02"
+  },
+  {
+    "order_no": "20.52353",
+    "catatan": "minta tolong cek printer, Krn hasil print tidak jelas, sudah di head cleaning 2x dan tidak ada perubahan",
+    "location_desc": "Arni/PPA, (Gedung Penunjang Lt 4)",
+    "create_date": "28 Dec 25 - 08:09"
+  },
+  {
+    "order_no": "20.52296",
+    "catatan": "seting cctv ruang gaduh gelisah di instalasi kenari",
+    "location_desc": "pak dony / simrs",
+    "create_date": "23 Dec 25 - 15:41"
+  },
+  {
+    "order_no": "20.52096",
+    "catatan": "cek finger absensi dpjp tdk bs absen in out",
+    "location_desc": "desi / ns garuda lt 5",
+    "create_date": "17 Dec 25 - 10:01"
+  },
+  {
+    "order_no": "20.52014",
+    "catatan": "printer lab central tidak bisa digunakan",
+    "location_desc": "lutfi lab sentral",
+    "create_date": "15 Dec 25 - 16:27"
+  },
+  {
+    "order_no": "20.52000",
+    "catatan": "cek iptv ruang tunggu tampilan gelap",
+    "location_desc": "Sukri / Ruang IBS Garuda Loket",
+    "create_date": "15 Dec 25 - 09:54"
+  },
+  {
+    "order_no": "20.51863",
+    "catatan": "order cek komputer manajer Akuntansi ya. Keluhan nya komputer lemot banget.",
+    "location_desc": "agus-simrs",
+    "create_date": "10 Dec 25 - 09:49"
+  },
+  {
+    "order_no": "20.51783",
+    "catatan": "printer error",
+    "location_desc": "aryani/TU",
+    "create_date": "08 Dec 25 - 10:08"
+  },
+  {
+    "order_no": "20.51745",
+    "catatan": "2 PC all in merk dell layar berkedip. video terlampir",
+    "location_desc": "nurdin-ICU Central",
+    "create_date": "07 Dec 25 - 16:28"
+  },
+  {
+    "order_no": "20.51710",
+    "catatan": "cek finger pintu kaca mati, info user setelah ganti battery kondisi saat ini tdk nyala",
+    "location_desc": "vera / grd b lt dsr",
+    "create_date": "05 Dec 25 - 17:10"
+  },
+  {
+    "order_no": "20.51443",
+    "catatan": "PC kedip2 mau mati",
+    "location_desc": "Mita / Elang Lt.2",
+    "create_date": "27 Nov 25 - 07:02"
+  },
+  {
+    "order_no": "20.51432",
+    "catatan": "monitor PC di NS Cendrawasih Anak Lt Dasar kedip2",
+    "location_desc": "mba afit / Cendrawasih Anak Lt Dasar",
+    "create_date": "26 Nov 25 - 14:21"
+  },
+  {
+    "order_no": "20.51332",
+    "catatan": "Beberapa tombol di laptop tidak bisa fungsi.",
+    "location_desc": "Febri / UTDRS",
+    "create_date": "25 Nov 25 - 08:13"
+  },
+  {
+    "order_no": "20.51316",
+    "catatan": "1 komputer di NS, layarnya bekedip-kedip hitam",
+    "location_desc": "Eva-merak lt 2",
+    "create_date": "24 Nov 25 - 16:37"
+  },
+  {
+    "order_no": "20.51144",
+    "catatan": "minta tolong untuk di cekkan TV di ruang \n522 tidak ada remot samsung\n523 tv mati dan tidak ada remot sanmsung\n527 tv tidak ada chanel Samsung \n528 tidak ada remote sharp \n529 tidak ada remete- saklar",
+    "location_desc": "garudaB lt.5 bu farida",
+    "create_date": "19 Nov 25 - 12:08"
+  },
+  {
+    "order_no": "20.51133",
+    "catatan": "ada 1tv ditak di pakai, minta untuk di settingkan biar bisa menampilkan nomor antrain,\n\n",
+    "location_desc": "poli jantung elang lt.DASAR / RISKA,",
+    "create_date": "19 Nov 25 - 09:45"
+  },
+  {
+    "order_no": "20.51093",
+    "catatan": "cek Finger DPJP yg di NS tidak bisa di gunakan, infodari user alat pecah dan harus di isolasi",
+    "location_desc": "Wida - NICU",
+    "create_date": "18 Nov 25 - 09:54"
+  },
+  {
+    "order_no": "20.50912",
+    "catatan": "rme butuh update net, mesin foto kopi tidak bisa printout",
+    "location_desc": "dewik.elang farmasi",
+    "create_date": "12 Nov 25 - 10:10"
+  },
+  {
+    "order_no": "20.50797",
+    "catatan": "Cek PC mati di ok 9",
+    "location_desc": "fafa / IBS Central",
+    "create_date": "08 Nov 25 - 09:12"
+  },
+  {
+    "order_no": "20.50761",
+    "catatan": "pintu akses fingger  tidak bisa  digunakan  ,",
+    "location_desc": "vk obsetri/bu dani",
+    "create_date": "06 Nov 25 - 15:15"
+  },
+  {
+    "order_no": "20.50718",
+    "catatan": "Perapian kabel di ruang Tindakan Pria Gedung Kasuari Lt.3.",
+    "location_desc": "Kustati / Kasuari Lt.3",
+    "create_date": "05 Nov 25 - 10:19"
+  },
+  {
+    "order_no": "20.50339",
+    "catatan": "pc all in merk dell di katim icu central kedip2 hilang timbul.",
+    "location_desc": "katim icu-icu centra",
+    "create_date": "21 Oct 25 - 14:27"
+  },
+  {
+    "order_no": "20.50208",
+    "catatan": "Daftarkan finger akses pintu masuk ruang VIP untuk semua pegawai",
+    "location_desc": "Udin / Cendrawasih Lt.2",
+    "create_date": "16 Oct 25 - 08:07"
+  },
+  {
+    "order_no": "20.50130",
+    "catatan": "Minta di cek Printer di ruang edukasi info user ada tulisan ad kertas di tengah",
+    "location_desc": "Rozak / Kamar Jenazah",
+    "create_date": "13 Oct 25 - 15:09"
+  },
+  {
+    "order_no": "20.50062",
+    "catatan": "Epson l565, Waktu buat nyetak muncul suara kasar dan hasil cetakan tidak bagus\n\n\n\n",
+    "location_desc": "Rina - Rumah Tangga R. oprasional,",
+    "create_date": "10 Oct 25 - 10:23"
+  },
+  {
+    "order_no": "20.49814",
+    "catatan": "cek tv kamar 502 tidak bisa digunakan,",
+    "location_desc": "Laila  - Garuda2 Lt.5 (GARUDA)",
+    "create_date": "30 Sep 25 - 18:43"
+  },
+  {
+    "order_no": "20.49418",
+    "catatan": "cek pc Dell CPU lemoot banget untuk RME jika login ketik password token habis 10.70.0.177",
+    "location_desc": "Adil / IGD Bedah Label Kuning",
+    "create_date": "17 Sep 25 - 08:54"
+  },
+  {
+    "order_no": "20.49411",
+    "catatan": "cek komputer dell jadul lemooot banget jika digunakan",
+    "location_desc": "Mbak Tria / Ruang Fismed Staff Admin Radiologi",
+    "create_date": "17 Sep 25 - 08:00"
+  },
+  {
+    "order_no": "20.49284",
+    "catatan": "Cek PC Dell Layar berkedip ruang persiapan dan ruang dalam obat citos pc lemoot sekali sering not responding",
+    "location_desc": "Diana / Farmasi Kasuari",
+    "create_date": "12 Sep 25 - 07:23"
+  },
+  {
+    "order_no": "20.49055",
+    "catatan": "Cek ruang komputer Call Center Merpati, kok laporannya lemot. Sama nanti dilaporkan ke saya, penyebab lemot nya apa",
+    "location_desc": "Prihananto / SIMRS",
+    "create_date": "03 Sep 25 - 10:20"
+  },
+  {
+    "order_no": "20.48863",
+    "catatan": "keyboard laptop merk dell error,huruf tidak bisa di pencet\n",
+    "location_desc": "saiful/igd label merah",
+    "create_date": "26 Aug 25 - 12:28"
+  },
+  {
+    "order_no": "20.54220",
+    "catatan": "printer TSC sensor gak kencang sering geser\" jadi hasilnya tidak bagus, mohon di bantu pengecekan",
+    "location_desc": "farmasi merpati - bu harzini tanjung",
+    "create_date": "26 Feb 26 - 09:29"
+  },
+  {
+    "order_no": "20.54217",
+    "catatan": "Pedampingan acara Monitoring Kinerja Keuangan Bulan Januari 2026 di Sidang A",
+    "location_desc": "Pak Joko Simrs",
+    "create_date": "26 Feb 26 - 08:30"
+  },
+  {
+    "order_no": "20.54213",
+    "catatan": "Cek pc mbak nila kalau share screen zoom tidak bisa, mau diremot minta didatangi teknisi saja",
+    "location_desc": "Nila - Komite PPI lantai 5",
+    "create_date": "26 Feb 26 - 07:37"
+  },
+  {
+    "order_no": "20.54210",
+    "catatan": "PC IP 10.66.0.105 jaringannya inetnya lemot, remote vnc terasa berat speedtest tidak kuat, tapi ethernet gigabit, mohon di TL karena untuk zoom sering keluar sendiri",
+    "location_desc": "Aziz - Diklat ",
+    "create_date": "26 Feb 26 - 07:22"
+  },
+  {
+    "order_no": "20.54209",
+    "catatan": "Reset level tinta printer epson l5290 karena terdeteksi habis dipc sehingga tidak bisa print",
+    "location_desc": "Niken - TPPRI Garuda a lt dasar",
+    "create_date": "26 Feb 26 - 07:15"
+  },
+  {
+    "order_no": "20.54208",
+    "catatan": "tidak ada data bpjs ditemukan, saat akan daftar di aplikasi KNOW",
+    "location_desc": "pasien Suyanto",
+    "create_date": "26 Feb 26 - 06:50"
+  },
+  {
+    "order_no": "20.54195",
+    "catatan": "PC Dell AIO lemot IP 10.63.1.32 di remot vnc hanya blank hitam dan berat",
+    "location_desc": "candra - ibs ruang k instalasi",
+    "create_date": "25 Feb 26 - 15:04"
+  },
+  {
+    "order_no": "20.54182",
+    "catatan": "Ade..admisi pendaftaran kasuari printer barcode tidak bisa keluar",
+    "location_desc": "ade /kasuari dasar",
+    "create_date": "25 Feb 26 - 12:28"
+  },
+  {
+    "order_no": "20.54175",
+    "catatan": "jaringan tidak bagus",
+    "location_desc": "dokter mirza",
+    "create_date": "25 Feb 26 - 09:40"
+  },
+  {
+    "order_no": "20.54174",
+    "catatan": "Telfon depan NS apabila menerima telfon selalu sibuk, padahal sedang tidak digunakan untuk telfon, untuk menelfon ruang lain bisa\nTerima kasih",
+    "location_desc": "hendika garuda lantai 5",
+    "create_date": "25 Feb 26 - 09:36"
+  },
+  {
+    "order_no": "20.54173",
+    "catatan": "mouse mati sudah di coba cabut colok masih tidak bisa",
+    "location_desc": "merak lt 2 - bu tiwi",
+    "create_date": "25 Feb 26 - 09:28"
+  },
+  {
+    "order_no": "20.54170",
+    "catatan": "no antrian tidak muncul di farmasi elang",
+    "location_desc": "zahra /farmasi elang",
+    "create_date": "25 Feb 26 - 09:10"
+  },
+  {
+    "order_no": "20.54168",
+    "catatan": "PC kamar 12 tiba\" mati sendiri untuk listrik aman",
+    "location_desc": "poli kandugan merpati - mbak neilana",
+    "create_date": "25 Feb 26 - 09:00"
+  },
+  {
+    "order_no": "20.54163",
+    "catatan": "TV kamar 1 nge hange ada suaranya tidak bisa ganti chanel mohon dibantu",
+    "location_desc": "marta -  kepodang lt 1",
+    "create_date": "25 Feb 26 - 08:23"
+  },
+  {
+    "order_no": "20.54162",
+    "catatan": "ketika printout crash",
+    "location_desc": "elang 2 vip fast track",
+    "create_date": "25 Feb 26 - 08:22"
+  },
+  {
+    "order_no": "20.54132",
+    "catatan": "cek jaringan laptop karena tidak bsia rme",
+    "location_desc": "rodi picu",
+    "create_date": "24 Feb 26 - 11:18"
+  },
+  {
+    "order_no": "20.54130",
+    "catatan": "sofi melaporkan jaringan wifi intera tidak bisa konek  , di semua device",
+    "location_desc": "YANMED LANTAI 3 penunjang",
+    "create_date": "24 Feb 26 - 11:09"
+  },
+  {
+    "order_no": "20.54117",
+    "catatan": "kabel power gosong , minta di ganti",
+    "location_desc": "poli jantung",
+    "create_date": "24 Feb 26 - 09:13"
+  },
+  {
+    "order_no": "20.54112",
+    "catatan": "no antrian error",
+    "location_desc": "nisa/depo farmasi merpati",
+    "create_date": "24 Feb 26 - 08:43"
+  },
+  {
+    "order_no": "20.54109",
+    "catatan": "tlp ip phone   tombol digitalnya  tidak tampil",
+    "location_desc": "diana/utdrs",
+    "create_date": "24 Feb 26 - 08:32"
+  },
+  {
+    "order_no": "20.54104",
+    "catatan": "komputer lemot, mohon cek jaringan ketika di remote  juga nge lag",
+    "location_desc": "aziz diklat",
+    "create_date": "24 Feb 26 - 07:57"
+  },
+  {
+    "order_no": "20.54090",
+    "catatan": "Dari poli dalam merpati nurse station meja 1.\nMelaporkan tiba- tiba komputer pc mati sendiri.\nListrik tidak ada yang ngetrip.",
+    "location_desc": "poli dalam merpati",
+    "create_date": "23 Feb 26 - 13:37"
+  },
+  {
+    "order_no": "20.54089",
+    "catatan": "mohon di bantu cito pasien virtual klinik panggilan tidak terhubung di poli neuro garuda . ext 7420 perawat rini tks",
+    "location_desc": "poli neuro garuda",
+    "create_date": "23 Feb 26 - 13:29"
+  },
+  {
+    "order_no": "20.54057",
+    "catatan": "tampilan tv error , tv antrian",
+    "location_desc": "poli mata lantai 1 desi",
+    "create_date": "23 Feb 26 - 09:47"
+  },
+  {
+    "order_no": "20.54056",
+    "catatan": "semua poli dalam merapati rme lemot",
+    "location_desc": "pak mike simrs",
+    "create_date": "23 Feb 26 - 09:39"
+  },
+  {
+    "order_no": "20.54055",
+    "catatan": "dokter bantar rme lemot",
+    "location_desc": "pak mike simrs",
+    "create_date": "23 Feb 26 - 09:37"
+  },
+  {
+    "order_no": "20.54054",
+    "catatan": "Selamat pagi \nDari Merak Dasar, ijin order laptop saat dinyalakan layar tampak spt difoto sejak pagi tdi\nMatur suwun????",
+    "location_desc": "yani merak dasar",
+    "create_date": "23 Feb 26 - 09:32"
+  },
+  {
+    "order_no": "20.54052",
+    "catatan": "layar ip phone mati",
+    "location_desc": "diana/utdrs",
+    "create_date": "23 Feb 26 - 09:17"
+  },
+  {
+    "order_no": "20.54047",
+    "catatan": "RME DPJP loading lama. Mohon ditindaklanjuti",
+    "location_desc": "dianti/obsetri",
+    "create_date": "23 Feb 26 - 09:10"
+  },
+  {
+    "order_no": "20.54044",
+    "catatan": "rme lemot",
+    "location_desc": "bos mike/simrs",
+    "create_date": "23 Feb 26 - 08:27"
+  },
+  {
+    "order_no": "20.54035",
+    "catatan": "komputer tidak bsia hidup , coba cek kelistrikan user  minta ada teknisi ke sini",
+    "location_desc": "rosa/kedokteran nuklir gedung baru kasuari",
+    "create_date": "23 Feb 26 - 07:39"
+  },
+  {
+    "order_no": "20.54032",
+    "catatan": "tidak bisa masuk windows",
+    "location_desc": "endah /kasuari lantai 3",
+    "create_date": "23 Feb 26 - 07:22"
+  },
+  {
+    "order_no": "20.54031",
+    "catatan": "jaringan internet dan printer error",
+    "location_desc": "pak ros/mbak tutik\nkedoknekran nuklir radilogi central",
+    "create_date": "23 Feb 26 - 07:21"
+  },
+  {
+    "order_no": "20.54013",
+    "catatan": "printer tidak connect, sudah di coba cabu colok kabelnya masih tidak bisa",
+    "location_desc": "bu yanti - gizi produksi",
+    "create_date": "22 Feb 26 - 13:36"
+  },
+  {
+    "order_no": "20.54011",
+    "catatan": "PC tidak mendapatkan jaringan, sudah di coba cabut colok kabel LAN masih sama",
+    "location_desc": "Widjayanti - Dari binatu di ruang penerimaan bawah",
+    "create_date": "22 Feb 26 - 08:15"
+  },
+  {
+    "order_no": "20.54010",
+    "catatan": "suara tlp tidak jelas",
+    "location_desc": "kutilang dasar insan",
+    "create_date": "21 Feb 26 - 22:24"
+  },
+  {
+    "order_no": "20.54009",
+    "catatan": "minta pengantian mouse karena mouse mati",
+    "location_desc": "merak dasar",
+    "create_date": "21 Feb 26 - 21:44"
+  },
+  {
+    "order_no": "20.53999",
+    "catatan": "ganti baterai cmos",
+    "location_desc": "pradipta depo kasuari farmasi",
+    "create_date": "20 Feb 26 - 17:48"
+  },
+  {
+    "order_no": "20.53997",
+    "catatan": "pc tidak dapat jaringan",
+    "location_desc": "iva/anak dasar",
+    "create_date": "20 Feb 26 - 15:21"
+  },
+  {
+    "order_no": "20.53988",
+    "catatan": "Cek pc asus aio ip 10.56.0.49 lemot, diremot di simrs vncnya berat dan ping stabil di ribuan",
+    "location_desc": "Puput Yunita - Poli Dalam Merpati",
+    "create_date": "20 Feb 26 - 13:20"
+  },
+  {
+    "order_no": "20.53986",
+    "catatan": "PC acer tiba-tiba mati mohon di cek\n",
+    "location_desc": "ibu dian - VK obstetri",
+    "create_date": "20 Feb 26 - 12:53"
+  },
+  {
+    "order_no": "20.53981",
+    "catatan": "Install aplikasi Launcher_APM Finger di tablet onkologi",
+    "location_desc": "Bu Fitri - SIMRS",
+    "create_date": "20 Feb 26 - 10:47"
+  },
+  {
+    "order_no": "20.53977",
+    "catatan": "perapian kabel di ruang lab imun SHK",
+    "location_desc": "pak bayu - Lab central",
+    "create_date": "20 Feb 26 - 10:18"
+  },
+  {
+    "order_no": "20.53973",
+    "catatan": "1. Pindahan komputer dari meja penjab ke meja instalasi\n2. Setting PC (sudah dilokasi) untuk ditaruh di meja penjab\nKetemu mba oris untuk lebih detailnya",
+    "location_desc": "Oris - Admin Farmasi penunjang dasar",
+    "create_date": "20 Feb 26 - 09:24"
+  },
+  {
+    "order_no": "20.53968",
+    "catatan": "\npenambahan kabel kurleb 10M",
+    "location_desc": "bu eni - ULP ( ruangan di depan TU )",
+    "create_date": "20 Feb 26 - 09:00"
+  },
+  {
+    "order_no": "20.53967",
+    "catatan": "\ncomputer tidak dapat jaringan,sudah cabut colok masih belom bisa ( 127.x.x.x )\n\n",
+    "location_desc": "mbak ningsih - Rajawali 4A",
+    "create_date": "20 Feb 26 - 08:49"
+  },
+  {
+    "order_no": "20.53956",
+    "catatan": "Penambahan jaringan di komputer tim PPK dekat virklin",
+    "location_desc": "Dony - Simrs",
+    "create_date": "20 Feb 26 - 07:45"
+  },
+  {
+    "order_no": "20.53929",
+    "catatan": "Cek printer Epson tinta di DS 3 hasil warna biru dan kuning tidak muncul",
+    "location_desc": "Arif - DS 3",
+    "create_date": "19 Feb 26 - 10:17"
+  },
+  {
+    "order_no": "20.53926",
+    "catatan": "Pintu masuk ruang rawat NICU sebelah nurse station, akses finger tidak bisa nge-lock",
+    "location_desc": "Sri Hartini - NICU NRT",
+    "create_date": "19 Feb 26 - 09:40"
+  },
+  {
+    "order_no": "20.53923",
+    "catatan": "pindah 1 set pc dari PMD lt.4 ke kasir IGD",
+    "location_desc": "estri / bagian PMD (keuangan lt.4)",
+    "create_date": "19 Feb 26 - 09:27"
+  },
+  {
+    "order_no": "20.53901",
+    "catatan": "Cek spesifikasi pc di ns karena ada laporan kelambatan",
+    "location_desc": "Pak Mex - Simrs",
+    "create_date": "18 Feb 26 - 12:49"
+  },
+  {
+    "order_no": "20.53894",
+    "catatan": "kamar 6 tidak keluar chanel nya",
+    "location_desc": "cendra  nuklir/farida",
+    "create_date": "18 Feb 26 - 10:29"
+  },
+  {
+    "order_no": "20.53892",
+    "catatan": "kamar garuda 526 error",
+    "location_desc": "bu fitri simrs",
+    "create_date": "18 Feb 26 - 10:15"
+  },
+  {
+    "order_no": "20.53884",
+    "catatan": "komputer tidak bisa masuk windows",
+    "location_desc": "mas mojo ips biomedes",
+    "create_date": "18 Feb 26 - 08:49"
+  },
+  {
+    "order_no": "20.53871",
+    "catatan": "sharing printer habis pindahan",
+    "location_desc": "ella/keuangan perben",
+    "create_date": "18 Feb 26 - 08:10"
+  },
+  {
+    "order_no": "20.53869",
+    "catatan": "tombol power cpu rusak,",
+    "location_desc": "ulp ipung",
+    "create_date": "18 Feb 26 - 07:48"
+  },
+  {
+    "order_no": "20.53868",
+    "catatan": "habis di pindah mas adhi, info user posisi komputer  belum sesuai  , pindahan pc",
+    "location_desc": "fardia .ksm penyakit dalam",
+    "create_date": "18 Feb 26 - 07:45"
+  },
+  {
+    "order_no": "20.53867",
+    "catatan": "\nmesin antrian di kasuari dasar mati, sebelumnya sudah sempat menyala sebentar kemudian mati lagi ( CITO )",
+    "location_desc": "mas utomo satpam - kasuari lt dasar",
+    "create_date": "18 Feb 26 - 05:58"
+  },
+  {
+    "order_no": "20.53863",
+    "catatan": "minta pengantian mouse karena mouse mati",
+    "location_desc": "merak dasar",
+    "create_date": "17 Feb 26 - 11:43"
+  },
+  {
+    "order_no": "20.53862",
+    "catatan": "chanel tv hilang",
+    "location_desc": "garuda lantai  6",
+    "create_date": "17 Feb 26 - 11:42"
+  },
+  {
+    "order_no": "20.53861",
+    "catatan": "minta mouse untuk tablet",
+    "location_desc": "kutilang dasar",
+    "create_date": "17 Feb 26 - 11:10"
+  },
+  {
+    "order_no": "20.53860",
+    "catatan": "minta pengantian mouse",
+    "location_desc": "heru.rajawali 3a",
+    "create_date": "17 Feb 26 - 11:09"
+  },
+  {
+    "order_no": "20.53859",
+    "catatan": "Selamat pagi team,,\nDari Instalasi KMKB,, ini PC tdk tersambung internet,, mohon utk di TL njih,,????\nSudah di restart,, kabel LAN jg sdh cabut pasang,, tetap tdk ada perubahan (sdh ±10mnt)",
+    "location_desc": "instalasi kmkb",
+    "create_date": "17 Feb 26 - 09:51"
+  },
+  {
+    "order_no": "20.53858",
+    "catatan": "sharing data, mbak putri ingin ada yang ke lokasi teknisi",
+    "location_desc": "putri perben lantai 4 penunjanng",
+    "create_date": "17 Feb 26 - 09:48"
+  },
+  {
+    "order_no": "20.53857",
+    "catatan": "\nTV Kamar NO 1  gambar tidak muncul ",
+    "location_desc": "kepodang dasar - mas Yusuf",
+    "create_date": "16 Feb 26 - 17:29"
+  },
+  {
+    "order_no": "20.53856",
+    "catatan": "\ntv kmar 619 keluar suara tapi tidak muncul gambarnya sudah mencoba untuk matikan dan hidupkan kembali masih tidak bisa",
+    "location_desc": "mbak vera - gadruda b lt 6",
+    "create_date": "16 Feb 26 - 16:33"
+  },
+  {
+    "order_no": "20.53855",
+    "catatan": "\ntlfn ibs ok 1 mati  ext 107",
+    "location_desc": "mas dodi - ibs",
+    "create_date": "16 Feb 26 - 14:05"
+  },
+  {
+    "order_no": "20.53852",
+    "catatan": "tab trobel",
+    "location_desc": "anak lantai  1",
+    "create_date": "16 Feb 26 - 08:28"
+  },
+  {
+    "order_no": "20.53849",
+    "catatan": "Selamat pagi, dari ruang farmasi Rajawali etiket macet kedip2 merah, sudah dikalibrasi tetap belum bisa.. ?? terimakasih",
+    "location_desc": "rajwali farmasi",
+    "create_date": "16 Feb 26 - 07:37"
+  },
+  {
+    "order_no": "20.53694",
+    "catatan": "pc dell mbleret, mohon di cek karena pc dell tersebut sering di gunakan dpjp",
+    "location_desc": "pak Aji - kenari",
+    "create_date": "10 Feb 26 - 06:52"
+  },
+  {
+    "order_no": "20.53662",
+    "catatan": "tv kamar 9 no sinyal",
+    "location_desc": "udin/cendra lantai 2",
+    "create_date": "09 Feb 26 - 09:54"
+  },
+  {
+    "order_no": "20.53616",
+    "catatan": "printer tidak bisa printout",
+    "location_desc": "Res dr. Jessica /USG radiologi central",
+    "create_date": "06 Feb 26 - 20:39"
+  },
+  {
+    "order_no": "20.53423",
+    "catatan": "monitor layar  berkedip",
+    "location_desc": "icu central",
+    "create_date": "30 Jan 26 - 21:43"
+  }
+]

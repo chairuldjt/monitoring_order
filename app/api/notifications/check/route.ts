@@ -1,65 +1,72 @@
 import { NextResponse } from 'next/server';
 import pool from '@/lib/db';
+import { getOptimizedSIMRSOrders, parseSIMRSDate } from '@/lib/simrs-client';
 
 export async function GET() {
     try {
-        // Check for follow_up orders older than 1 day
-        const [followUpOverdue]: any = await pool.query(`
-      SELECT o.id, o.order_no, o.title, o.requester_name, o.updated_at
-      FROM orders o
-      WHERE o.status = 'follow_up'
-      AND o.updated_at < DATE_SUB(NOW(), INTERVAL 1 DAY)
-    `);
+        // Fetch relevant status orders from SIMRS
+        const [followUpOrders, pendingOrders] = await Promise.all([
+            getOptimizedSIMRSOrders(11), // FOLLOW UP
+            getOptimizedSIMRSOrders(13), // PENDING
+        ]);
 
-        for (const order of followUpOverdue) {
-            // Check if notification already exists for this order today
-            const [existing]: any = await pool.query(
-                `SELECT id FROM notifications WHERE order_id = ? AND type = 'follow_up_overdue' AND DATE(created_at) = CURDATE()`,
-                [order.id]
-            );
-            if (existing.length === 0) {
-                await pool.query(
-                    `INSERT INTO notifications (user_id, title, message, type, order_id)
-           VALUES (NULL, ?, ?, 'follow_up_overdue', ?)`,
-                    [
-                        `Follow-up Terlambat: ${order.order_no}`,
-                        `Order "${order.title}" dari ${order.requester_name} sudah lebih dari 1 hari dalam status follow-up.`,
-                        order.id
-                    ]
+        const now = new Date();
+        const oneDayAgo = new Date(now.getTime() - (24 * 60 * 60 * 1000));
+        const oneMonthAgo = new Date(now.getTime() - (30 * 24 * 60 * 60 * 1000));
+
+        let followUpCount = 0;
+        let pendingCount = 0;
+
+        // Check for follow_up orders older than 1 day
+        for (const order of followUpOrders) {
+            const oDate = parseSIMRSDate(order.create_date);
+            if (oDate && oDate < oneDayAgo) {
+                const [existing]: any = await pool.query(
+                    `SELECT id FROM notifications WHERE order_no = ? AND type = 'follow_up_overdue' AND DATE(created_at) = CURDATE()`,
+                    [order.order_no]
                 );
+                if (existing.length === 0) {
+                    await pool.query(
+                        `INSERT INTO notifications (user_id, title, message, type, order_no)
+               VALUES (NULL, ?, ?, 'follow_up_overdue', ?)`,
+                        [
+                            `Follow-up Terlambat: ${order.order_no}`,
+                            `Order dari ${order.location_desc} sudah lebih dari 1 hari dalam status follow-up.`,
+                            order.order_no
+                        ]
+                    );
+                    followUpCount++;
+                }
             }
         }
 
         // Check for pending orders older than 1 month
-        const [pendingOverdue]: any = await pool.query(`
-      SELECT o.id, o.order_no, o.title, o.requester_name, o.updated_at
-      FROM orders o
-      WHERE o.status = 'pending'
-      AND o.updated_at < DATE_SUB(NOW(), INTERVAL 1 MONTH)
-    `);
-
-        for (const order of pendingOverdue) {
-            const [existing]: any = await pool.query(
-                `SELECT id FROM notifications WHERE order_id = ? AND type = 'pending_overdue' AND DATE(created_at) = CURDATE()`,
-                [order.id]
-            );
-            if (existing.length === 0) {
-                await pool.query(
-                    `INSERT INTO notifications (user_id, title, message, type, order_id)
-           VALUES (NULL, ?, ?, 'pending_overdue', ?)`,
-                    [
-                        `Pending Terlalu Lama: ${order.order_no}`,
-                        `Order "${order.title}" dari ${order.requester_name} sudah lebih dari 1 bulan dalam status pending!`,
-                        order.id
-                    ]
+        for (const order of pendingOrders) {
+            const oDate = parseSIMRSDate(order.create_date);
+            if (oDate && oDate < oneMonthAgo) {
+                const [existing]: any = await pool.query(
+                    `SELECT id FROM notifications WHERE order_no = ? AND type = 'pending_overdue' AND DATE(created_at) = CURDATE()`,
+                    [order.order_no]
                 );
+                if (existing.length === 0) {
+                    await pool.query(
+                        `INSERT INTO notifications (user_id, title, message, type, order_no)
+               VALUES (NULL, ?, ?, 'pending_overdue', ?)`,
+                        [
+                            `Pending Terlalu Lama: ${order.order_no}`,
+                            `Order dari ${order.location_desc} sudah lebih dari 1 bulan dalam status pending!`,
+                            order.order_no
+                        ]
+                    );
+                    pendingCount++;
+                }
             }
         }
 
         return NextResponse.json({
             message: 'Check completed',
-            followUpOverdue: followUpOverdue.length,
-            pendingOverdue: pendingOverdue.length,
+            followUpOverdue: followUpCount,
+            pendingOverdue: pendingCount,
         });
     } catch (error) {
         console.error('Notification check error:', error);

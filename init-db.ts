@@ -60,6 +60,53 @@ async function initDatabase() {
     `);
 
     // ================================
+    // TABLE: ai_usage_logs
+    // ================================
+    console.log('📋 Creating table: ai_usage_logs');
+    await connection.query(`
+        CREATE TABLE IF NOT EXISTS ai_usage_logs (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            request_type VARCHAR(50) NOT NULL,
+            prompt_tokens INT DEFAULT 0,
+            completion_tokens INT DEFAULT 0,
+            model VARCHAR(50) NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    `);
+
+    // ================================
+    // TABLE: notifications
+    // ================================
+    console.log('📋 Creating table: notifications');
+    await connection.query(`
+        CREATE TABLE IF NOT EXISTS notifications (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            user_id INT NULL,
+            title VARCHAR(255) NOT NULL,
+            message TEXT NOT NULL,
+            type VARCHAR(50) NOT NULL,
+            order_id INT NULL,
+            order_no VARCHAR(50) NULL,
+            is_read BOOLEAN DEFAULT FALSE,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    `);
+
+    // ================================
+    // TABLE: ai_assistant_requests
+    // ================================
+    console.log('📋 Creating table: ai_assistant_requests');
+    await connection.query(`
+        CREATE TABLE IF NOT EXISTS ai_assistant_requests (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            start_date DATE NOT NULL,
+            end_date DATE NOT NULL,
+            status ENUM('pending', 'executing', 'success', 'error') DEFAULT 'pending',
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    `);
+
+    // ================================
     // TABLE: ai_analysis
     // ================================
     console.log('📋 Creating table: ai_analysis');
@@ -68,17 +115,38 @@ async function initDatabase() {
             id INT AUTO_INCREMENT PRIMARY KEY,
             analysis_type VARCHAR(50) NOT NULL DEFAULT 'repeat_orders',
             result_json LONGTEXT NULL,
+            date_start DATE NULL,
+            date_end DATE NULL,
+            total_orders_analyzed INT DEFAULT 0,
             last_run TIMESTAMP NULL,
             status ENUM('success', 'failed', 'running') DEFAULT 'success',
             error_message TEXT NULL
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
     `);
 
+    // Ensure columns exist in ai_analysis (Migration for existing tables)
+    console.log('🔄 Checking columns for table: ai_analysis');
+    const [aiColumns]: any = await connection.query(`SHOW COLUMNS FROM ai_analysis`);
+    const aiColumnNames = aiColumns.map((c: any) => c.Field);
+
+    if (!aiColumnNames.includes('date_start')) {
+        console.log('   ➕ Adding column: date_start');
+        await connection.query(`ALTER TABLE ai_analysis ADD COLUMN date_start DATE NULL AFTER result_json`);
+    }
+    if (!aiColumnNames.includes('date_end')) {
+        console.log('   ➕ Adding column: date_end');
+        await connection.query(`ALTER TABLE ai_analysis ADD COLUMN date_end DATE NULL AFTER date_start`);
+    }
+    if (!aiColumnNames.includes('total_orders_analyzed')) {
+        console.log('   ➕ Adding column: total_orders_analyzed');
+        await connection.query(`ALTER TABLE ai_analysis ADD COLUMN total_orders_analyzed INT DEFAULT 0 AFTER date_end`);
+    }
+
     // ================================
-    // CLEANUP: Drop local orders tables (As requested: Live only)
+    // CLEANUP: Drop local orders tables (Legacy cleanup, but KEEP notifications)
     // ================================
-    console.log('🗑️  Dropping local orders tables (data now live from SIMRS)...');
-    await connection.query(`DROP TABLE IF EXISTS notifications`);
+    console.log('🗑️  Cleaning up legacy local orders data (except notifications)...');
+    // We KEEP notifications because it's used for tracking alerts even for SIMRS orders
     await connection.query(`DROP TABLE IF EXISTS order_status_history`);
     await connection.query(`DROP TABLE IF EXISTS orders`);
     await connection.query(`DROP TABLE IF EXISTS sync_logs`);

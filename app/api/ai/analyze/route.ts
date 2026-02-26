@@ -95,11 +95,13 @@ export async function POST() {
 
         const resultData = JSON.parse(jsonMatch[0]);
 
-        // 5. Save to Cache
+        // 5. Save to Cache & Log Usage
         await pool.query(
             "INSERT INTO ai_analysis (analysis_type, result_json, last_run, status) VALUES ('repeat_orders', ?, NOW(), 'success')",
             [JSON.stringify(resultData)]
         );
+
+        await pool.query("INSERT INTO ai_usage_logs () VALUES ()");
 
         return NextResponse.json({
             data: resultData,

@@ -10,10 +10,17 @@ export async function GET() {
         }
 
         const [rows]: any = await pool.query('SELECT setting_key, setting_value FROM settings');
-        const settings: Record<string, string> = {};
+        const settings: Record<string, any> = {};
         rows.forEach((row: any) => {
             settings[row.setting_key] = row.setting_value;
         });
+
+        // Get Today's AI Usage
+        const [usage]: any = await pool.query(
+            "SELECT COUNT(*) as count FROM ai_usage_logs WHERE created_at >= CURDATE()"
+        );
+        settings.ai_usage_today = usage[0]?.count || 0;
+        settings.ai_usage_limit = 1500; // Gemini Free Tier Default approx per day for 1.5 flash
 
         return NextResponse.json(settings);
     } catch (error: any) {

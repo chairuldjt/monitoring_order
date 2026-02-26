@@ -149,11 +149,14 @@ function SettingsContent() {
                                 </div>
                                 <div className="space-y-1">
                                     <div className="flex justify-between text-[10px] text-slate-400 font-bold uppercase mb-1">
-                                        <span>Quota Pemakaian</span>
-                                        <span>75% Aman</span>
+                                        <span>Quota Pemakaian ({settings.ai_usage_today || 0} / {settings.ai_usage_limit || 1500})</span>
+                                        <span>{Math.round(((settings.ai_usage_today || 0) / (settings.ai_usage_limit || 1500)) * 100)}%</span>
                                     </div>
                                     <div className="h-2 w-full bg-white/5 rounded-full overflow-hidden">
-                                        <div className="bg-gradient-to-r from-violet-500 to-fuchsia-500 h-full w-[15%]"></div>
+                                        <div
+                                            className="bg-gradient-to-r from-violet-500 to-fuchsia-500 h-full transition-all duration-500"
+                                            style={{ width: `${Math.min(100, ((settings.ai_usage_today || 0) / (settings.ai_usage_limit || 1500)) * 100)}%` }}
+                                        ></div>
                                     </div>
                                 </div>
                                 <p className="text-[11px] text-slate-400 font-medium">

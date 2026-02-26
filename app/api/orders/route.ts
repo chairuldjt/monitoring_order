@@ -27,6 +27,8 @@ export async function GET(request: Request) {
         const sort = searchParams.get('sort') || 'desc';
         const page = parseInt(searchParams.get('page') || '1');
         const limit = parseInt(searchParams.get('limit') || '50');
+        const nosParam = searchParams.get('nos');
+        const orderNos = nosParam ? nosParam.split(',').filter(Boolean) : null;
 
         // Determine which status IDs to fetch
         let statusIds: number[] = [];
@@ -66,6 +68,11 @@ export async function GET(request: Request) {
             create_date: o.create_date,
             _parsed_date: parseSIMRSDate(o.create_date),
         }));
+
+        // Exact Order Nos filter (High Priority)
+        if (orderNos && orderNos.length > 0) {
+            mapped = mapped.filter(o => orderNos.includes(o.order_no));
+        }
 
         // Search filter
         if (search) {

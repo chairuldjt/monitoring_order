@@ -32,6 +32,7 @@ function OrdersContent() {
     const initialStatus = searchParams.get('status') || '';
     const initialSearch = searchParams.get('search') || '';
     const initialSearchType = searchParams.get('searchType') || 'all';
+    const initialNos = searchParams.get('nos') || '';
 
     const [orders, setOrders] = useState<Order[]>([]);
     const [loading, setLoading] = useState(true);
@@ -48,6 +49,7 @@ function OrdersContent() {
     const [totalPages, setTotalPages] = useState(1);
     const [summary, setSummary] = useState<Record<string, number> | null>(null);
     const [error, setError] = useState<string | null>(null);
+    const [nosFilter, setNosFilter] = useState(initialNos);
 
     // Modal state
     const [selectedOrderId, setSelectedOrderId] = useState<number | null>(null);
@@ -62,6 +64,7 @@ function OrdersContent() {
             if (searchType !== 'all') params.set('searchType', searchType);
             if (startDate) params.set('startDate', startDate);
             if (endDate) params.set('endDate', endDate);
+            if (nosFilter) params.set('nos', nosFilter);
             params.set('sort', sortOrder);
             params.set('page', page.toString());
             params.set('limit', '50');
@@ -83,7 +86,7 @@ function OrdersContent() {
             setLoading(false);
             setRefreshing(false);
         }
-    }, [statusFilter, search, searchType, startDate, endDate, sortOrder, page]);
+    }, [statusFilter, search, searchType, startDate, endDate, nosFilter, sortOrder, page]);
 
     useEffect(() => {
         setLoading(true);
@@ -124,7 +127,7 @@ function OrdersContent() {
     };
 
     return (
-        <div className="min-h-screen p-4 md:p-8 space-y-6 animate-fade-in relative">
+        <div className="min-h-screen p-4 md:p-8 space-y-6 animate-fade-in relative pb-20">
             {/* Header */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white/40 backdrop-blur-md p-6 rounded-[2rem] border border-white/20 shadow-xl">
                 <div>
@@ -217,25 +220,46 @@ function OrdersContent() {
                         </div>
                     </div>
                 </div>
+
+                {/* Filter Actions */}
+                {(search || searchType !== 'all' || startDate || endDate || statusFilter !== initialStatus || nosFilter) && (
+                    <div className="flex justify-end -mt-2 mb-2">
+                        <button
+                            onClick={() => {
+                                setSearch('');
+                                setSearchType('all');
+                                setStartDate('');
+                                setEndDate('');
+                                setNosFilter('');
+                                setStatusFilter(initialStatus);
+                                setPage(1);
+                            }}
+                            className="text-xs font-bold text-slate-500 hover:text-red-500 flex items-center gap-1.5 transition-colors px-3 py-1.5 rounded-lg hover:bg-red-50"
+                        >
+                            <X className="w-3.5 h-3.5" />
+                            Hapus Semua Filter
+                        </button>
+                    </div>
+                )}
             </div>
 
-            {/* Filter Actions */}
-            {(search || searchType !== 'all' || startDate || endDate || statusFilter !== initialStatus) && (
-                <div className="flex justify-end -mt-2 mb-2">
+            {/* AI Filter Indicator */}
+            {nosFilter && (
+                <div className="bg-indigo-50/50 border border-indigo-100 p-4 rounded-2xl flex items-center justify-between gap-4 animate-fade-in-up">
+                    <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center shadow-lg">
+                            <Search className="w-4 h-4 text-white" />
+                        </div>
+                        <div>
+                            <p className="text-xs font-black text-indigo-700 uppercase tracking-widest leading-none mb-1">Eksplorasi Analisa AI</p>
+                            <p className="text-[10px] text-indigo-500 font-bold">Menampilkan {nosFilter.split(',').length} order spesifik hasil pengelompokan semantik.</p>
+                        </div>
+                    </div>
                     <button
-                        onClick={() => {
-                            setSearch('');
-                            setSearchType('all');
-                            setStartDate('');
-                            setEndDate('');
-                            setSortOrder('desc');
-                            setStatusFilter(initialStatus);
-                            setPage(1);
-                        }}
-                        className="text-xs font-bold text-slate-500 hover:text-red-500 flex items-center gap-1.5 transition-colors px-3 py-1.5 rounded-lg hover:bg-red-50"
+                        onClick={() => { setNosFilter(''); setPage(1); }}
+                        className="bg-white text-indigo-600 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-indigo-50 transition-colors border border-indigo-100 shadow-sm"
                     >
-                        <X className="w-3.5 h-3.5" />
-                        Hapus Semua Filter
+                        Tampilkan Semua
                     </button>
                 </div>
             )}
@@ -246,133 +270,138 @@ function OrdersContent() {
                     <button
                         key={s.key}
                         onClick={() => { setStatusFilter(s.key); setPage(1); }}
-                        className={`px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all ${statusFilter === s.key
-                            ? 'bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white shadow-lg'
-                            : 'bg-white border border-slate-200 text-slate-500 hover:bg-slate-50'
+                        className={`px-6 py-2.5 rounded-xl text-xs font-black transition-all border uppercase tracking-widest ${statusFilter === s.key
+                            ? 'bg-violet-600 text-white border-violet-600 shadow-lg shadow-violet-200'
+                            : 'bg-white text-slate-500 border-slate-100 hover:border-violet-300'
                             }`}
                     >
                         {s.label}
-                        {summary && s.key && (
-                            <span className="ml-1.5 opacity-70">({summary[s.key] || 0})</span>
-                        )}
+                        {summary && summary[s.key || 'all'] ? (
+                            <span className={`ml-2 px-1.5 py-0.5 rounded-md text-[9px] ${statusFilter === s.key ? 'bg-violet-400' : 'bg-slate-100'}`}>
+                                {summary[s.key || 'all']}
+                            </span>
+                        ) : null}
                     </button>
                 ))}
             </div>
 
             {/* Orders Table */}
-            <div className="bg-white rounded-[2rem] border border-slate-100 shadow-2xl overflow-hidden">
+            <div className="bg-white/60 backdrop-blur-md rounded-[2.5rem] border border-white/20 shadow-xl overflow-hidden min-h-[400px]">
                 {loading ? (
-                    <div className="flex items-center justify-center py-20">
-                        <div className="text-center">
-                            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-violet-600 mx-auto mb-3"></div>
-                            <p className="text-sm text-slate-400">Mengambil data dari SIMRS...</p>
+                    <div className="p-20 flex flex-col items-center justify-center text-center">
+                        <div className="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center mb-4 animate-pulse">
+                            <RefreshCw className="w-8 h-8 text-slate-300 animate-spin" />
                         </div>
+                        <h3 className="text-lg font-black text-slate-800 uppercase tracking-widest">Memuat Data...</h3>
+                    </div>
+                ) : orders.length === 0 ? (
+                    <div className="p-20 flex flex-col items-center justify-center text-center">
+                        <div className="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center mb-4 text-slate-300">
+                            <X className="w-8 h-8" />
+                        </div>
+                        <h3 className="text-lg font-black text-slate-800 uppercase tracking-widest">Tidak Ada Data</h3>
+                        <p className="text-sm text-slate-500 font-medium">Coba sesuaikan filter pencarian atau tanggal.</p>
                     </div>
                 ) : (
                     <div className="overflow-x-auto">
-                        <table className="w-full text-left">
-                            <thead className="bg-slate-50/80">
+                        <table className="w-full">
+                            <thead className="bg-slate-50/50">
                                 <tr>
-                                    <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">No. Order</th>
-                                    <th className="px-4 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Catatan</th>
-                                    <th className="px-4 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Pembuat Order</th>
-                                    <th className="px-4 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Extensi</th>
-                                    <th className="px-4 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Unit / Lokasi</th>
-                                    <th className="px-4 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Teknisi</th>
-                                    <th className="px-4 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Status</th>
-                                    <th
-                                        onClick={() => {
-                                            setSortOrder(prev => prev === 'desc' ? 'asc' : 'desc');
-                                            setPage(1);
-                                        }}
-                                        className="px-6 py-4 text-[10px] font-black hover:text-violet-600 text-slate-400 uppercase tracking-widest text-right cursor-pointer transition-colors group select-none"
-                                    >
-                                        <div className="flex items-center justify-end gap-1.5">
-                                            Tanggal
-                                            <div className="bg-slate-100 p-1 rounded-md group-hover:bg-violet-100 transition-colors">
-                                                {sortOrder === 'desc' ? <ArrowDown className="w-3 h-3 text-slate-400 group-hover:text-violet-600" /> : <ArrowUp className="w-3 h-3 text-slate-400 group-hover:text-violet-600" />}
-                                            </div>
-                                        </div>
-                                    </th>
+                                    <th className="px-6 py-4 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">Info Order</th>
+                                    <th className="px-6 py-4 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">Pelapor & Lokasi</th>
+                                    <th className="px-6 py-4 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">Catatan Keluhan</th>
+                                    <th className="px-6 py-4 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">Status & Teknisi</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-slate-50">
-                                {orders.length > 0 ? (
-                                    orders.map((order, i) => (
-                                        <tr
-                                            key={i}
-                                            onClick={() => setSelectedOrderId(order.order_id)}
-                                            className="hover:bg-violet-50/30 transition-colors group cursor-pointer"
-                                        >
-                                            <td className="px-6 py-4">
-                                                <span className="text-sm font-bold text-violet-600 group-hover:underline">{order.order_no}</span>
-                                            </td>
-                                            <td className="px-4 py-4">
-                                                <p className="text-sm font-medium text-slate-700 whitespace-normal break-words" title={order.description}>
-                                                    {order.title}
-                                                </p>
-                                            </td>
-                                            <td className="px-4 py-4 text-sm text-slate-600">{order.requester_name}</td>
-                                            <td className="px-4 py-4 text-xs font-bold text-slate-500">{order.ext_phone || '-'}</td>
-                                            <td className="px-4 py-4 text-xs text-slate-400 max-w-[150px] truncate">{order.requester_unit}</td>
-                                            <td className="px-4 py-4 text-xs text-slate-500 font-medium">{order.teknisi || '-'}</td>
-                                            <td className="px-4 py-4 text-center">
-                                                <span className={`text-[10px] font-black px-3 py-1 rounded-full border whitespace-nowrap ${getStatusColor(order.status)}`}>
+                            <tbody className="divide-y divide-slate-100">
+                                {orders.map((order) => (
+                                    <tr
+                                        key={order.order_id}
+                                        className="hover:bg-violet-50/30 transition-colors cursor-pointer group"
+                                        onClick={() => setSelectedOrderId(order.order_id)}
+                                    >
+                                        <td className="px-6 py-5 whitespace-nowrap">
+                                            <div className="flex flex-col">
+                                                <span className="text-xs font-black text-slate-800 uppercase tracking-wider">{order.order_no}</span>
+                                                <span className="text-[10px] text-slate-400 font-bold mt-1 uppercase">{order.create_date}</span>
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-5 whitespace-nowrap">
+                                            <div className="flex flex-col">
+                                                <span className="text-xs font-black text-slate-700 uppercase tracking-widest">{order.requester_name}</span>
+                                                <span className="text-[10px] text-violet-500 font-bold mt-0.5 uppercase tracking-wider">{order.requester_unit}</span>
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-5 max-w-xs">
+                                            <p className="text-xs font-bold text-slate-600 line-clamp-2 leading-relaxed">
+                                                {order.title || order.description}
+                                            </p>
+                                        </td>
+                                        <td className="px-6 py-5 whitespace-nowrap">
+                                            <div className="flex flex-col gap-2">
+                                                <span className={`px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest border w-fit ${getStatusColor(order.status)}`}>
                                                     {order.status}
                                                 </span>
-                                            </td>
-                                            <td className="px-6 py-4 text-right text-xs text-slate-400 font-medium whitespace-nowrap">{order.create_date}</td>
-                                        </tr>
-                                    ))
-                                ) : (
-                                    <tr>
-                                        <td colSpan={8} className="px-6 py-20 text-center text-slate-400">
-                                            <div className="flex flex-col items-center gap-3">
-                                                <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center text-4xl shadow-sm">🔍</div>
-                                                <span className="font-medium">Tidak ada order ditemukan</span>
+                                                <span className="text-[9px] font-black text-slate-400 uppercase tracking-[0.15em] pl-0.5">
+                                                    {order.teknisi || 'MENUNGGU TEKNISI'}
+                                                </span>
                                             </div>
                                         </td>
                                     </tr>
-                                )}
+                                ))}
                             </tbody>
                         </table>
                     </div>
                 )}
+            </div>
 
-                {/* Pagination */}
-                {
-                    totalPages > 1 && (
-                        <div className="px-6 py-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
-                            <span className="text-xs text-slate-400 font-medium">
-                                Menampilkan {((page - 1) * 50) + 1}-{Math.min(page * 50, total)} dari {total} order
-                            </span>
-                            <div className="flex gap-2">
+            {/* Pagination */}
+            {totalPages > 1 && (
+                <div className="flex flex-col md:flex-row items-center justify-between gap-4 pb-12">
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest bg-white/50 px-4 py-2 rounded-xl border border-white/20 shadow-sm">
+                        Halaman {page} dari {totalPages} • <span className="text-slate-600">Total {total} item</span>
+                    </p>
+                    <div className="flex items-center gap-1.5 p-1.5 bg-white/60 backdrop-blur-md rounded-2xl border border-white/20 shadow-lg">
+                        <button
+                            onClick={() => setPage(p => Math.max(1, p - 1))}
+                            disabled={page === 1}
+                            className="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-50 text-slate-400 disabled:opacity-30 hover:bg-violet-50 hover:text-violet-600 transition-all font-bold"
+                        >
+                            <ArrowUp className="-rotate-90 w-4 h-4" />
+                        </button>
+                        {[...Array(Math.min(5, totalPages))].map((_, i) => {
+                            let p = page - 2 + i;
+                            if (page <= 2) p = i + 1;
+                            if (page >= totalPages - 1) p = totalPages - 4 + i;
+                            if (p < 1 || p > totalPages) return null;
+                            return (
                                 <button
-                                    onClick={() => setPage(p => Math.max(1, p - 1))}
-                                    disabled={page === 1}
-                                    className="px-4 py-2 text-xs font-bold rounded-lg bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-40"
+                                    key={p}
+                                    onClick={() => setPage(p)}
+                                    className={`w-10 h-10 flex items-center justify-center rounded-xl text-[10px] font-black transition-all ${page === p ? 'bg-violet-600 text-white shadow-lg' : 'hover:bg-slate-50 text-slate-400'}`}
                                 >
-                                    ← Prev
+                                    {p}
                                 </button>
-                                <span className="px-3 py-2 text-xs font-black text-violet-600">{page}/{totalPages}</span>
-                                <button
-                                    onClick={() => setPage(p => Math.min(totalPages, p + 1))}
-                                    disabled={page === totalPages}
-                                    className="px-4 py-2 text-xs font-bold rounded-lg bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-40"
-                                >
-                                    Next →
-                                </button>
-                            </div>
-                        </div>
-                    )
-                }
-            </div >
+                            );
+                        })}
+                        <button
+                            onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                            disabled={page === totalPages}
+                            className="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-50 text-slate-400 disabled:opacity-30 hover:bg-violet-50 hover:text-violet-600 transition-all font-bold"
+                        >
+                            <ArrowDown className="-rotate-90 w-4 h-4" />
+                        </button>
+                    </div>
+                </div>
+            )}
 
             {/* Modal */}
-            < OrderDetailModal
-                orderId={selectedOrderId}
-                onClose={() => setSelectedOrderId(null)}
-            />
-        </div >
+            {selectedOrderId && (
+                <OrderDetailModal
+                    orderId={selectedOrderId}
+                    onClose={() => setSelectedOrderId(null)}
+                />
+            )}
+        </div>
     );
 }

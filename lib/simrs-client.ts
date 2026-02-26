@@ -5,6 +5,7 @@
  * Auth: Custom header `access-token` with JWT
  */
 
+import axios from 'axios';
 import { cache } from './cache';
 
 // SIMRS API Config from .env
@@ -70,23 +71,16 @@ export async function simrsLogin(): Promise<string> {
     }
 
     try {
-        const response = await fetch(`${SIMRS_API_URL}/secure/auth_validate_login`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                login: SIMRS_USERNAME,
-                pwd: SIMRS_PASSWORD,
-            }),
+        const response = await axios.post(`${SIMRS_API_URL}/secure/auth_validate_login`, {
+            login: SIMRS_USERNAME,
+            pwd: SIMRS_PASSWORD,
         });
 
-        if (!response.ok) {
-            throw new Error(`SIMRS login failed: ${response.status}`);
-        }
-
-        const data = await response.json();
+        const data = response.data;
 
         // Response format: { result: true, token: "eyJ..." }
         if (!data.result || !data.token) {
+            console.error('[SIMRS] Login failed. Response data:', data);
             throw new Error('SIMRS login returned invalid response');
         }
 
@@ -95,7 +89,7 @@ export async function simrsLogin(): Promise<string> {
         // Cache for 8 hours
         tokenExpiry = Date.now() + 8 * 60 * 60 * 1000;
         return cachedToken!;
-    } catch (error) {
+    } catch (error: any) {
         cachedToken = null;
         tokenExpiry = 0;
         throw error;
@@ -103,43 +97,42 @@ export async function simrsLogin(): Promise<string> {
 }
 
 /**
- * Make authenticated request to SIMRS API
+ * Make authenticated request to SIMRS API with retry logic
  */
-async function simrsFetch(endpoint: string, options: RequestInit = {}): Promise<any> {
+async function simrsFetch(endpoint: string, options: any = {}, retryCount = 0): Promise<any> {
     const token = await simrsLogin();
 
-    const response = await fetch(`${SIMRS_API_URL}${endpoint}`, {
-        ...options,
-        headers: {
-            'access-token': token,
-            'Content-Type': 'application/json',
-            ...(options.headers || {}),
-        },
-    });
+    try {
+        const response = await axios({
+            url: `${SIMRS_API_URL}${endpoint}`,
+            method: options.method || 'GET',
+            data: options.body ? JSON.parse(options.body) : undefined,
+            headers: {
+                'access-token': token,
+                'Content-Type': 'application/json',
+                ...(options.headers || {}),
+            },
+            timeout: 30000,
+        });
 
-    if (!response.ok) {
+        return response.data;
+    } catch (error: any) {
+        // Handle 429 Too Many Requests
+        if (error.response?.status === 429 && retryCount < 3) {
+            const delay = 5000 * (retryCount + 1);
+            console.warn(`[SIMRS] 429 Too Many Requests. Retrying in ${delay / 1000}s... (Attempt ${retryCount + 1}/3)`);
+            await new Promise(resolve => setTimeout(resolve, delay));
+            return simrsFetch(endpoint, options, retryCount + 1);
+        }
+
         // If 401/403, invalidate token and retry once
-        if (response.status === 401 || response.status === 403) {
+        if ((error.response?.status === 401 || error.response?.status === 403) && retryCount === 0) {
             cachedToken = null;
             tokenExpiry = 0;
-            const retryToken = await simrsLogin();
-            const retryResponse = await fetch(`${SIMRS_API_URL}${endpoint}`, {
-                ...options,
-                headers: {
-                    'access-token': retryToken,
-                    'Content-Type': 'application/json',
-                    ...(options.headers || {}),
-                },
-            });
-            if (!retryResponse.ok) {
-                throw new Error(`SIMRS API error: ${retryResponse.status}`);
-            }
-            return retryResponse.json();
+            return simrsFetch(endpoint, options, retryCount + 1);
         }
-        throw new Error(`SIMRS API error: ${response.status}`);
+        throw new Error(`SIMRS API error: ${error.response?.status || error.message}`);
     }
-
-    return response.json();
 }
 
 /**

@@ -38,14 +38,15 @@ export async function POST(request: Request) {
             }, { status: 400 });
         }
 
-        await pool.query(
+        const [result]: any = await pool.query(
             'INSERT INTO ai_assistant_requests (start_date, end_date, status) VALUES (?, ?, "pending")',
             [startDate, endDate]
         );
 
         return NextResponse.json({
             success: true,
-            message: 'Permintaan telah dikirim ke Assistant. Assistant akan segera memproses analisa ini.'
+            message: 'Permintaan telah dikirim ke Assistant. Assistant akan segera memproses analisa ini.',
+            id: result.insertId
         });
     } catch (error: any) {
         return NextResponse.json({ error: error.message }, { status: 500 });

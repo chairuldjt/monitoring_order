@@ -2,8 +2,9 @@
 
 import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { useEffect, useState, useCallback } from 'react';
-import { ArrowLeft, RefreshCw, Repeat, MapPin, Search, ArrowDown, ArrowUp, X, Brain, AlertTriangle } from 'lucide-react';
+import { ArrowLeft, RefreshCw, Repeat, MapPin, Search, ArrowDown, ArrowUp, X, Brain, AlertTriangle, ChevronLeft } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 export default function RepeatOrdersPage() {
     return (
@@ -14,6 +15,10 @@ export default function RepeatOrdersPage() {
 }
 
 function RepeatOrdersContent() {
+    const router = useRouter();
+    const searchParams = useSearchParams();
+    const idParam = searchParams.get('id');
+
     const [loading, setLoading] = useState(true);
 
     // AI State
@@ -22,7 +27,7 @@ function RepeatOrdersContent() {
     const [aiError, setAiError] = useState<string | null>(null);
     const [aiMeta, setAiMeta] = useState<any>(null);
     const [aiHistory, setAiHistory] = useState<any[]>([]);
-    const [selectedHistoryId, setSelectedHistoryId] = useState<number | null>(null);
+    const [selectedHistoryId, setSelectedHistoryId] = useState<number | null>(idParam ? parseInt(idParam) : null);
 
     // AI Parameters State
     const [showAiModal, setShowAiModal] = useState(false);
@@ -31,7 +36,7 @@ function RepeatOrdersContent() {
     const [estimating, setEstimating] = useState(false);
     const [estimation, setEstimation] = useState<{ orderCount: number, estimatedTokens: number } | null>(null);
     const [selectedModel, setSelectedModel] = useState('gemini-2.0-flash-lite');
-    const [requestStatus, setRequestStatus] = useState<{ status: string, message?: string } | null>(null);
+    const [requestStatus, setRequestStatus] = useState<{ status: string, message?: string, id?: number } | null>(null);
 
     const fetchAiAnalysis = useCallback(async (triggerManual = false, params: any = {}) => {
         if (!triggerManual) {
@@ -48,7 +53,7 @@ function RepeatOrdersContent() {
                         return true;
                     }
 
-                    if (params.id || json.data) {
+                    if (params.id) {
                         setAiData(json.data || []);
                         setAiMeta(json);
                         setSelectedHistoryId(json.id);
@@ -136,11 +141,15 @@ function RepeatOrdersContent() {
     };
 
     useEffect(() => {
+        const parsedId = idParam ? parseInt(idParam) : null;
+        const id = (parsedId !== null && !isNaN(parsedId)) ? parsedId : null;
+        setSelectedHistoryId(id);
+
         let isSubscribed = true;
         let interval: NodeJS.Timeout;
 
         const checkStatus = async () => {
-            const isRunning = await fetchAiAnalysis();
+            const isRunning = await fetchAiAnalysis(false, { id });
             if (isRunning && isSubscribed) {
                 interval = setTimeout(checkStatus, 5000);
             }
@@ -155,15 +164,16 @@ function RepeatOrdersContent() {
             isSubscribed = false;
             if (interval) clearTimeout(interval);
         };
-    }, [fetchAiAnalysis]);
+    }, [fetchAiAnalysis, idParam]);
 
     return (
         <div className="min-h-screen p-4 md:p-8 space-y-6 animate-fade-in relative">
             {/* Modal Analisa AI */}
             {showAiModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fade-in">
-                    <div className="bg-white rounded-[2.5rem] shadow-2xl w-full max-w-lg overflow-hidden border border-white/20 animate-scale-in">
-                        <div className="bg-gradient-to-br from-indigo-600 to-violet-700 p-8 text-white relative">
+                    <div className="bg-white rounded-[2.5rem] shadow-2xl w-full max-w-lg overflow-hidden border border-white/20 animate-scale-in flex flex-col max-h-[90vh]">
+                        {/* Modal Header */}
+                        <div className="bg-gradient-to-br from-indigo-600 to-violet-700 p-8 text-white relative flex-shrink-0">
                             <button onClick={() => setShowAiModal(false)} className="absolute top-6 right-6 p-2 hover:bg-white/10 rounded-full transition-colors">
                                 <X className="w-5 h-5" />
                             </button>
@@ -176,7 +186,8 @@ function RepeatOrdersContent() {
                             <p className="text-indigo-100 text-sm font-medium">Tentukan rentang data SIMRS yang akan dianalisa secara cerdas.</p>
                         </div>
 
-                        <div className="p-8 space-y-6">
+                        {/* Modal Content - Scrollable */}
+                        <div className="p-8 space-y-6 overflow-y-auto custom-scrollbar">
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-2">
                                     <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest pl-1">Tanggal Mulai</label>
@@ -240,40 +251,59 @@ function RepeatOrdersContent() {
                                 </div>
                             )}
 
-                            <button
-                                onClick={() => fetchAiAnalysis(true, { startDate, endDate })}
-                                disabled={!estimation || aiStatus === 'running'}
-                                className="w-full py-4 bg-gradient-to-r from-indigo-600 to-violet-600 text-white rounded-2xl text-sm font-black uppercase tracking-widest shadow-lg shadow-indigo-200 hover:shadow-indigo-300 transition-all active:scale-[0.98] disabled:opacity-50 disabled:grayscale mb-2"
-                            >
-                                Jalankan Analisa API (Pakai Kuota)
-                            </button>
+                            <div className="space-y-4">
+                                <button
+                                    onClick={() => fetchAiAnalysis(true, { startDate, endDate })}
+                                    disabled={!estimation || aiStatus === 'running'}
+                                    className="w-full py-4 bg-gradient-to-r from-indigo-600 to-violet-600 text-white rounded-2xl text-sm font-black uppercase tracking-widest shadow-lg shadow-indigo-200 hover:shadow-indigo-300 transition-all active:scale-[0.98] disabled:opacity-50 disabled:grayscale"
+                                >
+                                    Jalankan Analisa API (Pakai Kuota)
+                                </button>
 
-                            <div className="relative">
-                                <div className="absolute inset-0 flex items-center" aria-hidden="true">
-                                    <div className="w-full border-t border-slate-200"></div>
+                                <div className="relative">
+                                    <div className="absolute inset-0 flex items-center" aria-hidden="true">
+                                        <div className="w-full border-t border-slate-200"></div>
+                                    </div>
+                                    <div className="relative flex justify-center text-[10px] font-bold uppercase tracking-widest">
+                                        <span className="bg-white px-4 text-slate-400">Atau Solusi Tanpa Kuota</span>
+                                    </div>
                                 </div>
-                                <div className="relative flex justify-center text-[10px] font-bold uppercase tracking-widest">
-                                    <span className="bg-white px-4 text-slate-400">Atau Solusi Tanpa Kuota</span>
-                                </div>
+
+                                <button
+                                    onClick={handleRequestAssistant}
+                                    disabled={!estimation || aiStatus === 'running' || estimating}
+                                    className="w-full py-4 bg-emerald-50 text-emerald-700 border-2 border-emerald-100 rounded-2xl text-sm font-black uppercase tracking-widest hover:bg-emerald-100 transition-all active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-3"
+                                >
+                                    <Brain className="w-5 h-5 text-emerald-500" />
+                                    Request Analisa ke Assistant
+                                </button>
                             </div>
 
-                            <button
-                                onClick={handleRequestAssistant}
-                                disabled={!estimation || aiStatus === 'running' || estimating}
-                                className="w-full py-4 bg-emerald-50 text-emerald-700 border-2 border-emerald-100 rounded-2xl text-sm font-black uppercase tracking-widest hover:bg-emerald-100 transition-all active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-3"
-                            >
-                                <Brain className="w-5 h-5 text-emerald-500" />
-                                Request Analisa ke Assistant
-                            </button>
-
                             {requestStatus && (
-                                <div className={`p-4 rounded-2xl text-xs font-bold animate-fade-in-up ${requestStatus.status === 'success' ? 'bg-emerald-500 text-white' : 'bg-rose-50 text-rose-600 border border-rose-100'
-                                    }`}>
-                                    {requestStatus.message}
+                                <div className="space-y-3 animate-fade-in-up">
+                                    <div className={`p-4 rounded-2xl text-xs font-bold ${requestStatus.status === 'success' ? 'bg-emerald-500 text-white' : 'bg-rose-50 text-rose-600 border border-rose-100'
+                                        }`}>
+                                        {requestStatus.message}
+                                    </div>
+
+                                    {requestStatus.status === 'success' && (
+                                        <button
+                                            onClick={() => {
+                                                const reqIdStr = requestStatus.id ? requestStatus.id : '(Lihat ID Request terakhir di Database/Logs)';
+                                                const prompt = `Tolong proses request analisa ID: ${reqIdStr}.\nSaya sudah menjalankan fetch data terbaru (raw_data).\nGunakan data mentah tersebut untuk melakukan analisa semantik manual.`;
+                                                navigator.clipboard.writeText(prompt);
+                                                alert('Prompt berhasil disalin! Silakan paste ke chat Assistant.');
+                                            }}
+                                            className="w-full py-3 bg-white border-2 border-emerald-500 text-emerald-600 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-emerald-50 transition-all flex items-center justify-center gap-2"
+                                        >
+                                            <Search className="w-3 h-3" /> {/* Using Search as a placeholder for Copy/Clipboard icon if not imported, but wait, Search is imported. Let's use Brain or Search. */}
+                                            Salin Prompt untuk Assistant
+                                        </button>
+                                    )}
                                 </div>
                             )}
 
-                            <p className="text-[10px] text-slate-400 font-medium text-center leading-tight px-4">
+                            <p className="text-[10px] text-slate-400 font-medium text-center leading-tight px-4 pb-2">
                                 *Request ke Assistant tidak memakai kuota API Gemini Anda, tapi diproses manual oleh Assistant di chat.
                             </p>
                         </div>
@@ -299,11 +329,11 @@ function RepeatOrdersContent() {
                                         <div className="w-1 h-1 bg-slate-300 rounded-full"></div>
                                         <button
                                             onClick={() => {
-                                                setSelectedHistoryId(null);
-                                                setAiData([]);
+                                                router.push('/repeat');
                                             }}
-                                            className="text-[9px] font-black uppercase text-indigo-600 hover:text-indigo-800 transition-colors"
+                                            className="group flex items-center gap-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full transition-all border border-indigo-100 font-black text-[9px] uppercase tracking-wider"
                                         >
+                                            <ChevronLeft className="w-3 h-3 group-hover:-translate-x-0.5 transition-transform" />
                                             Kembali ke History
                                         </button>
                                     </>
@@ -381,7 +411,7 @@ function RepeatOrdersContent() {
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 relative z-10">
-                        {aiData.map((item: any, i: number) => (
+                        {([...aiData].sort((a, b) => (b.count || 0) - (a.count || 0))).map((item: any, i: number) => (
                             <div key={i} className="bg-white rounded-3xl p-8 border border-slate-100 shadow-sm hover:shadow-2xl transition-all group/item hover:-translate-y-2 flex flex-col border-b-4 border-b-transparent hover:border-b-violet-500">
                                 <div className="flex items-center justify-between mb-6">
                                     <div className="flex items-center gap-2">
@@ -413,7 +443,11 @@ function RepeatOrdersContent() {
                                     </div>
 
                                     <Link
-                                        href={`/orders?search=${encodeURIComponent(item.title)}&searchType=description`}
+                                        href={
+                                            item.order_nos && item.order_nos.length > 0
+                                                ? `/orders?nos=${encodeURIComponent(item.order_nos.join(','))}`
+                                                : `/orders?search=${encodeURIComponent(item.title)}&searchType=description`
+                                        }
                                         className="w-full py-3 bg-slate-900 text-white rounded-xl text-[10px] font-black uppercase tracking-[0.2em] text-center block hover:bg-violet-600 transition-all shadow-lg shadow-slate-200"
                                     >
                                         Investigasi Detail
@@ -434,13 +468,13 @@ function RepeatOrdersContent() {
 
                     {aiHistory.length > 0 ? (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {aiHistory.map((h: any) => (
+                            {aiHistory.map((h: any, index: number) => (
                                 <div key={h.id} className="bg-white/60 backdrop-blur-md rounded-[2rem] border border-white/20 p-6 shadow-xl hover:shadow-2xl transition-all group hover:-translate-y-1">
                                     <div className="flex items-center justify-between mb-6">
                                         <div className="w-12 h-12 bg-indigo-50 rounded-2xl flex items-center justify-center group-hover:bg-indigo-600 transition-colors">
                                             <Brain className="w-6 h-6 text-indigo-500 group-hover:text-white transition-colors" />
                                         </div>
-                                        <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest">#{h.id}</span>
+                                        <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest">#{aiHistory.length - index}</span>
                                     </div>
 
                                     <div className="space-y-1 mb-6">
@@ -467,9 +501,7 @@ function RepeatOrdersContent() {
 
                                     <button
                                         onClick={() => {
-                                            setSelectedHistoryId(h.id);
-                                            setLoading(true);
-                                            fetchAiAnalysis(false, { id: h.id }).finally(() => setLoading(false));
+                                            router.push(`/repeat?id=${h.id}`);
                                         }}
                                         className="w-full py-4 bg-slate-900 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-indigo-600 transition-all shadow-lg shadow-slate-200 active:scale-[0.98]"
                                     >

@@ -20,17 +20,21 @@ async function run() {
         }
 
         const token = loginRes.data.token;
-        const statuses = [11, 12, 13, 15];
+        const statuses = [10, 11, 12, 13, 15, 30];
         let allOrders: any[] = [];
 
         for (const s of statuses) {
+            console.log(`Fetching status ${s}...`);
             const res = await axios.get(`${url}/order/order_list_by_status/${s}`, {
                 headers: { 'access-token': token }
             });
             const data = res.data.result || res.data.data || res.data || [];
             if (Array.isArray(data)) {
+                console.log(`Received ${data.length} orders for status ${s}`);
                 allOrders = [...allOrders, ...data];
             }
+            // Delay to avoid 429
+            await new Promise(resolve => setTimeout(resolve, 2000));
         }
 
         const output = allOrders.map(o => ({
@@ -40,8 +44,20 @@ async function run() {
             create_date: o.create_date
         }));
 
-        fs.writeFileSync(path.join(process.cwd(), 'scripts/raw_data.json'), JSON.stringify(output, null, 2), 'utf8');
-        console.log('SUCCESS: Written ' + output.length + ' orders to scripts/raw_data.json');
+        const dateStr = new Date().toISOString().split('T')[0];
+        const baseFilename = `raw_data_${dateStr}.json`;
+        const legacyFilename = `raw_data.json`;
+
+        const scriptsDir = path.join(process.cwd(), 'scripts');
+        fs.writeFileSync(path.join(scriptsDir, baseFilename), JSON.stringify(output, null, 2), 'utf8');
+        fs.writeFileSync(path.join(scriptsDir, legacyFilename), JSON.stringify(output, null, 2), 'utf8');
+
+        console.log(`\n--- FETCH SUMMARY ---`);
+        console.log(`Total Orders: ${allOrders.length}`);
+        console.log(`Date Stamped: scripts/${baseFilename}`);
+        console.log(`Legacy File: scripts/${legacyFilename}`);
+        console.log(`---------------------\n`);
+        console.log('SUCCESS: Raw data backup created.');
     } catch (e: any) {
         console.error('ERROR:', e.response?.data || e.message);
     }

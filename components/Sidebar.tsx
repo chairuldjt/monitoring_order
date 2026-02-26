@@ -19,17 +19,17 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
     const menuItems = [
         { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
         { name: 'Orders', path: '/orders', icon: ClipboardList },
-        { name: 'Overdue Follow Up', path: '/orders/overdue', icon: AlertTriangle },
-        { name: 'Repeat Orders', path: '/orders/repeat', icon: Repeat },
-        { name: 'Pending Lama', path: '/orders/pending', icon: Clock },
-        { name: 'Analitik Order', path: '/orders/analytics', icon: BarChart2 },
+        { name: 'Overdue Follow Up', path: '/overdue', icon: AlertTriangle },
+        { name: 'Repeat Orders', path: '/repeat', icon: Repeat },
+        { name: 'Pending Lama', path: '/pending', icon: Clock },
+        { name: 'Analitik Order', path: '/analytics', icon: BarChart2 },
         { name: 'Tracking', path: '/tracking', icon: Search },
         { name: 'Pengaturan', path: '/settings', icon: Settings },
     ];
 
     const isActive = (path: string) => {
         if (path === '/orders') {
-            return pathname === '/orders' || (pathname?.startsWith('/orders/') && !['/orders/overdue', '/orders/repeat', '/orders/pending', '/orders/analytics'].includes(pathname));
+            return pathname === '/orders' || (pathname?.startsWith('/orders/') && !['/overdue', '/repeat', '/pending', '/analytics', '/create'].includes(pathname));
         }
         if (pathname === path) return true;
         if (path !== '/' && pathname?.startsWith(path + '/')) return true;

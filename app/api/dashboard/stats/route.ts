@@ -5,6 +5,7 @@ import {
   getOptimizedSIMRSOrders,
   parseSIMRSDate,
 } from '@/lib/simrs-client';
+import { getSystemSettings } from '@/lib/settings-helper';
 
 /**
  * Dashboard Stats — ALL data fetched LIVE from SIMRS API with server-side caching
@@ -40,16 +41,21 @@ export async function GET() {
     // Combine all fetched orders for analytics
     const allActiveOrders = [...followUpOrders, ...runningOrders, ...pendingOrders, ...doneOrders];
 
-    // 3. Follow-up overdue (> 1 day): from follow_up orders where create_date is > 1 day ago
-    const oneDayAgo = new Date();
-    oneDayAgo.setDate(oneDayAgo.getDate() - 1);
+    // 3. Dynamic Thresholds from Settings
+    const settings = await getSystemSettings();
+    const overdueFollowupDays = Number(settings['overdue_followup_days']) || 1;
+    const overduePendingMonths = Number(settings['overdue_pending_months']) || 1;
+
+    // 4. Follow-up overdue: from follow_up orders where create_date is older than threshold
+    const followupThresholdDate = new Date();
+    followupThresholdDate.setDate(followupThresholdDate.getDate() - overdueFollowupDays);
 
     // Since SIMRS doesn't separate follow_up easily, we use the summary + status_desc
     const followUpOverdue = followUpOrders
       .filter(o => o.status_desc?.toUpperCase() === 'FOLLOW UP')
       .filter(o => {
         const d = parseSIMRSDate(o.create_date);
-        return d && d < oneDayAgo;
+        return d && d < followupThresholdDate;
       })
       .map(o => ({
         order_no: o.order_no,
@@ -62,15 +68,15 @@ export async function GET() {
       }))
       .slice(0, 10);
 
-    // 4. Pending overdue (> 1 month)
-    const oneMonthAgo = new Date();
-    oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+    // 5. Pending overdue
+    const pendingThresholdDate = new Date();
+    pendingThresholdDate.setMonth(pendingThresholdDate.getMonth() - overduePendingMonths);
 
     const pendingOverdue = pendingOrders
       .filter(o => o.status_desc?.toUpperCase() === 'PENDING')
       .filter(o => {
         const d = parseSIMRSDate(o.create_date);
-        return d && d < oneMonthAgo;
+        return d && d < pendingThresholdDate;
       })
       .map(o => ({
         order_no: o.order_no,

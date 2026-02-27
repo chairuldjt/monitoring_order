@@ -40,6 +40,7 @@ function AnalyticsContent() {
     const [selectedYear, setSelectedYear] = useState(String(new Date().getFullYear()));
     const [expandedRows, setExpandedRows] = useState<string[]>([]);
     const [uniqueTechnicians, setUniqueTechnicians] = useState<string[]>([]);
+    const [thresholds, setThresholds] = useState({ excellent: 24, normal: 72 });
 
     // New Technician State
     const [selectedTechnician, setSelectedTechnician] = useState<string>('all');
@@ -80,6 +81,24 @@ function AnalyticsContent() {
             setRefreshing(false);
         }
     }, [viewType, selectedMonth, selectedYear]);
+
+    useEffect(() => {
+        const fetchThresholds = async () => {
+            try {
+                const res = await fetch('/api/settings');
+                if (res.ok) {
+                    const settings = await res.json();
+                    setThresholds({
+                        excellent: Number(settings.performance_excellent_hours) || 24,
+                        normal: Number(settings.performance_normal_hours) || 72
+                    });
+                }
+            } catch (err) {
+                console.error('Failed to fetch thresholds');
+            }
+        };
+        fetchThresholds();
+    }, []);
 
     useEffect(() => {
         setLoading(true);
@@ -261,9 +280,9 @@ function AnalyticsContent() {
                                                         {row.averageHours} Jam
                                                     </td>
                                                     <td className="px-6 py-4 text-sm text-right">
-                                                        {row.averageHours <= 24 && row.orderCount > 0 ? (
+                                                        {row.averageHours <= thresholds.excellent && row.orderCount > 0 ? (
                                                             <span className="text-emerald-500 font-bold bg-emerald-50 px-3 py-1 rounded-full">Sangat Baik</span>
-                                                        ) : row.averageHours <= 72 && row.orderCount > 0 ? (
+                                                        ) : row.averageHours <= thresholds.normal && row.orderCount > 0 ? (
                                                             <span className="text-amber-500 font-bold bg-amber-50 px-3 py-1 rounded-full">Normal</span>
                                                         ) : row.orderCount > 0 ? (
                                                             <span className="text-red-500 font-bold bg-red-50 px-3 py-1 rounded-full">Perlu Perhatian</span>
@@ -297,7 +316,7 @@ function AnalyticsContent() {
                                                                                         <span className="text-xs text-slate-500">{tech.orderCount} order selesai</span>
                                                                                     </div>
                                                                                     <div className="flex flex-col items-end">
-                                                                                        <span className={`text-sm font-black ${tech.averageHours <= 24 ? 'text-emerald-600' : tech.averageHours <= 72 ? 'text-amber-600' : 'text-red-600'}`}>
+                                                                                        <span className={`text-sm font-black ${tech.averageHours <= thresholds.excellent ? 'text-emerald-600' : tech.averageHours <= thresholds.normal ? 'text-amber-600' : 'text-red-600'}`}>
                                                                                             {tech.averageHours} Jam
                                                                                         </span>
                                                                                     </div>

@@ -4,7 +4,7 @@ import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { useState, useEffect } from 'react';
 import {
     Settings, Brain, ShieldCheck, Save, RefreshCw, Key,
-    AlertTriangle, CheckCircle2, TrendingUp, Info
+    AlertTriangle, CheckCircle2, TrendingUp, Info, Medal, Clock
 } from 'lucide-react';
 
 export default function SettingsPage() {
@@ -104,6 +104,82 @@ function SettingsContent() {
             )}
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                {/* SLA & Thresholds Configuration */}
+                <div className="bg-white rounded-[2rem] border border-slate-100 shadow-xl p-8 space-y-6 relative overflow-hidden group lg:col-span-2">
+                    <div className="flex items-center gap-4 mb-2">
+                        <div className="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center">
+                            <Clock className="w-6 h-6 text-indigo-600" />
+                        </div>
+                        <div>
+                            <h2 className="text-xl font-black text-slate-800">SLA & Ambang Batas (Thresholds)</h2>
+                            <p className="text-xs text-slate-400 font-bold uppercase tracking-wider">Durasi Overdue & Klasifikasi Performa</p>
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div className="space-y-2">
+                            <label className="text-xs font-black text-slate-500 uppercase tracking-widest flex items-center gap-2">
+                                <AlertTriangle className="w-3 h-3 text-amber-500" />
+                                Overdue Follow Up (Hari)
+                            </label>
+                            <input
+                                type="number"
+                                value={settings.overdue_followup_days || '1'}
+                                onChange={(e) => setSettings({ ...settings, overdue_followup_days: e.target.value })}
+                                className="w-full px-5 py-3 bg-slate-50 border border-slate-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 font-bold text-slate-700"
+                            />
+                        </div>
+
+                        <div className="space-y-2">
+                            <label className="text-xs font-black text-slate-500 uppercase tracking-widest flex items-center gap-2">
+                                <Clock className="w-3 h-3 text-rose-500" />
+                                Overdue Pending (Bulan)
+                            </label>
+                            <input
+                                type="number"
+                                value={settings.overdue_pending_months || '1'}
+                                onChange={(e) => setSettings({ ...settings, overdue_pending_months: e.target.value })}
+                                className="w-full px-5 py-3 bg-slate-50 border border-slate-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 font-bold text-slate-700"
+                            />
+                        </div>
+
+                        <div className="space-y-2">
+                            <label className="text-xs font-black text-slate-500 uppercase tracking-widest flex items-center gap-2">
+                                <Medal className="w-3 h-3 text-emerald-500" />
+                                Performa: Sangat Baik (Jam)
+                            </label>
+                            <input
+                                type="number"
+                                value={settings.performance_excellent_hours || '24'}
+                                onChange={(e) => setSettings({ ...settings, performance_excellent_hours: e.target.value })}
+                                className="w-full px-5 py-3 bg-slate-50 border border-slate-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 font-bold text-slate-700"
+                            />
+                        </div>
+
+                        <div className="space-y-2">
+                            <label className="text-xs font-black text-slate-500 uppercase tracking-widest flex items-center gap-2">
+                                <Medal className="w-3 h-3 text-amber-500" />
+                                Performa: Normal (Jam)
+                            </label>
+                            <input
+                                type="number"
+                                value={settings.performance_normal_hours || '72'}
+                                onChange={(e) => setSettings({ ...settings, performance_normal_hours: e.target.value })}
+                                className="w-full px-5 py-3 bg-slate-50 border border-slate-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 font-bold text-slate-700"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="p-4 bg-indigo-50 rounded-[1.5rem] border border-indigo-100 flex gap-4">
+                        <div className="w-10 h-10 bg-white rounded-xl shadow-sm border border-indigo-100 flex items-center justify-center shrink-0">
+                            <Info className="w-5 h-5 text-indigo-500" />
+                        </div>
+                        <p className="text-[11px] text-indigo-700 leading-relaxed font-medium">
+                            Pengaturan ambang batas ini akan mempengaruhi perhitungan jumlah order yang terlambat di Dashboard (Overdue Follow Up & Pending) serta klasifikasi indikator performa pada laporan Analitik. Gunakan standar SLA yang berlaku di unit kerja Anda.
+                        </p>
+                    </div>
+                </div>
+
                 {/* AI Configuration */}
                 <div className="bg-white rounded-[2rem] border border-slate-100 shadow-xl p-8 space-y-6 relative overflow-hidden group">
                     <div className="absolute -top-10 -right-10 w-40 h-40 bg-violet-50 rounded-full blur-3xl opacity-50"></div>

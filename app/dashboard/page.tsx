@@ -7,7 +7,7 @@ import Link from 'next/link';
 import {
     FolderOpen, MessageSquare, Loader, CheckCircle, ShieldCheck, Clock,
     TrendingUp, AlertTriangle, Repeat, ArrowRight, Timer,
-    RefreshCw, Wifi, WifiOff, BarChart2, Brain
+    RefreshCw, Wifi, WifiOff, BarChart2, Brain, Users, Medal
 } from 'lucide-react';
 import { OrderDetailModal } from '@/components/OrderDetailModal';
 
@@ -411,8 +411,8 @@ function DashboardContent() {
                     </div>
                 </div>
 
-                {/* Avg Resolution Time Analytics Widget */}
-                <AnalyticsMiniWidget />
+                {/* Activity Log Widget (Replaces old Analytics position) */}
+                <ActivityLogWidget recentOrders={stats?.recentOrders || []} />
 
             </div>
 
@@ -459,6 +459,18 @@ function DashboardContent() {
                     </div>
                 </div>
             )}
+
+            {/* Bottom Section: Technician Breakdown & Analytics */}
+            <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 items-stretch">
+                <div className="h-full">
+                    <TechnicianBreakdownWidget />
+                </div>
+                <div className="h-full">
+                    <AnalyticsMiniWidget />
+                </div>
+            </div>
+
+            {/* Recent Orders */}
 
             {/* Recent Orders */}
             <div className="bg-white rounded-[2rem] border border-slate-100 shadow-2xl overflow-hidden">
@@ -535,84 +547,381 @@ function DashboardContent() {
 }
 
 // Komponen Widget Tersendiri agar tidak merusak performa loading Dashboard
+function ActivityLogWidget({ recentOrders }: { recentOrders: any[] }) {
+    return (
+        <div className="bg-white rounded-[2rem] border border-slate-100 shadow-xl p-8 relative overflow-hidden h-full flex flex-col group hover:shadow-2xl transition-all">
+            <div className="absolute -top-6 -right-6 w-32 h-32 bg-slate-50 rounded-full blur-3xl"></div>
+            <div className="relative z-10 flex flex-col h-full">
+                <div className="flex items-center gap-3 mb-6">
+                    <div className="w-12 h-12 bg-gradient-to-br from-slate-700 to-slate-900 rounded-xl flex items-center justify-center shadow-lg">
+                        <Wifi className="w-6 h-6 text-white" />
+                    </div>
+                    <div>
+                        <h3 className="font-black text-slate-800 text-lg">Log Aktivitas</h3>
+                        <p className="text-[10px] text-slate-400 uppercase tracking-widest font-bold">Aktivitas Terkini</p>
+                    </div>
+                </div>
+
+                <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar">
+                    {recentOrders.length > 0 ? (
+                        <div className="space-y-4">
+                            {recentOrders.slice(0, 5).map((order: any, i: number) => (
+                                <div key={i} className="flex gap-4 items-start relative pb-4 last:pb-0">
+                                    {i !== recentOrders.slice(0, 5).length - 1 && (
+                                        <div className="absolute left-[11px] top-6 bottom-0 w-[2px] bg-slate-100"></div>
+                                    )}
+                                    <div className={`w-6 h-6 rounded-full shrink-0 flex items-center justify-center text-[10px] text-white z-10 ${order.status?.toUpperCase() === 'DONE' ? 'bg-emerald-500' :
+                                        order.status?.toUpperCase() === 'RUNNING' ? 'bg-indigo-500' :
+                                            'bg-blue-500'
+                                        }`}>
+                                        {i + 1}
+                                    </div>
+                                    <div className="min-w-0 flex-1">
+                                        <p className="text-xs font-bold text-slate-800 truncate">
+                                            {order.teknisi || 'System'} <span className="font-medium text-slate-500">melakukan</span> {order.status}
+                                        </p>
+                                        <div className="flex items-center gap-2 mt-1">
+                                            <p className="text-[10px] text-slate-400 font-bold uppercase truncate tracking-tighter">#{order.order_no} • {order.title}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="h-full flex flex-col items-center justify-center py-10 opacity-40">
+                            <span className="text-3xl mb-2">📡</span>
+                            <p className="text-[10px] font-black uppercase tracking-widest text-slate-500">Monitoring Sinyal...</p>
+                        </div>
+                    )}
+                </div>
+
+                <div className="mt-6 pt-4 border-t border-slate-100 flex justify-end">
+                    <Link href="/orders" className="text-xs font-bold text-slate-600 hover:text-slate-800 flex items-center gap-1 group/link">
+                        Lihat Log Lengkap
+                        <ArrowRight className="w-3.5 h-3.5 group-hover/link:translate-x-1 transition-transform" />
+                    </Link>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+// Komponen Widget Tersendiri agar tidak merusak performa loading Dashboard
 function AnalyticsMiniWidget() {
     const [data, setData] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    const [thresholds, setThresholds] = useState({ excellent: 24, normal: 72 });
 
     useEffect(() => {
         let isMounted = true;
-        const fetchAnalytics = async () => {
+        const fetchData = async () => {
             try {
+                // Fetch analytic data
                 const res = await fetch('/api/orders/analytics');
                 if (res.ok) {
                     const json = await res.json();
                     if (isMounted) setData(json.data || []);
+                }
+
+                // Fetch thresholds from settings
+                const sRes = await fetch('/api/settings');
+                if (sRes.ok) {
+                    const settings = await sRes.json();
+                    if (isMounted) {
+                        setThresholds({
+                            excellent: Number(settings.performance_excellent_hours) || 24,
+                            normal: Number(settings.performance_normal_hours) || 72
+                        });
+                    }
                 }
             } catch (err) { }
             finally {
                 if (isMounted) setLoading(false);
             }
         };
-        fetchAnalytics();
+        fetchData();
         return () => { isMounted = false; };
     }, []);
 
     const currentMonthData = data.length > 0 ? data[data.length - 1] : null;
+    const previousMonthData = data.length > 1 ? data[data.length - 2] : null;
+
+    // Calculate Trend
+    let trend = 0;
+    if (currentMonthData && previousMonthData && previousMonthData.averageHours > 0) {
+        trend = ((currentMonthData.averageHours - previousMonthData.averageHours) / previousMonthData.averageHours) * 100;
+    }
+
+    // Mini Bar Chart Preview
+    const getBarChartPreview = () => {
+        if (data.length === 0) return null;
+        const recentData = data.slice(-8); // Show more periods to fill width
+        const max = Math.max(...recentData.map(d => d.averageHours), 1);
+        const height = 40;
+        const width = 140;
+        const barWidth = 12;
+        const gap = 4;
+
+        return recentData.map((d, i) => {
+            const barHeight = (d.averageHours / max) * height;
+            const x = i * (barWidth + gap);
+            const y = height - barHeight;
+            return (
+                <rect
+                    key={i}
+                    x={x}
+                    y={y}
+                    width={barWidth}
+                    height={barHeight}
+                    rx="2"
+                    fill="url(#miniBarGradient)"
+                    className="transition-all duration-700 ease-out"
+                    opacity={i === recentData.length - 1 ? 1 : 0.5}
+                />
+            );
+        });
+    };
+
+    const topTechs = currentMonthData?.technicians?.slice(0, 3) || [];
+    const performanceLabel = currentMonthData ? (
+        currentMonthData.averageHours <= thresholds.excellent ? { text: 'Sangat Baik', color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' } :
+            currentMonthData.averageHours <= thresholds.normal ? { text: 'Normal', color: 'text-amber-400 bg-amber-500/10 border-amber-500/20' } :
+                { text: 'Perlu Perhatian', color: 'text-rose-400 bg-rose-500/10 border-rose-500/20' }
+    ) : null;
 
     return (
-        <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-[2rem] border border-slate-700 shadow-xl p-8 relative overflow-hidden group">
+        <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-[2rem] border border-slate-700 shadow-xl p-8 relative overflow-hidden group h-full flex flex-col">
             <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/20 rounded-full blur-3xl group-hover:bg-indigo-500/30 transition-colors duration-500"></div>
             <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-fuchsia-500/20 rounded-full blur-3xl"></div>
 
             <div className="relative z-10 flex flex-col h-full">
-                <div className="flex items-center gap-3 mb-6">
-                    <div className="w-12 h-12 bg-white/10 backdrop-blur-md rounded-xl flex items-center justify-center border border-white/10">
-                        <BarChart2 className="w-6 h-6 text-indigo-300" />
-                    </div>
-                    <div>
-                        <h3 className="font-black text-white">Rata-Rata Penyelesaian</h3>
-                        <p className="text-[10px] text-slate-400 uppercase tracking-widest font-bold">Waktu Respond Minggu Ini</p>
-                    </div>
-                </div>
-
-                <div className="flex-1 flex flex-col justify-center">
-                    {loading ? (
-                        <div className="text-center py-6">
-                            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-400 mx-auto mb-2"></div>
-                            <span className="text-xs text-slate-400">Menyinkronkan analitik...</span>
+                <div className="flex items-center justify-between mb-6">
+                    <div className="flex items-center gap-3">
+                        <div className="w-12 h-12 bg-white/10 backdrop-blur-md rounded-xl flex items-center justify-center border border-white/10 shadow-inner">
+                            <BarChart2 className="w-6 h-6 text-indigo-300" />
                         </div>
-                    ) : currentMonthData ? (
                         <div>
-                            <div className="flex items-baseline gap-2 mb-2">
-                                <span className="text-5xl font-black text-white tabular-nums tracking-tight">
-                                    {currentMonthData.averageHours}
-                                </span>
-                                <span className="text-base font-bold text-slate-400">Jam</span>
-                            </div>
-
-                            <div className="mt-4 flex items-center gap-2">
-                                <div className={`px-3 py-1.5 rounded-lg text-xs font-bold border flex items-center justify-center w-full ${currentMonthData.averageHours <= 24
-                                    ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30'
-                                    : currentMonthData.averageHours <= 72
-                                        ? 'bg-amber-500/20 text-amber-400 border-amber-500/30'
-                                        : 'bg-rose-500/20 text-rose-400 border-rose-500/30'
-                                    }`}>
-                                    Total {currentMonthData.orderCount} Order Selesai
-                                </div>
-                            </div>
+                            <h3 className="font-black text-white text-lg">Waktu Penyelesaian</h3>
+                            <p className="text-[10px] text-slate-400 uppercase tracking-widest font-bold">Respon Time Analysis</p>
                         </div>
-                    ) : (
-                        <div className="text-center py-6 opacity-60">
-                            <span className="text-sm font-medium text-slate-300">Belum ada data bulan ini</span>
+                    </div>
+                    {data.length > 1 && (
+                        <div className={`px-2 py-1 rounded-lg text-[9px] font-black tracking-tighter flex items-center gap-1 ${trend <= 0 ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400'}`}>
+                            {trend <= 0 ? '↓' : '↑'} {Math.abs(trend).toFixed(1)}%
                         </div>
                     )}
                 </div>
 
-                <div className="mt-6 pt-4 border-t border-white/10 flex justify-end">
+                <div className="flex-1 flex flex-col justify-center py-4">
+                    {loading ? (
+                        <div className="text-center py-6">
+                            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-400 mx-auto mb-2"></div>
+                            <span className="text-xs text-indigo-300 opacity-60">Menyinkronkan...</span>
+                        </div>
+                    ) : currentMonthData ? (
+                        <div className="space-y-8">
+                            <div className="flex items-end justify-between gap-4">
+                                <div className="flex-1">
+                                    <div className="flex items-baseline gap-2 mb-1">
+                                        <span className="text-6xl font-black text-white tabular-nums tracking-tighter drop-shadow-md">
+                                            {currentMonthData.averageHours}
+                                        </span>
+                                        <span className="text-xl font-bold text-slate-400">Jam</span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">RATA-RATA MINGGU INI</span>
+                                        {performanceLabel && (
+                                            <span className={`px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-tighter border ${performanceLabel.color}`}>
+                                                {performanceLabel.text}
+                                            </span>
+                                        )}
+                                    </div>
+                                </div>
+
+                                {/* Mini Bar Chart Preview */}
+                                <div className="shrink-0 relative w-[130px] h-[40px] opacity-80 group-hover:opacity-100 transition-opacity">
+                                    <svg width="130" height="40" viewBox="0 0 130 40">
+                                        <defs>
+                                            <linearGradient id="miniBarGradient" x1="0" y1="0" x2="0" y2="1">
+                                                <stop offset="0%" stopColor="#8b5cf6" />
+                                                <stop offset="100%" stopColor="#d946ef" />
+                                            </linearGradient>
+                                        </defs>
+                                        {getBarChartPreview()}
+                                    </svg>
+                                </div>
+                            </div>
+
+                            {/* Top Performers Section to fill space */}
+                            {topTechs.length > 0 && (
+                                <div className="bg-white/5 backdrop-blur-sm rounded-2xl border border-white/5 p-4">
+                                    <div className="flex items-center gap-2 mb-3">
+                                        <Medal className="w-3 h-3 text-amber-400" />
+                                        <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Paling Responsif</span>
+                                    </div>
+                                    <div className="grid grid-cols-1 gap-2">
+                                        {topTechs.map((tech: any, i: number) => (
+                                            <div key={i} className="flex items-center justify-between text-[11px]">
+                                                <span className="text-slate-300 font-bold truncate max-w-[140px]">{tech.name}</span>
+                                                <div className="flex items-center gap-3">
+                                                    <span className="text-slate-500 font-bold">{tech.orderCount} ord</span>
+                                                    <span className="text-indigo-300 font-black w-14 text-right">{tech.averageHours}j</span>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    ) : (
+                        <div className="text-center py-10 opacity-60">
+                            <span className="text-sm font-medium text-slate-300 italic">Data tidak tersedia</span>
+                        </div>
+                    )}
+                </div>
+
+                <div className="mt-6 pt-4 border-t border-white/10 flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                        <div className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse"></div>
+                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tight">Trend Mode Active</span>
+                    </div>
                     <Link href="/analytics" className="text-xs font-bold text-indigo-300 hover:text-white flex items-center gap-1 group/link transition-colors">
-                        Buka Mode Analitik
+                        Buka Detail
                         <ArrowRight className="w-3.5 h-3.5 group-hover/link:translate-x-1 transition-transform" />
                     </Link>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+function TechnicianBreakdownWidget() {
+    const [data, setData] = useState<{ leaderboard: any[], total_orders: number, total_teknisi: number, data: any[] } | null>(null);
+    const [loading, setLoading] = useState(true);
+
+    const fetchData = async () => {
+        try {
+            const res = await fetch('/api/technician-breakdown');
+            if (res.ok) {
+                const json = await res.json();
+                setData(json);
+            }
+        } catch (err) { }
+        finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchData();
+        const interval = setInterval(() => fetchData(), 30000);
+        return () => clearInterval(interval);
+    }, []);
+
+    const handleToggleStatus = async (teknisiName: string, currentStatus: boolean) => {
+        try {
+            const res = await fetch('/api/technician-breakdown', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    technician_name: teknisiName,
+                    is_off_order: !currentStatus
+                })
+            });
+            if (res.ok) fetchData();
+        } catch (err) { }
+    };
+
+    const topPerformers = data?.leaderboard?.slice(0, 5) || [];
+    const maxOrder = Math.max(...(topPerformers.map(d => d.order) || [1]), 1);
+
+    return (
+        <div className="bg-white rounded-[2rem] border border-slate-100 shadow-xl overflow-hidden h-full flex flex-col group hover:shadow-2xl transition-all">
+            <div className="px-8 py-6 flex items-center justify-between border-b border-slate-50">
+                <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 bg-slate-50 rounded-xl flex items-center justify-center shadow-sm border border-slate-100">
+                        <Users className="w-6 h-6 text-indigo-500" />
+                    </div>
+                    <div>
+                        <h3 className="text-lg font-black text-slate-800 tracking-tight">Technician Performance</h3>
+                        <p className="text-[10px] text-slate-400 uppercase tracking-widest font-bold">Live Breakdown</p>
+                    </div>
+                </div>
+                <Link href="/breakdown" className="text-xs font-bold text-indigo-500 hover:text-indigo-600 flex items-center gap-1 transition-colors group/link">
+                    Lihat Detail
+                    <ArrowRight className="w-3.5 h-3.5 group-hover/link:translate-x-1 transition-transform" />
+                </Link>
+            </div>
+
+            <div className="px-2 pb-6">
+                <div className="overflow-x-auto">
+                    <table className="w-full text-left">
+                        <thead>
+                            <tr className="border-b border-slate-50">
+                                <th className="px-6 py-4 text-[9px] font-black text-slate-400 uppercase tracking-widest">Technician Name</th>
+                                <th className="px-6 py-4 text-[9px] font-black text-slate-400 uppercase tracking-widest text-right">Orders Handled</th>
+                                <th className="px-6 py-4 text-[9px] font-black text-slate-400 uppercase tracking-widest text-center">Progress</th>
+                                <th className="px-6 py-4 text-[9px] font-black text-slate-400 uppercase tracking-widest text-center">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-slate-50">
+                            {loading ? (
+                                Array.from({ length: 5 }).map((_, i) => (
+                                    <tr key={i} className="animate-pulse">
+                                        <td colSpan={4} className="px-6 py-6 h-12"></td>
+                                    </tr>
+                                ))
+                            ) : topPerformers.length > 0 ? (
+                                topPerformers.map((tech: any, i: number) => (
+                                    <tr key={i} className="group hover:bg-slate-50/30 transition-colors">
+                                        <td className="px-6 py-5">
+                                            <div className="flex items-center gap-2">
+                                                <span className="text-sm font-bold text-slate-700">{tech.teknisi}</span>
+                                                <div className="flex gap-1">
+                                                    {tech.jabatan === 'teknisi' && (
+                                                        <span className="text-[7px] font-black bg-blue-50 text-blue-500 px-2 py-0.5 rounded-md border border-blue-100 uppercase">TEKNISI</span>
+                                                    )}
+                                                    {tech.jabatan === 'servicedesk' && (
+                                                        <span className="text-[7px] font-black bg-emerald-50 text-emerald-500 px-2 py-0.5 rounded-md border border-emerald-100 uppercase">SD</span>
+                                                    )}
+                                                    {tech.isNightShift && (
+                                                        <span className="text-[7px] font-black bg-indigo-50 text-indigo-500 px-2 py-0.5 rounded-md border border-indigo-100 uppercase">SHIFT MALAM KEMARIN</span>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-5 text-right">
+                                            <span className="text-xl font-black text-slate-900 leading-none">{tech.order}</span>
+                                        </td>
+                                        <td className="px-6 py-5">
+                                            <div className="max-w-[120px] mx-auto">
+                                                <div className="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
+                                                    <div
+                                                        className="bg-blue-500 h-full rounded-full transition-all duration-1000"
+                                                        style={{ width: `${(tech.order / maxOrder) * 100}%` }}
+                                                    ></div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-5 text-center">
+                                            <div className={`text-[8px] font-black px-3 py-1 rounded-md border tracking-tighter shadow-sm inline-block ${tech.isOff
+                                                ? 'bg-rose-50 text-rose-600 border-rose-200'
+                                                : 'bg-emerald-50 text-emerald-600 border-emerald-200'
+                                                }`}>
+                                                {tech.isOff ? 'INACTIVE' : 'ACTIVE'}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan={4} className="px-6 py-20 text-center text-slate-400 font-bold uppercase tracking-widest text-xs opacity-50">
+                                        No technician activity detected
+                                    </td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>

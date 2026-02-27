@@ -19,11 +19,11 @@ export async function GET(
 
         return NextResponse.json({
             data: photos.map((p: any) => ({
-                id: p.id || Math.random(),
-                thumbnail: p.thumbnail || p.image_url || '',
-                full: p.image_url || '',
-                created_at: p.create_date || '',
-                user_name: p.user_name || '',
+                id: p.id || p.photo_id || Math.random(),
+                thumbnail: p.id || p.photo_id ? `/api/photos/${p.id || p.photo_id}` : '',
+                full: p.id || p.photo_id ? `/api/photos/${p.id || p.photo_id}` : '',
+                created_at: p.create_date || p.created_at || '',
+                user_name: p.user_name || p.nama_lengkap || p.nama_teknisi || p.teknisi_name || '',
             }))
         });
     } catch (error: any) {

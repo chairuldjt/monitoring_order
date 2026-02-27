@@ -285,7 +285,10 @@ export function OrderDetailModal({ orderId, onClose }: OrderDetailModalProps) {
             {selectedPhoto && (
                 <div
                     className="fixed inset-0 z-[110] bg-slate-900/95 backdrop-blur-xl flex items-center justify-center p-4 animate-fade-in"
-                    onClick={() => setSelectedPhoto(null)}
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedPhoto(null);
+                    }}
                 >
                     <button
                         className="absolute top-8 right-8 text-white/50 hover:text-white transition-all bg-white/10 hover:bg-white/20 p-3 rounded-2xl"

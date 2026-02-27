@@ -27,6 +27,7 @@ export async function GET(
         // 3. Map for UI compatibility
         return NextResponse.json({
             data: {
+                order_id: simrsOrder.order_id,
                 order_no: simrsOrder.order_no,
                 title: simrsOrder.catatan || `Order ${simrsOrder.order_no}`,
                 description: simrsOrder.catatan,

@@ -268,7 +268,10 @@ export default function TrackingPage() {
             {selectedPhoto && (
                 <div
                     className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4 animate-fade-in"
-                    onClick={() => setSelectedPhoto(null)}
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedPhoto(null);
+                    }}
                 >
                     <button
                         className="absolute top-8 right-8 text-white/50 hover:text-white transition-colors"

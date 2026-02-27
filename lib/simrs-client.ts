@@ -331,7 +331,13 @@ export function parseSIMRSDate(dateStr: string): Date | null {
             if (year < 100) year += 2000;
             const hour = parseInt(matchA[4]);
             const minute = parseInt(matchA[5]);
-            return new Date(year, month, day, hour, minute);
+
+            // Assume Asia/Jakarta (WIB)
+            const date = new Date(year, month, day, hour, minute);
+            const wibOffset = 7 * 60; // WIB is UTC+7
+            const localOffset = date.getTimezoneOffset(); // in minutes
+            date.setMinutes(date.getMinutes() + localOffset + wibOffset);
+            return date;
         }
 
         // Format B: "Mon DD YYYY HH:mmAM/PM" (e.g. "Feb 25 2026  9:14PM")
@@ -347,7 +353,12 @@ export function parseSIMRSDate(dateStr: string): Date | null {
             if (ampm === 'PM' && hour < 12) hour += 12;
             if (ampm === 'AM' && hour === 12) hour = 0;
 
-            return new Date(year, month, day, hour, minute);
+            // Assume Asia/Jakarta (WIB)
+            const date = new Date(year, month, day, hour, minute);
+            const wibOffset = 7 * 60;
+            const localOffset = date.getTimezoneOffset();
+            date.setMinutes(date.getMinutes() + localOffset + wibOffset);
+            return date;
         }
 
         return null;

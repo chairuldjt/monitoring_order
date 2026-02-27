@@ -31,21 +31,26 @@ export async function GET() {
     const totalOrders = Object.values(counts).reduce((a, b) => a + b, 0);
 
     // 2. Fetch active orders for analytics (Optimized with Summary-based Caching)
-    const [openOrders, followUpOrders, runningOrders, pendingOrders, doneOrders] = await Promise.all([
+    const [openOrders, followUpOrders, runningOrders, pendingOrders, doneOrders, verifiedOrders] = await Promise.all([
       getOptimizedSIMRSOrders(10), // Open
       getOptimizedSIMRSOrders(11), // Follow Up
       getOptimizedSIMRSOrders(12), // Running
       getOptimizedSIMRSOrders(13), // Pending
       getOptimizedSIMRSOrders(15), // Done
+      getOptimizedSIMRSOrders(30), // Verified
     ]);
 
     // Combine all fetched orders for analytics
-    const allActiveOrders = [...openOrders, ...followUpOrders, ...runningOrders, ...pendingOrders, ...doneOrders];
+    const allActiveOrders = [...openOrders, ...followUpOrders, ...runningOrders, ...pendingOrders, ...doneOrders, ...verifiedOrders];
 
-    // 3. Calculate orders created today (from 00:00:00)
-    const startOfToday = new Date();
+    // 3. Calculate orders created today (WIB timezone: Asia/Jakarta)
+    const now = new Date();
+    // Create Date object for start of today in WIB
+    const startOfToday = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Jakarta' }));
     startOfToday.setHours(0, 0, 0, 0);
 
+    // Convert startOfToday back to Date object that can be compared with parsed SIMRS dates
+    // since parsed SIMRS dates are now forced to WIB
     const todayOrders = allActiveOrders.filter(o => {
       const d = parseSIMRSDate(o.create_date);
       return d && d >= startOfToday;

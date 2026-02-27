@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
-import { ArrowLeft, RefreshCw, BarChart2, Clock, ChevronDown, ChevronUp, User } from 'lucide-react';
+import { ArrowLeft, RefreshCw, BarChart2, Clock, ChevronDown, ChevronUp, User, ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';
 import Link from 'next/link';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LabelList } from 'recharts';
 
@@ -44,6 +44,22 @@ function AnalyticsContent() {
 
     // New Technician State
     const [selectedTechnician, setSelectedTechnician] = useState<string>('all');
+    const [showAllOrders, setShowAllOrders] = useState<Record<string, boolean>>({});
+    const [sortConfig, setSortConfig] = useState<{ key: string; direction: 'asc' | 'desc' } | null>(null);
+
+    const handleSort = (key: string) => {
+        setSortConfig(prev => {
+            if (prev?.key === key) {
+                if (prev.direction === 'asc') return { key, direction: 'desc' };
+                return null; // Reset to default
+            }
+            return { key, direction: 'asc' };
+        });
+    };
+
+    const toggleShowAll = (id: string) => {
+        setShowAllOrders(prev => ({ ...prev, [id]: !prev[id] }));
+    };
 
     const toggleRow = (id: string) => {
         setExpandedRows(prev =>
@@ -118,6 +134,29 @@ function AnalyticsContent() {
             };
         });
     }, [data, selectedTechnician]);
+
+    // Compute display data based on selected technician and sorting
+    const sortedData = useMemo(() => {
+        let baseData = displayData;
+
+        if (!sortConfig) return baseData;
+
+        return [...baseData].sort((a, b) => {
+            const { key, direction } = sortConfig;
+            let valA = a[key as keyof typeof a];
+            let valB = b[key as keyof typeof b];
+
+            if (typeof valA === 'string' && typeof valB === 'string') {
+                return direction === 'asc' ? valA.localeCompare(valB) : valB.localeCompare(valA);
+            }
+
+            if (typeof valA === 'number' && typeof valB === 'number') {
+                return direction === 'asc' ? valA - valB : valB - valA;
+            }
+
+            return 0;
+        });
+    }, [displayData, sortConfig]);
 
     return (
         <div className="min-h-screen p-4 md:p-8 space-y-6 animate-fade-in relative">
@@ -260,15 +299,45 @@ function AnalyticsContent() {
                             <table className="w-full text-left border-collapse min-w-[600px] sm:min-w-0">
                                 <thead>
                                     <tr className="bg-slate-50 border-b border-slate-200 text-slate-500 text-xs uppercase tracking-wider">
-                                        <th className="px-6 py-4 font-black">Periode</th>
-                                        <th className="px-6 py-4 font-black">Total Order Selesai</th>
-                                        <th className="px-6 py-4 font-black">Rata-Rata Durasi</th>
+                                        <th
+                                            className="px-6 py-4 font-black cursor-pointer hover:bg-slate-100 transition-colors group"
+                                            onClick={() => handleSort('rawKey')}
+                                        >
+                                            <div className="flex items-center gap-2">
+                                                Periode
+                                                {sortConfig?.key === 'label' ? (
+                                                    sortConfig.direction === 'asc' ? <ArrowUp className="w-3 h-3 text-violet-600" /> : <ArrowDown className="w-3 h-3 text-violet-600" />
+                                                ) : <ArrowUpDown className="w-3 h-3 opacity-0 group-hover:opacity-40 transition-opacity" />}
+                                            </div>
+                                        </th>
+                                        <th
+                                            className="px-6 py-4 font-black cursor-pointer hover:bg-slate-100 transition-colors group"
+                                            onClick={() => handleSort('orderCount')}
+                                        >
+                                            <div className="flex items-center gap-2">
+                                                Total Order Selesai
+                                                {sortConfig?.key === 'orderCount' ? (
+                                                    sortConfig.direction === 'asc' ? <ArrowUp className="w-3 h-3 text-violet-600" /> : <ArrowDown className="w-3 h-3 text-violet-600" />
+                                                ) : <ArrowUpDown className="w-3 h-3 opacity-0 group-hover:opacity-40 transition-opacity" />}
+                                            </div>
+                                        </th>
+                                        <th
+                                            className="px-6 py-4 font-black cursor-pointer hover:bg-slate-100 transition-colors group"
+                                            onClick={() => handleSort('averageHours')}
+                                        >
+                                            <div className="flex items-center gap-2">
+                                                Rata-Rata Durasi
+                                                {sortConfig?.key === 'averageHours' ? (
+                                                    sortConfig.direction === 'asc' ? <ArrowUp className="w-3 h-3 text-violet-600" /> : <ArrowDown className="w-3 h-3 text-violet-600" />
+                                                ) : <ArrowUpDown className="w-3 h-3 opacity-0 group-hover:opacity-40 transition-opacity" />}
+                                            </div>
+                                        </th>
                                         <th className="px-6 py-4 font-black text-right">Performa</th>
                                         {selectedTechnician === 'all' && <th className="px-6 py-4"></th>}
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-slate-100">
-                                    {displayData.map((row, idx) => {
+                                    {sortedData.map((row, idx) => {
                                         const isExpanded = expandedRows.includes(row.rawKey);
                                         return (
                                             <React.Fragment key={idx}>
@@ -329,7 +398,6 @@ function AnalyticsContent() {
                                                                     </div>
                                                                 )}
 
-                                                                {/* Top 5 Order Terlama Section */}
                                                                 {(() => {
                                                                     let orderDetails = row.details || [];
                                                                     if (selectedTechnician !== 'all') {
@@ -339,13 +407,27 @@ function AnalyticsContent() {
 
                                                                     if (top5Slowest.length === 0) return null;
 
+                                                                    const showAll = showAllOrders[row.rawKey] || false;
+                                                                    const displayOrders = showAll ? [...orderDetails].sort((a, b) => b.duration_hours - a.duration_hours) : top5Slowest;
+
                                                                     return (
                                                                         <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
-                                                                            <h4 className="text-xs font-black text-slate-500 uppercase flex items-center gap-2 mb-4">
-                                                                                <Clock className="w-4 h-4 text-red-500" /> Top 5 Order Terlama ({row.label})
-                                                                            </h4>
+                                                                            <div className="flex items-center justify-between mb-4">
+                                                                                <h4 className="text-xs font-black text-slate-500 uppercase flex items-center gap-2">
+                                                                                    <Clock className="w-4 h-4 text-red-500" />
+                                                                                    {showAll ? `Daftar Seluruh Order (${row.label})` : `Top 5 Order Terlama (${row.label})`}
+                                                                                </h4>
+                                                                                {orderDetails.length > 5 && (
+                                                                                    <button
+                                                                                        onClick={(e) => { e.stopPropagation(); toggleShowAll(row.rawKey); }}
+                                                                                        className="text-[10px] font-black text-violet-600 uppercase tracking-widest hover:text-violet-800 transition-colors"
+                                                                                    >
+                                                                                        {showAll ? 'Tampilkan Lebih Sedikit' : `Lihat Selengkapnya (${orderDetails.length})`}
+                                                                                    </button>
+                                                                                )}
+                                                                            </div>
                                                                             <div className="flex flex-col gap-2">
-                                                                                {top5Slowest.map((order, idx) => (
+                                                                                {displayOrders.map((order, idx) => (
                                                                                     <div key={idx} className="flex flex-col sm:flex-row sm:items-center justify-between p-3 rounded-xl bg-red-50/50 border border-red-100 hover:border-red-200 transition-colors gap-3">
                                                                                         <div className="flex flex-col">
                                                                                             <span className="text-sm font-bold text-slate-800">{order.order_no}</span>

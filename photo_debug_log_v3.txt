@@ -1,0 +1,8 @@
+Testing endpoint: http://172.16.1.212:5010/photo/get_photo/263970
+FAILED for /photo/get_photo/263970: Request failed with status code 404 (404)
+Testing endpoint: http://172.16.1.212:5010/order/get_photo/263970
+FAILED for /order/get_photo/263970: Request failed with status code 404 (404)
+Testing endpoint: http://172.16.1.212:5010/order/photo_list/263970
+FAILED for /order/photo_list/263970: Request failed with status code 404 (404)
+Testing endpoint: http://172.16.1.212:5010/photo/photo_list/263970
+FAILED for /photo/photo_list/263970: Request failed with status code 404 (404)

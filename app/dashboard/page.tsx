@@ -133,18 +133,18 @@ function DashboardContent() {
     };
 
     return (
-        <div className="min-h-screen p-4 md:p-8 space-y-8 animate-fade-in">
+        <div className="min-h-screen p-3 md:p-8 space-y-6 md:space-y-8 animate-fade-in pb-20 md:pb-8">
             {/* Welcome Header */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white/40 backdrop-blur-md p-8 rounded-[2rem] border border-white/20 shadow-xl">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 md:gap-6 bg-white/40 backdrop-blur-md p-6 md:p-8 rounded-[1.5rem] md:rounded-[2rem] border border-white/20 shadow-xl">
                 <div className="flex items-center gap-5">
                     <div className="w-16 h-16 bg-gradient-to-br from-violet-600 to-fuchsia-600 rounded-2xl flex items-center justify-center shadow-lg shadow-violet-200 animate-float">
                         <TrendingUp className="w-8 h-8 text-white" />
                     </div>
                     <div>
-                        <h1 className="text-3xl font-black text-slate-800">
+                        <h1 className="text-2xl md:text-3xl font-black text-slate-800 leading-tight">
                             Selamat Datang, <span className="bg-gradient-to-r from-violet-600 to-fuchsia-600 bg-clip-text text-transparent">{user?.username}!</span>
                         </h1>
-                        <p className="text-slate-500 font-medium mt-1 uppercase tracking-widest text-[10px] font-black opacity-60">
+                        <p className="text-slate-500 font-medium mt-1 uppercase tracking-widest text-[9px] md:text-[10px] font-black opacity-60">
                             SIMRS Order Monitoring — Live View
                         </p>
                     </div>
@@ -182,7 +182,7 @@ function DashboardContent() {
             </div>
 
             {/* Status Cards */}
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4">
                 {statusCards.map((card, i) => {
                     const Icon = card.icon;
                     const count = stats?.counts[card.key] || 0;

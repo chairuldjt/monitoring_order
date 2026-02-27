@@ -134,7 +134,7 @@ function AnalyticsContent() {
                     </div>
                 </div>
 
-                <div className="flex flex-col sm:flex-row gap-3">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
                     <div className="bg-slate-100 p-1.5 rounded-2xl flex gap-1">
                         {[
                             { id: 'daily', label: 'Harian' },
@@ -144,7 +144,7 @@ function AnalyticsContent() {
                             <button
                                 key={btn.id}
                                 onClick={() => setViewType(btn.id as any)}
-                                className={`px-4 py-2 rounded-xl text-xs font-black transition-all ${viewType === btn.id
+                                className={`flex-1 sm:flex-none px-4 py-2 rounded-xl text-xs font-black transition-all ${viewType === btn.id
                                     ? 'bg-white text-violet-600 shadow-sm'
                                     : 'text-slate-500 hover:text-slate-700'
                                     }`}
@@ -154,32 +154,35 @@ function AnalyticsContent() {
                         ))}
                     </div>
 
-                    <div className="flex gap-2">
-                        {viewType !== 'monthly' && (
+                    <div className="flex flex-col sm:flex-row gap-2">
+                        <div className="flex gap-2 flex-1">
+                            {viewType !== 'monthly' && (
+                                <select
+                                    value={selectedMonth}
+                                    onChange={(e) => setSelectedMonth(e.target.value)}
+                                    className="flex-1 bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-700 outline-none focus:ring-2 focus:ring-violet-500 sm:max-w-[120px]"
+                                >
+                                    {["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"].map((m, i) => (
+                                        <option key={i + 1} value={String(i + 1)}>{m}</option>
+                                    ))}
+                                </select>
+                            )}
+
                             <select
-                                value={selectedMonth}
-                                onChange={(e) => setSelectedMonth(e.target.value)}
-                                className="bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-700 outline-none focus:ring-2 focus:ring-violet-500 max-w-[120px]"
+                                value={selectedYear}
+                                onChange={(e) => setSelectedYear(e.target.value)}
+                                className="flex-1 bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-700 outline-none focus:ring-2 focus:ring-violet-500 sm:max-w-[90px]"
                             >
-                                {["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"].map((m, i) => (
-                                    <option key={i + 1} value={String(i + 1)}>{m}</option>
+                                {[2024, 2025, 2026].map(y => (
+                                    <option key={y} value={String(y)}>{y}</option>
                                 ))}
                             </select>
-                        )}
+                        </div>
 
-                        <select
-                            value={selectedYear}
-                            onChange={(e) => setSelectedYear(e.target.value)}
-                            className="bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-700 outline-none focus:ring-2 focus:ring-violet-500 max-w-[90px]"
-                        >
-                            {[2024, 2025, 2026].map(y => (
-                                <option key={y} value={String(y)}>{y}</option>
-                            ))}
-                        </select>
                         <select
                             value={selectedTechnician}
                             onChange={(e) => setSelectedTechnician(e.target.value)}
-                            className="bg-white border border-violet-200 rounded-xl px-3 py-2 text-xs font-bold text-violet-700 outline-none focus:ring-2 focus:ring-violet-500 max-w-[150px] shadow-sm"
+                            className="bg-white border border-violet-200 rounded-xl px-3 py-2 text-xs font-bold text-violet-700 outline-none focus:ring-2 focus:ring-violet-500 w-full sm:max-w-[150px] shadow-sm"
                         >
                             <option value="all">Semua Teknisi</option>
                             {uniqueTechnicians.map(tech => (
@@ -191,7 +194,7 @@ function AnalyticsContent() {
                     <button
                         onClick={() => fetchAnalytics(true)}
                         disabled={refreshing || loading}
-                        className="bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white px-5 py-2.5 rounded-xl hover:shadow-lg transition-all font-bold flex items-center gap-2 active:scale-95 disabled:opacity-60 text-sm whitespace-nowrap"
+                        className="bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white px-5 py-2.5 rounded-xl hover:shadow-lg transition-all font-bold flex items-center justify-center gap-2 active:scale-95 disabled:opacity-60 text-sm whitespace-nowrap"
                     >
                         <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
                         Kalkulasi Ulang
@@ -253,8 +256,8 @@ function AnalyticsContent() {
                         </div>
 
                         {/* TABLE SUMMARY SECTION */}
-                        <div className="rounded-2xl border border-slate-200 overflow-hidden">
-                            <table className="w-full text-left border-collapse">
+                        <div className="rounded-2xl border border-slate-200 overflow-x-auto no-scrollbar">
+                            <table className="w-full text-left border-collapse min-w-[600px] sm:min-w-0">
                                 <thead>
                                     <tr className="bg-slate-50 border-b border-slate-200 text-slate-500 text-xs uppercase tracking-wider">
                                         <th className="px-6 py-4 font-black">Periode</th>

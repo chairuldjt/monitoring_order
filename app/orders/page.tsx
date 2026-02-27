@@ -200,7 +200,7 @@ function OrdersContent() {
                     </div>
 
                     {/* Date Filters */}
-                    <div className="flex-1 flex gap-2">
+                    <div className="flex-1 flex flex-col sm:flex-row gap-2">
                         <div className="flex-1">
                             <input
                                 type="date"
@@ -209,7 +209,7 @@ function OrdersContent() {
                                 className="w-full px-4 py-3 bg-white border border-slate-200 rounded-2xl text-sm font-medium focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none text-slate-600"
                             />
                         </div>
-                        <div className="flex items-center text-slate-400 font-bold">-</div>
+                        <div className="hidden sm:flex items-center text-slate-400 font-bold">-</div>
                         <div className="flex-1">
                             <input
                                 type="date"
@@ -265,7 +265,7 @@ function OrdersContent() {
             )}
 
             {/* Status Pills */}
-            <div className="flex gap-2 flex-wrap">
+            <div className="flex gap-2 pb-2 overflow-x-auto no-scrollbar scroll-smooth flex-nowrap -mx-4 px-4 md:mx-0 md:px-0 md:flex-wrap">
                 {statuses.map(s => (
                     <button
                         key={s.key}

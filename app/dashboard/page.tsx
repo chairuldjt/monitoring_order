@@ -14,6 +14,8 @@ import { OrderDetailModal } from '@/components/OrderDetailModal';
 interface DashboardStats {
     counts: Record<string, number>;
     totalOrders: number;
+    todayOrders: number;
+    oldestOrderDate: string | null;
     followUpOverdue: any[];
     pendingOverdue: any[];
     repeatOrders: any[];
@@ -215,14 +217,26 @@ function DashboardContent() {
                             </div>
                             <div>
                                 <h3 className="font-black text-slate-800 text-lg">Total Order</h3>
-                                <p className="text-[10px] text-slate-400 uppercase tracking-widest font-bold">Keseluruhan Order</p>
+                                <div className="flex items-center gap-2">
+                                    <p className="text-[10px] text-slate-400 uppercase tracking-widest font-bold">Keseluruhan Order</p>
+                                    <span className="w-1 h-1 rounded-full bg-slate-200"></span>
+                                    <div className="flex items-center gap-1 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-100">
+                                        <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
+                                        <span className="text-[9px] font-black text-emerald-600 uppercase">+{stats?.todayOrders || 0} HARI INI</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
                         <div className="flex flex-col justify-center flex-1">
                             <div className="flex items-baseline gap-2 mb-2">
                                 <span className="text-6xl font-black text-slate-900 tabular-nums tracking-tight">{stats?.totalOrders || 0}</span>
-                                <span className="text-lg font-bold text-slate-400">order</span>
+                                <div className="flex flex-col">
+                                    <span className="text-lg font-bold text-slate-400">order</span>
+                                    {stats?.oldestOrderDate && (
+                                        <span className="text-[10px] text-slate-400 font-bold whitespace-nowrap">terhitung dari {stats.oldestOrderDate}</span>
+                                    )}
+                                </div>
                             </div>
 
                             <div className="mt-4 flex flex-col gap-4 w-full">

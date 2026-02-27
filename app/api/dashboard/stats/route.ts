@@ -31,7 +31,8 @@ export async function GET() {
     const totalOrders = Object.values(counts).reduce((a, b) => a + b, 0);
 
     // 2. Fetch active orders for analytics (Optimized with Summary-based Caching)
-    const [followUpOrders, runningOrders, pendingOrders, doneOrders] = await Promise.all([
+    const [openOrders, followUpOrders, runningOrders, pendingOrders, doneOrders] = await Promise.all([
+      getOptimizedSIMRSOrders(10), // Open
       getOptimizedSIMRSOrders(11), // Follow Up
       getOptimizedSIMRSOrders(12), // Running
       getOptimizedSIMRSOrders(13), // Pending
@@ -39,9 +40,31 @@ export async function GET() {
     ]);
 
     // Combine all fetched orders for analytics
-    const allActiveOrders = [...followUpOrders, ...runningOrders, ...pendingOrders, ...doneOrders];
+    const allActiveOrders = [...openOrders, ...followUpOrders, ...runningOrders, ...pendingOrders, ...doneOrders];
 
-    // 3. Dynamic Thresholds from Settings
+    // 3. Calculate orders created today (from 00:00:00)
+    const startOfToday = new Date();
+    startOfToday.setHours(0, 0, 0, 0);
+
+    const todayOrders = allActiveOrders.filter(o => {
+      const d = parseSIMRSDate(o.create_date);
+      return d && d >= startOfToday;
+    }).length;
+
+    // 4. Find oldest order date
+    let oldestDate: Date | null = null;
+    allActiveOrders.forEach(o => {
+      const d = parseSIMRSDate(o.create_date);
+      if (d) {
+        if (!oldestDate || d < oldestDate) oldestDate = d;
+      }
+    });
+
+    const oldestOrderDate = oldestDate
+      ? (oldestDate as Date).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' })
+      : null;
+
+    // 5. Dynamic Thresholds from Settings
     const settings = await getSystemSettings();
     const overdueFollowupDays = Number(settings['overdue_followup_days']) || 1;
     const overduePendingMonths = Number(settings['overdue_pending_months']) || 1;
@@ -131,6 +154,8 @@ export async function GET() {
     return NextResponse.json({
       counts,
       totalOrders,
+      todayOrders,
+      oldestOrderDate,
       followUpOverdue,
       pendingOverdue,
       repeatOrders,

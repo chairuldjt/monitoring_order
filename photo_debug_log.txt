@@ -1,8 +1,0 @@
-API URL: http://172.16.1.212:5010
-Login: nugrohochairul
-Login result: true
-Searching for order 20.54270...
-Found! Order ID: 263970 (Status 15)
-Testing photo endpoint: http://172.16.1.212:5010/photo/get_photo/263970
-Error fetching photo: Request failed with status code 404
-Error response saved to photo_debug_error.json
